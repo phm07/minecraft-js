@@ -9,7 +9,11 @@ import Texture from "../gl/texture";
 class Human {
 
     constructor(position) {
+
+        this.time = 0;
         this.position = position;
+        this.rotation = [];
+
         this.texture = new Texture(human);
         this.shader = new Shader(vertexShader, fragmentShader);
 
@@ -220,19 +224,28 @@ class Human {
         this.torso.delete();
     }
 
-    update() {
+    update(delta) {
+
+        this.time += delta;
+        this.rotation.y += delta;
 
         this.torso.position = [this.position.x-4/16, this.position.y+12/16, this.position.z-2/16];
+        this.torso.rotation = this.rotation;
         this.torso.update();
         this.rightLeg.position = [this.position.x-4/16, this.position.y, this.position.z-2/16];
+        this.rightLeg.rotation = this.rotation;
         this.rightLeg.update();
         this.leftLeg.position = [this.position.x, this.position.y, this.position.z-2/16];
+        this.leftLeg.rotation = this.rotation;
         this.leftLeg.update();
         this.rightArm.position = [this.position.x-8/16, this.position.y+12/16, this.position.z-2/16];
+        this.rightArm.rotation = this.rotation;
         this.rightArm.update();
         this.leftArm.position = [this.position.x+4/16, this.position.y+12/16, this.position.z-2/16];
+        this.leftArm.rotation = this.rotation;
         this.leftArm.update();
         this.head.position = [this.position.x-4/16, this.position.y+24/16, this.position.z-4/16];
+        this.head.rotation = this.rotation;
         this.head.update();
     }
 

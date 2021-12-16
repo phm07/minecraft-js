@@ -1,4 +1,5 @@
 const path = require("path");
+const TerserPlugin = require("terser-webpack-plugin");
 const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
@@ -13,6 +14,10 @@ module.exports = {
     node: {
         __dirname: false,
         __filename: false
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin()]
     },
     externals: [nodeExternals()],
     module: {

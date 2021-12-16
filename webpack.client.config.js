@@ -1,5 +1,6 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
     devtool: "source-map",
@@ -14,6 +15,10 @@ module.exports = {
     output: {
         path: path.join(__dirname, "dist"),
         filename: "client.bundle.js"
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin()]
     },
     target: "web",
     module: {
