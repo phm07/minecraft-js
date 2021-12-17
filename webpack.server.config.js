@@ -2,13 +2,14 @@ const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 const nodeExternals = require("webpack-node-externals");
 
-module.exports = {
-    entry: {
-        server: "./src/server/app.js"
-    },
+module.exports = (env, argv) => ({
+    mode: argv.mode,
+    devtool: argv.mode === "development" ? "eval-source-map" : false,
+    entry: "./src/server/app.js",
     output: {
         path: path.join(__dirname, "dist"),
-        filename: "server.bundle.js"
+        filename: "server.bundle.js",
+        publicPath: "/"
     },
     target: "node",
     node: {
@@ -16,7 +17,7 @@ module.exports = {
         __filename: false
     },
     optimization: {
-        minimize: true,
+        minimize: argv.mode === "production",
         minimizer: [new TerserPlugin()]
     },
     externals: [nodeExternals()],
@@ -44,4 +45,4 @@ module.exports = {
             }
         ]
     }
-};
+});

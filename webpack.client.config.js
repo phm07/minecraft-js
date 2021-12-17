@@ -2,11 +2,10 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
-module.exports = {
-    devtool: "source-map",
-    entry: {
-        index: "./src/client/app.js"
-    },
+module.exports = (env, argv) => ({
+    mode: argv.mode,
+    devtool: argv.mode === "development" ? "eval-source-map" : false,
+    entry: "./src/client/app.js",
     plugins: [
         new HtmlWebpackPlugin({
             title: "Game"
@@ -14,10 +13,11 @@ module.exports = {
     ],
     output: {
         path: path.join(__dirname, "dist"),
-        filename: "client.bundle.js"
+        filename: "client.bundle" + (argv.mode === "production" ? ".min" : "") + ".js",
+        publicPath: "/"
     },
     optimization: {
-        minimize: true,
+        minimize: argv.mode === "production",
         minimizer: [new TerserPlugin()]
     },
     target: "web",
@@ -37,7 +37,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: "babel-loader",
+                loader: "babel-loader"
             },
             {
                 test: /\.(s[ac]ss)$/i,
@@ -50,7 +50,7 @@ module.exports = {
             {
                 test: /\.(fs)|(vs)|(obj)$/i,
                 use: ["raw-loader"]
-            },
+            }
         ]
     }
-}
+});
