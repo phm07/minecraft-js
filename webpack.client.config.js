@@ -14,7 +14,8 @@ module.exports = (env, argv) => ({
     output: {
         path: path.join(__dirname, "dist"),
         filename: "client.bundle" + (argv.mode === "production" ? ".min" : "") + ".js",
-        publicPath: "/"
+        publicPath: "/",
+        clean: true
     },
     optimization: {
         minimize: argv.mode === "production",
