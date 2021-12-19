@@ -24,17 +24,6 @@ module.exports = (env, argv) => ({
     module: {
         rules: [
             {
-                enforce: "pre",
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: "eslint-loader",
-                options: {
-                    emitWarning: true,
-                    failOnError: false,
-                    failOnWarning: false
-                }
-            },
-            {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: ["babel-loader"]
