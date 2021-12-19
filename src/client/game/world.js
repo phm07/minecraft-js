@@ -9,7 +9,7 @@ class World {
         this.chunkMap = {};
         this.requested = {};
         this.terrain = new Terrain(this);
-        
+
         const world = this;
         this.worker = {
             queue: [],
@@ -111,14 +111,12 @@ class World {
     }
 
     getNeighbors(chunk) {
-        const neighbors = [
-            this.chunkMap[[chunk.x-1, chunk.z]],
-            this.chunkMap[[chunk.x+1, chunk.z]],
-            this.chunkMap[[chunk.x, chunk.z-1]],
-            this.chunkMap[[chunk.x, chunk.z+1]],
+        return [
+            this.chunkMap[[chunk.x - 1, chunk.z]],
+            this.chunkMap[[chunk.x + 1, chunk.z]],
+            this.chunkMap[[chunk.x, chunk.z - 1]],
+            this.chunkMap[[chunk.x, chunk.z + 1]],
         ].filter(e => !!e);
-        
-        return neighbors;
     }
 }
 

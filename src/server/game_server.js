@@ -1,5 +1,6 @@
 import LoginHandler from "./connection/login_handler.js";
 import World from "./game/world.js";
+import crypto from "crypto";
 
 class GameServer {
 
@@ -10,11 +11,20 @@ class GameServer {
         this.loginHandler = new LoginHandler();
     }
 
-    getPlayer(name) {
-        for(let player of this.players) {
-            if(player.name === name) return player;
-        }
-        return null;
+    getPlayerByName(name) {
+        return this.players.find(player => player.name === name);
+    }
+
+    newEntityId() {
+        let id;
+        do {
+            id = crypto.randomBytes(4).readInt32BE(0);
+        } while(this.findEntity(id));
+        return id;
+    }
+
+    findEntity(id) {
+        return this.players.find(player => player.id === id);
     }
 }
 

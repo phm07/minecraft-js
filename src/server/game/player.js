@@ -1,7 +1,9 @@
 class Player {
 
     constructor(socket) {
-        
+
+        this.id = server.newEntityId();
+
         this.socket = socket;
 
         this.position = server.world.spawnPoint;
@@ -22,7 +24,23 @@ class Player {
                 ...this.position,
                 ...packet.position
             };
+            this.socket.broadcast.emit("position", {
+                id: this.id,
+                position: this.position
+            });
         });
+
+        this.socket.broadcast.emit("playerAdd", {
+            id: this.id,
+            position: this.position
+        });
+
+        for(let player of server.players) {
+            this.socket.emit("playerAdd", {
+                id: player.id,
+                position: player.position
+            });
+        }
     }
 
 }

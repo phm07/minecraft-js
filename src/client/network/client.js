@@ -57,7 +57,15 @@ class Client {
         this.socket.on("chunk", chunk => {
             chunk.blocks = new Uint8Array(chunk.blocks);
             game.scene.world.receiveChunk(chunk).then();
-        })
+        });
+
+        this.socket.on("playerAdd", packet => {
+            game.scene.playerManager.addPlayer(packet.id, packet.position);
+        });
+
+        this.socket.on("position", packet => {
+            game.scene.playerManager.updatePlayer(packet.id, packet.position);
+        });
     }
 }
 

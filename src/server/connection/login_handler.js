@@ -10,7 +10,7 @@ class LoginHandler {
             }, 10000);
             socket.on("login", event => {
                 clearTimeout(timeout);
-                const existing = server.getPlayer(event.name);
+                const existing = server.getPlayerByName(event.name);
                 if(event.name.length < 3 || event.name.length > 24) {
                     socket.emit("error", "Invalid name");
                     socket.disconnect();

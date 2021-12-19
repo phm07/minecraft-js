@@ -5,7 +5,7 @@ class World {
 
     constructor() {
         this.spawnPoint = {x: 0, y: 100, z: 0, yaw: 0, pitch: 0};
-        this.generator = new WorldGenerator();
+        this.generator = new WorldGenerator("momm");
         this.chunkMap = {};
     }
 

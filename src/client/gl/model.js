@@ -1,4 +1,4 @@
-import { mat4 } from "gl-matrix";
+import { mat4, quat } from "gl-matrix";
 
 class Model {
 
@@ -21,11 +21,19 @@ class Model {
         this.mesh.bind();
     }
 
+    delete() {
+        this.mesh.delete();
+    }
+
     update() {
+
+        const rotationQuat = quat.create();
+        quat.fromEuler(rotationQuat, ...this.rotation);
+
         this.modelMatrix = mat4.create();
         mat4.fromRotationTranslationScaleOrigin(
             this.modelMatrix,
-            [...this.rotation, 1],
+            rotationQuat,
             this.position,
             this.scale,
             this.origin
