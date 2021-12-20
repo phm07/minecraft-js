@@ -46,7 +46,7 @@ class Model {
     public update(): void {
 
         const rotationQuat = quat.create();
-        quat.fromEuler(rotationQuat, this.rotation.x, this.rotation.y, this.rotation.z);
+        quat.fromEuler(rotationQuat, this.rotation.x*(180/Math.PI), this.rotation.y*(180/Math.PI), this.rotation.z*(180/Math.PI));
 
         mat4.fromRotationTranslationScaleOrigin(
             this.modelMatrix,

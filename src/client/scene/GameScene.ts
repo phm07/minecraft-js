@@ -34,7 +34,7 @@ class GameScene implements IScene {
 
     public update(delta: number): void {
         this.player.update(delta);
-        this.playerManager.update();
+        this.playerManager.update(delta);
     }
 
     public render(): void {

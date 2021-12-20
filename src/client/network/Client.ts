@@ -76,6 +76,10 @@ class Client {
         this.socket.on("position", (packet: {id: number, position: PlayerPosition}) => {
             (game.scene as GameScene).playerManager.updatePlayer(packet.id, packet.position);
         });
+
+        this.socket.on("playerRemove", (packet: {id: number}) => {
+            (game.scene as GameScene).playerManager.removePlayer(packet.id);
+        });
     }
 }
 

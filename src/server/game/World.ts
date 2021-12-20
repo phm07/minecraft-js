@@ -9,7 +9,7 @@ class World {
     private readonly chunkMap: {[index: string]: Chunk};
 
     public constructor() {
-        this.spawnPoint = {x: 0, y: 100, z: 0, yaw: 0, pitch: 0};
+        this.spawnPoint = new PlayerPosition(0, 100, 0, 0, 0);
         this.generator = new WorldGenerator();
         this.chunkMap = {};
     }

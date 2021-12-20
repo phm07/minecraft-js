@@ -22,6 +22,11 @@ class PlayerManager {
         this.players.push(new Human(id, this.shader, this.texture, position));
     }
 
+    public removePlayer(id: number): void {
+        const human = this.findPlayer(id);
+        if(human) this.players.splice(this.players.indexOf(human), 1);
+    }
+
     public updatePlayer(id: number, position: PlayerPosition): void {
         const player = this.findPlayer(id);
         if(player) player.setPosition(position);
@@ -35,8 +40,8 @@ class PlayerManager {
         this.players.forEach(player => player.delete());
     }
 
-    public update(): void {
-        this.players.forEach(player => player.update());
+    public update(delta: number): void {
+        this.players.forEach(player => player.update(delta));
     }
 
     public render(): void {

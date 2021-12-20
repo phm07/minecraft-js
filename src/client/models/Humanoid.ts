@@ -11,7 +11,7 @@ type UV = {front: Side, back: Side, top: Side, bottom: Side, right: Side, left: 
 class Humanoid {
     
     public position: PlayerPosition;
-    private readonly bodyYaw: number;
+    public bodyYaw: number;
     private readonly armSwing: number;
     private readonly legSwing: number;
     private readonly texture: Texture;
@@ -61,7 +61,7 @@ class Humanoid {
     }
 
     private static map(x: number, y: number, w: number, h: number, d: number): number[][] {
-        const i = 0.001; // inset
+        const i = 0.005; // inset
         return Humanoid.mapUvs({
             front: {
                 left: x+d/64+i,
@@ -145,27 +145,27 @@ class Humanoid {
     public update(): void {
 
         this.torso.position = new Vec3(this.position.x-8/16, this.position.y+12/16, this.position.z-8/16);
-        this.torso.rotation = new Vec3(0, this.bodyYaw, 0);
+        this.torso.rotation = new Vec3(0, this.bodyYaw+Math.PI, 0);
         this.torso.update();
 
         this.rightLeg.position = new Vec3(this.position.x-16/16, this.position.y-4/16, this.position.z-8/16);
-        this.rightLeg.rotation = new Vec3(-this.legSwing, this.bodyYaw, 0);
+        this.rightLeg.rotation = new Vec3(-this.legSwing, this.bodyYaw+Math.PI, 0);
         this.rightLeg.update();
 
         this.leftLeg.position = new Vec3(this.position.x, this.position.y-4/16, this.position.z-8/16);
-        this.leftLeg.rotation = new Vec3(this.legSwing, this.bodyYaw, 0);
+        this.leftLeg.rotation = new Vec3(this.legSwing, this.bodyYaw+Math.PI, 0);
         this.leftLeg.update();
 
         this.rightArm.position = new Vec3(this.position.x-32/16, this.position.y+9/16, this.position.z-8/16);
-        this.rightArm.rotation = new Vec3(this.armSwing, this.bodyYaw, 0);
+        this.rightArm.rotation = new Vec3(this.armSwing, this.bodyYaw+Math.PI, 0);
         this.rightArm.update();
 
         this.leftArm.position = new Vec3(this.position.x+16/16, this.position.y+9/16, this.position.z-8/16);
-        this.leftArm.rotation = new Vec3(-this.armSwing, this.bodyYaw, 0);
+        this.leftArm.rotation = new Vec3(-this.armSwing, this.bodyYaw+Math.PI, 0);
         this.leftArm.update();
 
         this.head.position = new Vec3(this.position.x-8/16, this.position.y+24/16, this.position.z-8/16);
-        this.head.rotation = new Vec3(0, 0, 0);
+        this.head.rotation = new Vec3(this.position.pitch, this.position.yaw+Math.PI, 0);
         this.head.update();
     }
 

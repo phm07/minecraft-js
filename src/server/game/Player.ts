@@ -14,7 +14,14 @@ class Player {
         this.name = name;
         this.socket = socket;
 
-        this.position = global.server.world.spawnPoint;
+        this.socket.on("disconnect", () => {
+            global.server.players.splice(global.server.players.indexOf(this), 1);
+            this.socket.broadcast.emit("playerRemove", {
+                id: this.id
+            });
+        });
+
+        this.position = PlayerPosition.clone(global.server.world.spawnPoint);
         this.socket.emit("teleport", {
             position: this.position
         });
@@ -28,10 +35,7 @@ class Player {
         });
 
         this.socket.on("position", (packet: {position: PlayerPosition}) => {
-            this.position = {
-                ...this.position,
-                ...packet.position
-            };
+            Object.assign(this.position, packet.position);
             this.socket.broadcast.emit("position", {
                 id: this.id,
                 position: this.position

@@ -44,7 +44,8 @@ class Player {
 
         this.updatePosition(delta);
 
-        this.camera.position = new PlayerPosition(this.position.x, this.position.y+1.7, this.position.z, this.position.yaw, this.position.pitch);
+        this.camera.position = PlayerPosition.clone(this.position);
+        this.camera.position.y += 1.7;
         this.camera.updateViewMatrix();
 
         if(Math.floor(oldX/16) !== Math.floor(this.position.x/16)
@@ -123,10 +124,7 @@ class Player {
     }
 
     public teleport(position: PlayerPosition): void {
-        this.position = {
-            ...this.position,
-            ...position
-        };
+        Object.assign(this.position, position);
     }
 }
 

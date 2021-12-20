@@ -13,6 +13,10 @@ class PlayerPosition {
         this.yaw = yaw;
         this.pitch = pitch;
     }
+
+    public static clone(position: PlayerPosition): PlayerPosition {
+        return JSON.parse(JSON.stringify(position)) as PlayerPosition;
+    }
 }
 
 export default PlayerPosition;
