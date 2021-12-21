@@ -1,5 +1,5 @@
-import HomeScene from "./scene/HomeScene";
 import Client from "./network/Client";
+import HomeScene from "./scene/HomeScene";
 import IScene from "./scene/IScene";
 
 class Game {

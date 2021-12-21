@@ -1,12 +1,12 @@
+import PlayerPosition from "../../common/PlayerPosition";
 import Chunk from "./Chunk";
 import WorldGenerator from "./WorldGenerator";
-import PlayerPosition from "../../common/PlayerPosition";
 
 class World {
 
     public readonly spawnPoint: PlayerPosition;
     private readonly generator: WorldGenerator;
-    private readonly chunkMap: {[index: string]: Chunk};
+    private readonly chunkMap: { [index: string]: Chunk };
 
     public constructor() {
         this.spawnPoint = new PlayerPosition(0, 100, 0, 0, 0);
@@ -16,7 +16,7 @@ class World {
 
     public getChunk(x: number, z: number): Chunk {
         let chunk = this.chunkMap[[x, z].toString()];
-        if(!chunk) {
+        if (!chunk) {
             chunk = new Chunk(x, z);
             this.generator.generateChunk(chunk);
             this.chunkMap[[x, z].toString()] = chunk;

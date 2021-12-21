@@ -1,13 +1,14 @@
 import * as express from "express";
 import * as http from "http";
 import { Server } from "socket.io";
-import GameServer from "./GameServer";
+
 import DevServer from "./DevServer";
+import GameServer from "./GameServer";
 
 const app = express();
 const httpServer = http.createServer(app);
 
-if(process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "development") {
     DevServer.use(app);
 }
 

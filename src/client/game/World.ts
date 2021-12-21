@@ -1,14 +1,15 @@
-import Chunk from "./Chunk";
-import Terrain from "./Terrain";
-import ChunkWorker from "./ChunkWorker";
 import GameScene from "../scene/GameScene";
+import Chunk from "./Chunk";
+import ChunkWorker from "./ChunkWorker";
+import Terrain from "./Terrain";
 
 class World {
 
     public static readonly RENDER_DISTANCE = 8;
-    private readonly requested: {[index: string]: boolean};
+
+    private readonly requested: { [index: string]: boolean };
     private readonly worker: ChunkWorker;
-    public readonly chunkMap: {[index: string]: Chunk};
+    public readonly chunkMap: { [index: string]: Chunk };
     public readonly terrain: Terrain;
 
     public constructor() {
@@ -34,8 +35,8 @@ class World {
 
     public requestChunk(x: number, z: number): void {
 
-        if(!this.requested[[x, z].toString()]) {
-            game.client.socket?.emit("requestChunk", {x, z});
+        if (!this.requested[[x, z].toString()]) {
+            game.client.socket?.emit("requestChunk", { x, z });
             this.requested[[x, z].toString()] = true;
         }
     }
@@ -51,23 +52,23 @@ class World {
         const chunkX = Math.floor((game.scene as GameScene).player.position.x / 16);
         const chunkZ = Math.floor((game.scene as GameScene).player.position.z / 16);
 
-        for(const chunkCoord in this.chunkMap) {
+        for (const chunkCoord in this.chunkMap) {
             const chunk = this.chunkMap[chunkCoord];
             const dx = Math.abs(chunk.x - chunkX);
             const dz = Math.abs(chunk.z - chunkZ);
-            if(dx > World.RENDER_DISTANCE || dz > World.RENDER_DISTANCE) {
+            if (dx > World.RENDER_DISTANCE || dz > World.RENDER_DISTANCE) {
                 this.unloadChunk(chunk);
             }
         }
 
-        for(let r = 0; r <= World.RENDER_DISTANCE; r++) {
-            for(let x = -1; x <= 1; x += 2) {
-                for(let z = chunkZ-r; z <= chunkZ+r; z++) {
+        for (let r = 0; r <= World.RENDER_DISTANCE; r++) {
+            for (let x = -1; x <= 1; x += 2) {
+                for (let z = chunkZ-r; z <= chunkZ+r; z++) {
                     this.requestChunk(chunkX+x*r, z);
                 }
             }
-            for(let z = -1; z <= 1; z += 2) {
-                for(let x = chunkX-r; x <= chunkX+r; x++) {
+            for (let z = -1; z <= 1; z += 2) {
+                for (let x = chunkX-r; x <= chunkX+r; x++) {
                     this.requestChunk(x, chunkZ+z*r);
                 }
             }
@@ -85,7 +86,7 @@ class World {
             this.chunkMap[[chunk.x - 1, chunk.z].toString()],
             this.chunkMap[[chunk.x + 1, chunk.z].toString()],
             this.chunkMap[[chunk.x, chunk.z - 1].toString()],
-            this.chunkMap[[chunk.x, chunk.z + 1].toString()],
+            this.chunkMap[[chunk.x, chunk.z + 1].toString()]
         ].filter(e => !!e);
     }
 }

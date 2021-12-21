@@ -6,6 +6,7 @@ class ChunkWorker {
     private readonly world: World;
     private readonly queue: Chunk[];
     private readonly timer: NodeJS.Timer;
+
     private working = false;
 
     public constructor(world: World) {
@@ -15,7 +16,7 @@ class ChunkWorker {
         this.timer = setInterval(() => {
 
             const chunk = this.queue[this.queue.length-1];
-            if(!chunk || this.working) return;
+            if (!chunk || this.working) return;
 
             this.working = true;
             this.queue.pop();
@@ -24,12 +25,12 @@ class ChunkWorker {
 
             const neighbors = this.world.getNeighbors(chunk);
 
-            if(neighbors.length === 4) {
+            if (neighbors.length === 4) {
                 this.world.terrain.updateChunk(chunk);
             }
 
-            for(const neighbor of neighbors) {
-                if(this.world.getNeighbors(neighbor).length === 4) {
+            for (const neighbor of neighbors) {
+                if (this.world.getNeighbors(neighbor).length === 4) {
                     this.world.terrain.updateChunk(neighbor);
                 }
             }

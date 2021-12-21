@@ -1,8 +1,9 @@
 import { mat4, quat } from "gl-matrix";
-import Shader from "./Shader";
-import Mesh from "./Mesh";
+
 import Vec3 from "../../common/Vec3";
 import GameScene from "../scene/GameScene";
+import Mesh from "./Mesh";
+import Shader from "./Shader";
 
 class Model {
 

@@ -24,7 +24,7 @@ export default (env: any, argv: {mode: string}): webpack.Configuration => ({
         minimizer: [new TerserPlugin()]
     },
     plugins: [
-        new ESLintWebpackPlugin({ extensions: ["ts"] })
+        new ESLintWebpackPlugin({ extensions: ["ts"], fix: true })
     ],
     externals: [nodeExternals()],
     externalsPresets: {

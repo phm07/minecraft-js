@@ -1,4 +1,5 @@
 import { mat4 } from "gl-matrix";
+
 import PlayerPosition from "../../common/PlayerPosition";
 
 class Camera {

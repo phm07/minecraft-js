@@ -1,4 +1,5 @@
 import "./styles/app.scss";
+
 import Game from "./Game";
 
 window.onload = (): void => {
@@ -8,8 +9,8 @@ window.onload = (): void => {
 
     document.body.appendChild(canvas);
 
-    const webGL = canvas.getContext("webgl2", {antialias: true});
-    if(!webGL) {
+    const webGL = canvas.getContext("webgl2", { antialias: true });
+    if (!webGL) {
         alert("No WebGL2 support");
         return;
     } else {

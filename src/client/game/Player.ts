@@ -1,17 +1,17 @@
-import AABB from "../physics/AABB";
-import PlayerController from "./PlayerController";
-import Camera from "../gl/Camera";
 import PlayerPosition from "../../common/PlayerPosition";
 import Vec3 from "../../common/Vec3";
+import Camera from "../gl/Camera";
+import AABB from "../physics/AABB";
 import GameScene from "../scene/GameScene";
+import PlayerController from "./PlayerController";
 
 class Player {
 
     private readonly camera: Camera;
     private readonly controller: PlayerController;
     private readonly updateTimer: NodeJS.Timer;
-    public position: PlayerPosition;
     public readonly velocity: Vec3;
+    public position: PlayerPosition;
     public onGround: boolean;
 
     public constructor(camera: Camera) {
@@ -48,15 +48,15 @@ class Player {
         this.camera.position.y += 1.7;
         this.camera.updateViewMatrix();
 
-        if(Math.floor(oldX/16) !== Math.floor(this.position.x/16)
+        if (Math.floor(oldX/16) !== Math.floor(this.position.x/16)
             || Math.floor(oldZ/16) !== Math.floor(this.position.z/16)) {
             (game.scene as GameScene).world.update();
         }
     }
 
     public isCollision(aabb: AABB, blocks: AABB[]): boolean {
-        for(const block of blocks) {
-            if(block.intersects(aabb)) return true;
+        for (const block of blocks) {
+            if (block.intersects(aabb)) return true;
         }
         return false;
     }
@@ -69,13 +69,13 @@ class Player {
         const steps = Math.ceil(delta/(1/120));
         const d = delta/steps;
 
-        for(let step = 0; step < steps; step++) {
+        for (let step = 0; step < steps; step++) {
             const dx = this.velocity.x * d;
             const dy = this.velocity.y * d;
             const dz = this.velocity.z * d;
 
             aabb.x += dx;
-            if(this.isCollision(aabb, blocks)) {
+            if (this.isCollision(aabb, blocks)) {
                 aabb.x -= dx;
                 this.velocity.x = 0;
             } else {
@@ -83,17 +83,17 @@ class Player {
             }
             
             aabb.y += dy;
-            if(this.isCollision(aabb, blocks)) {
+            if (this.isCollision(aabb, blocks)) {
                 aabb.y -= dy;
-                if(dy < 0) this.onGround = true;
+                if (dy < 0) this.onGround = true;
                 this.velocity.y = 0;
             } else {
                 this.position.y += dy;
-                if(dy > 0) this.onGround = false;
+                if (dy > 0) this.onGround = false;
             }
 
             aabb.z += dz;
-            if(this.isCollision(aabb, blocks)) {
+            if (this.isCollision(aabb, blocks)) {
                 aabb.z -= dz;
                 this.velocity.z = 0;
             } else {
@@ -105,15 +105,15 @@ class Player {
     public getWorldAABB(): AABB[] {
 
         const blocks = [];
-        for(let x = -1; x <= 1; x++) {
-            for(let y = -1; y <= 2; y++) {
-                for(let z = -1; z <= 1; z++) {
-                    if(x === 0 && z === 0 && y >= 0 && y < 2) continue;
+        for (let x = -1; x <= 1; x++) {
+            for (let y = -1; y <= 2; y++) {
+                for (let z = -1; z <= 1; z++) {
+                    if (x === 0 && z === 0 && y >= 0 && y < 2) continue;
                     const blockX = Math.floor(this.position.x+x);
                     const blockY = Math.floor(this.position.y+y);
                     const blockZ = Math.floor(this.position.z+z);
 
-                    if((game.scene as GameScene).world.blockAt(blockX, blockY, blockZ)) {
+                    if ((game.scene as GameScene).world.blockAt(blockX, blockY, blockZ)) {
                         blocks.push(new AABB(blockX, blockY, blockZ, 1, 1, 1));
                     }
                 }

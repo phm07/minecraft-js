@@ -1,7 +1,7 @@
-import Humanoid from "../models/Humanoid";
 import PlayerPosition from "../../common/PlayerPosition";
 import Shader from "../gl/Shader";
 import Texture from "../gl/Texture";
+import Humanoid from "../models/Humanoid";
 
 class Human {
 

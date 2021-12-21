@@ -16,7 +16,7 @@ class VertexBuffer {
         const stride = attributes.reduce((a, b) => a+b)*4;
         let offset = 0;
 
-        for(let i = 0; i < attributes.length; i++) {
+        for (let i = 0; i < attributes.length; i++) {
             GL.enableVertexAttribArray(i);
             GL.vertexAttribPointer(i, attributes[i], GL.FLOAT, false, stride, offset);
             offset += attributes[i] * 4;

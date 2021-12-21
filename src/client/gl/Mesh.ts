@@ -1,5 +1,5 @@
-import VertexBuffer from "./VertexBuffer";
 import IndexBuffer from "./IndexBuffer";
+import VertexBuffer from "./VertexBuffer";
 
 class Mesh {
     

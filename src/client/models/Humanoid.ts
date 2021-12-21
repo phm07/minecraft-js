@@ -1,12 +1,12 @@
-import ShadedTexturedCuboid from "./ShadedTexturedCuboid";
+import PlayerPosition from "../../common/PlayerPosition";
+import Vec3 from "../../common/Vec3";
 import Model from "../gl/Model";
 import Shader from "../gl/Shader";
 import Texture from "../gl/Texture";
-import PlayerPosition from "../../common/PlayerPosition";
-import Vec3 from "../../common/Vec3";
+import ShadedTexturedCuboid from "./ShadedTexturedCuboid";
 
-type Side = {left: number, right: number, top: number, bottom: number};
-type UV = {front: Side, back: Side, top: Side, bottom: Side, right: Side, left: Side};
+type Side = { left: number, right: number, top: number, bottom: number };
+type UV = { front: Side, back: Side, top: Side, bottom: Side, right: Side, left: Side };
 
 class Humanoid {
     
@@ -132,7 +132,7 @@ class Humanoid {
             [left.left, left.bottom, 0.8],
             [left.right, left.bottom, 0.8],
             [left.right, left.top, 0.8],
-            [left.left, left.top, 0.8],
+            [left.left, left.top, 0.8]
         ];
     }
 

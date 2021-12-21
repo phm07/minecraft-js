@@ -1,4 +1,5 @@
-import {Socket} from "socket.io";
+import { Socket } from "socket.io";
+
 import PlayerPosition from "../../common/PlayerPosition";
 
 class Player {
@@ -26,15 +27,15 @@ class Player {
             position: this.position
         });
 
-        this.socket.on("requestChunk", (packet: {x: number, z: number}) => {
+        this.socket.on("requestChunk", (packet: { x: number, z: number }) => {
             const dx = packet.x*16-this.position.x;
             const dz = packet.z*16-this.position.z;
-            if(dx*dx + dz*dz <= (256)*(256)) {
+            if (dx*dx + dz*dz <= (256)*(256)) {
                 global.server.world.getChunk(packet.x, packet.z).sendTo(this);
             }
         });
 
-        this.socket.on("position", (packet: {position: PlayerPosition}) => {
+        this.socket.on("position", (packet: { position: PlayerPosition }) => {
             Object.assign(this.position, packet.position);
             this.socket.broadcast.emit("position", {
                 id: this.id,
@@ -47,7 +48,7 @@ class Player {
             position: this.position
         });
 
-        for(const player of global.server.players) {
+        for (const player of global.server.players) {
             this.socket.emit("playerAdd", {
                 id: player.id,
                 position: player.position

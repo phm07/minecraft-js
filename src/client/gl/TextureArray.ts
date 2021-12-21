@@ -27,8 +27,8 @@ class TextureArray {
                 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 
             const promises = [];
-            for(let x = 0; x < tilesX; x++) {
-                for(let y = 0; y < tilesY; y++) {
+            for (let x = 0; x < tilesX; x++) {
+                for (let y = 0; y < tilesY; y++) {
                     promises.push(TextureArray.cropImage(image, x*tileWidth, y*tileHeight, tileWidth, tileHeight));
                 }
             }
@@ -36,8 +36,8 @@ class TextureArray {
             const tiles = await Promise.all(promises);
             this.bind();
 
-            for(let x = 0; x < tilesX; x++) {
-                for(let y = 0; y < tilesY; y++) {
+            for (let x = 0; x < tilesX; x++) {
+                for (let y = 0; y < tilesY; y++) {
                     GL.texSubImage3D(GL.TEXTURE_2D_ARRAY, 0, 0, 0, x+y*tilesX,
                         tileWidth, tileHeight, 1, GL.RGBA, GL.UNSIGNED_BYTE, tiles[y+x*tilesY]);
                 }

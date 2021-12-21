@@ -1,10 +1,10 @@
-import Shader from "../gl/Shader";
-import vertexShader from "../shaders/human.vs";
-import fragmentShader from "../shaders/human.fs";
-import skin from "../assets/steve.png";
-import Texture from "../gl/Texture";
-import Human from "./Human";
 import PlayerPosition from "../../common/PlayerPosition";
+import skin from "../assets/steve.png";
+import Shader from "../gl/Shader";
+import Texture from "../gl/Texture";
+import fragmentShader from "../shaders/human.fs";
+import vertexShader from "../shaders/human.vs";
+import Human from "./Human";
 
 class PlayerManager {
 
@@ -24,12 +24,12 @@ class PlayerManager {
 
     public removePlayer(id: number): void {
         const human = this.findPlayer(id);
-        if(human) this.players.splice(this.players.indexOf(human), 1);
+        if (human) this.players.splice(this.players.indexOf(human), 1);
     }
 
     public updatePlayer(id: number, position: PlayerPosition): void {
         const player = this.findPlayer(id);
-        if(player) player.setPosition(position);
+        if (player) player.setPosition(position);
     }
 
     public findPlayer(id: number): Human | null {

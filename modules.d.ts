@@ -12,10 +12,3 @@ declare module "*.png" {
     const url: string;
     export default url;
 }
-
-declare module "seeded-rand" {
-    export default class Random {
-        static seed(seed: any): void;
-        static random(): number;
-    }
-}

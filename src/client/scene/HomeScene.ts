@@ -1,10 +1,11 @@
-import TexturedQuad2D from "../models/TexturedQuad2D";
-import Texture from "../gl/Texture";
-import background from "../assets/background.png";
 import "../styles/home_scene.scss";
+
+import background from "../assets/background.png";
 import Shader from "../gl/Shader";
-import guiVertexShader from "../shaders/gui.vs";
+import Texture from "../gl/Texture";
+import TexturedQuad2D from "../models/TexturedQuad2D";
 import guiFragmentShader from "../shaders/gui.fs";
+import guiVertexShader from "../shaders/gui.vs";
 import IScene from "./IScene";
 
 class HomeScene implements IScene {
@@ -38,7 +39,7 @@ class HomeScene implements IScene {
 
         const errBox = document.createElement("div");
         errBox.className = "error";
-        if(this.error) errBox.innerHTML = "Error: " + this.error;
+        if (this.error) errBox.innerHTML = "Error: " + this.error;
         this.loginBox.appendChild(errBox);
 
         const nameLabel = document.createElement("p");
@@ -49,7 +50,7 @@ class HomeScene implements IScene {
         nameField.type = "text";
         nameField.spellcheck = false;
         nameField.onkeydown = (e): void => {
-            if(e.code === "Enter") {
+            if (e.code === "Enter") {
                 playButton.click();
             }
         };
@@ -67,7 +68,7 @@ class HomeScene implements IScene {
             try {
                 await game.client.login(nameField.value);
             } catch (err) {
-                if(typeof err === "string") {
+                if (typeof err === "string") {
                     errBox.innerHTML = `Error: ${err}`;
                 }
             }
@@ -77,7 +78,7 @@ class HomeScene implements IScene {
     }
 
     public delete(): void {
-        if(this.loginBox) document.body.removeChild(this.loginBox);
+        if (this.loginBox) document.body.removeChild(this.loginBox);
         this.backgroundTexture.delete();
         this.shader.delete();
     }
@@ -96,7 +97,7 @@ class HomeScene implements IScene {
 
     public onWindowResize(): void {
 
-        if(this.backgroundQuad) {
+        if (this.backgroundQuad) {
             this.backgroundQuad.unbind();
             this.backgroundQuad.delete();
         }

@@ -14,7 +14,7 @@ export default (env: any, argv: {mode: string}): webpack.Configuration => ({
         new HtmlWebpackPlugin({
             title: "Game"
         }),
-        new ESLintWebpackPlugin({ extensions: ["ts"] })
+        new ESLintWebpackPlugin({ extensions: ["ts"], fix: true })
     ],
     output: {
         path: path.join(__dirname, "dist"),

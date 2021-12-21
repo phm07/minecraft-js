@@ -1,7 +1,8 @@
-import LoginHandler from "./connection/LoginHandler";
-import World from "./game/World";
 import * as crypto from "crypto";
+
+import LoginHandler from "./connection/LoginHandler";
 import Player from "./game/Player";
+import World from "./game/World";
 
 class GameServer {
 
@@ -24,7 +25,7 @@ class GameServer {
         let id;
         do {
             id = crypto.randomBytes(4).readInt32BE(0);
-        } while(this.findEntity(id));
+        } while (this.findEntity(id));
         return id;
     }
 

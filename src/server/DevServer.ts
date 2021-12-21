@@ -1,7 +1,7 @@
-
-import { webpack } from "webpack";
 import { Express } from "express";
+import { webpack } from "webpack";
 import * as webpackDevMiddleware from "webpack-dev-middleware";
+
 import configFunction from "../../webpack.client.config";
 
 class DevServer {

@@ -1,9 +1,9 @@
-import Camera from "../gl/Camera";
-import World from "../game/World";
+import PlayerPosition from "../../common/PlayerPosition";
 import Player from "../game/Player";
 import PlayerManager from "../game/PlayerManager";
+import World from "../game/World";
+import Camera from "../gl/Camera";
 import IScene from "./IScene";
-import PlayerPosition from "../../common/PlayerPosition";
 
 class GameScene implements IScene {
 
