@@ -2,7 +2,7 @@
 
 precision highp float;
 
-in vec2 vTexCoord;
+centroid in vec2 vTexCoord;
 in float vBrightness;
 
 uniform highp sampler2D uTexture;

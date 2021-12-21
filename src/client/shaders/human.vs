@@ -8,7 +8,7 @@ uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjMatrix;
 
-out vec2 vTexCoord;
+centroid out vec2 vTexCoord;
 out float vBrightness;
 
 void main() {

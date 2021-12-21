@@ -61,43 +61,42 @@ class Humanoid {
     }
 
     private static map(x: number, y: number, w: number, h: number, d: number): number[][] {
-        const i = 0.005; // inset
         return Humanoid.mapUvs({
             front: {
-                left: x+d/64+i,
-                right: x+(d+w)/64-i,
-                top: y+d/64+i,
-                bottom: y+(d+h)/64-i
+                left: x+d/64,
+                right: x+(d+w)/64,
+                top: y+d/64,
+                bottom: y+(d+h)/64
             },
             back: {
-                left: x+(2*d+w)/64+i,
-                right: x+(2*(d+w))/64-i,
-                top: y+d/64+i,
-                bottom: y+(d+h)/64-i
+                left: x+(2*d+w)/64,
+                right: x+(2*(d+w))/64,
+                top: y+d/64,
+                bottom: y+(d+h)/64
             },
             top: {
-                left: x+d/64+i,
-                right: x+(d+w)/64-i,
-                top: y+i,
-                bottom: y+d/64-i
+                left: x+d/64,
+                right: x+(d+w)/64,
+                top: y,
+                bottom: y+d/64
             },
             bottom: {
-                left: x+(d+w)/64+i,
-                right: x+(d+2*w)/64-i,
-                top: y+i,
-                bottom: y+d/64-i
+                left: x+(d+w)/64,
+                right: x+(d+2*w)/64,
+                top: y,
+                bottom: y+d/64
             },
             left: {
-                left: x+i,
-                right: x+d/64-i,
-                top: y+d/64+i,
-                bottom: y+(d+h)/64-i
+                left: x,
+                right: x+d/64,
+                top: y+d/64,
+                bottom: y+(d+h)/64
             },
             right: {
-                left: x+(d+w)/64+i,
-                right: x+(2*d+w)/64-i,
-                top: y+d/64+i,
-                bottom: y+(d+h)/64-i
+                left: x+(d+w)/64,
+                right: x+(2*d+w)/64,
+                top: y+d/64,
+                bottom: y+(d+h)/64
             }
         });
     }
@@ -145,27 +144,27 @@ class Humanoid {
     public update(): void {
 
         this.torso.position = new Vec3(this.position.x-8/16, this.position.y+12/16, this.position.z-8/16);
-        this.torso.rotation = new Vec3(0, this.bodyYaw+Math.PI, 0);
+        this.torso.rotation = new Vec3(0, -this.bodyYaw+Math.PI, 0);
         this.torso.update();
 
         this.rightLeg.position = new Vec3(this.position.x-16/16, this.position.y-4/16, this.position.z-8/16);
-        this.rightLeg.rotation = new Vec3(-this.legSwing, this.bodyYaw+Math.PI, 0);
+        this.rightLeg.rotation = new Vec3(-this.legSwing, -this.bodyYaw+Math.PI, 0);
         this.rightLeg.update();
 
         this.leftLeg.position = new Vec3(this.position.x, this.position.y-4/16, this.position.z-8/16);
-        this.leftLeg.rotation = new Vec3(this.legSwing, this.bodyYaw+Math.PI, 0);
+        this.leftLeg.rotation = new Vec3(this.legSwing, -this.bodyYaw+Math.PI, 0);
         this.leftLeg.update();
 
         this.rightArm.position = new Vec3(this.position.x-32/16, this.position.y+9/16, this.position.z-8/16);
-        this.rightArm.rotation = new Vec3(this.armSwing, this.bodyYaw+Math.PI, 0);
+        this.rightArm.rotation = new Vec3(this.armSwing, -this.bodyYaw+Math.PI, 0);
         this.rightArm.update();
 
         this.leftArm.position = new Vec3(this.position.x+16/16, this.position.y+9/16, this.position.z-8/16);
-        this.leftArm.rotation = new Vec3(-this.armSwing, this.bodyYaw+Math.PI, 0);
+        this.leftArm.rotation = new Vec3(-this.armSwing, -this.bodyYaw+Math.PI, 0);
         this.leftArm.update();
 
         this.head.position = new Vec3(this.position.x-8/16, this.position.y+24/16, this.position.z-8/16);
-        this.head.rotation = new Vec3(this.position.pitch, this.position.yaw+Math.PI, 0);
+        this.head.rotation = new Vec3(this.position.pitch, -this.position.yaw+Math.PI, 0);
         this.head.update();
     }
 
