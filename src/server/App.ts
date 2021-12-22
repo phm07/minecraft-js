@@ -19,5 +19,5 @@ global.server = new GameServer();
 
 const port = process.env.PORT ?? 80;
 httpServer.listen(port, () => {
-    console.log(`${(process.env.NODE_ENV === "development" ? "Development" : "")} Server started on port ${port}`);
+    console.log(`${(process.env.NODE_ENV === "development" ? "Development " : "")}Server started on port ${port}`);
 });
