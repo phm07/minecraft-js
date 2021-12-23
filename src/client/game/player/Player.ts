@@ -1,3 +1,4 @@
+import Interpolator from "../../../common/Interpolator";
 import PlayerPosition from "../../../common/PlayerPosition";
 import Util from "../../../common/Util";
 import Vec3 from "../../../common/Vec3";
@@ -11,16 +12,20 @@ class Player {
     private readonly camera: Camera;
     private readonly controller: PlayerController;
     private readonly updateTimer: NodeJS.Timer;
+    private readonly interpolator: Interpolator;
     public readonly velocity: Vec3;
+    private time: number;
     public position: PlayerPosition;
     public onGround: boolean;
 
     public constructor(camera: Camera) {
         this.camera = camera;
+        this.interpolator = new Interpolator({ bob: 0 });
         this.controller = new PlayerController(this);
         this.position = new PlayerPosition();
         this.velocity = new Vec3();
         this.onGround = false;
+        this.time = 0;
 
         this.updateTimer = setInterval(() => {
             game.client.socket?.emit("position", {
@@ -38,6 +43,9 @@ class Player {
 
     public update(delta: number): void {
 
+        this.interpolator.update(delta);
+        this.time += delta;
+
         this.velocity.y -= delta * 25.0;
         this.velocity.y = Math.max(-25.0, this.velocity.y);
         this.velocity.x = Util.lerp(this.velocity.x, 0, delta * 25);
@@ -49,8 +57,18 @@ class Player {
 
         this.updatePosition(delta);
 
+        if (Util.distSquare(this.velocity.x, this.velocity.z, 0, 0) >= 1 && this.onGround) {
+            this.interpolator.animate("bob", 1, 0.1);
+        } else {
+            this.interpolator.animate("bob", 0, 0.1);
+        }
+
+        const bob = this.interpolator.getValue("bob") * 0.1;
         this.camera.position = PlayerPosition.clone(this.position);
-        this.camera.position.y += 1.7;
+        this.camera.position.y += 1.7 + Math.sin(this.time * 10) * bob;
+        this.camera.position.x += Math.cos(this.camera.position.yaw) * Math.sin(this.time * 5) * bob;
+        this.camera.position.z += Math.sin(this.camera.position.yaw) * Math.sin(this.time * 5) * bob;
+
         this.camera.updateViewMatrix();
 
         if (Math.floor(oldX / 16) !== Math.floor(this.position.x / 16)
