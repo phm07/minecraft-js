@@ -18,7 +18,7 @@ class Model {
     public scale: Vec3;
     public origin: Vec3;
 
-    public constructor(shader: Shader, mesh: Mesh, position: Vec3, rotation = new Vec3, scale = new Vec3(), origin = new Vec3()) {
+    public constructor(shader: Shader, mesh: Mesh, position: Vec3 = new Vec3(), rotation = new Vec3, scale = new Vec3(1, 1, 1), origin = new Vec3()) {
 
         this.shader = shader;
         this.mesh = mesh;

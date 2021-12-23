@@ -3,6 +3,7 @@ import Vec3 from "../../../common/Vec3";
 import skin from "../../assets/steve.png";
 import Shader from "../../gl/Shader";
 import Texture from "../../gl/Texture";
+import GameScene from "../../scene/GameScene";
 import fragmentShader from "../../shaders/human.fs";
 import vertexShader from "../../shaders/human.vs";
 import Human from "./Human";
@@ -19,8 +20,8 @@ class PlayerManager {
         this.texture = new Texture(skin);
     }
 
-    public addPlayer(id: number, position: PlayerPosition): void {
-        this.players.push(new Human(id, this.shader, this.texture, position));
+    public addPlayer(id: number, name: string, position: PlayerPosition): void {
+        this.players.push(new Human(id, name, this.shader, this.texture, position));
     }
 
     public removePlayer(id: number): void {
@@ -46,7 +47,22 @@ class PlayerManager {
     }
 
     public render(): void {
+
         this.players.forEach(player => player.render());
+
+        GL.disable(GL.DEPTH_TEST);
+        GL.disable(GL.CULL_FACE);
+        GL.enable(GL.BLEND);
+
+        const camPos = (game.scene as GameScene).camera.position;
+        this.players
+            .slice()
+            .sort(({ position: a }, { position: b }) => PlayerPosition.distSquare(b, camPos) - PlayerPosition.distSquare(a, camPos))
+            .forEach(player => player.renderText());
+
+        GL.enable(GL.DEPTH_TEST);
+        GL.enable(GL.CULL_FACE);
+        GL.disable(GL.BLEND);
     }
 }
 

@@ -1,4 +1,4 @@
-import Texture from "./Texture";
+import ImageUtils from "../../common/ImageUtils";
 
 class TextureArray {
 
@@ -17,19 +17,19 @@ class TextureArray {
 
         void (async (): Promise<void> => {
 
-            const image = await Texture.loadImage(src);
+            const image = await ImageUtils.loadImage(src);
             this.bind();
 
-            const tileWidth = Math.floor(image.width/tilesX);
-            const tileHeight = Math.floor(image.height/tilesY);
+            const tileWidth = Math.floor(image.width / tilesX);
+            const tileHeight = Math.floor(image.height / tilesY);
 
-            GL.texImage3D(GL.TEXTURE_2D_ARRAY, 0, GL.RGBA, tileWidth, tileHeight, tilesX*tilesY,
+            GL.texImage3D(GL.TEXTURE_2D_ARRAY, 0, GL.RGBA, tileWidth, tileHeight, tilesX * tilesY,
                 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
 
             const promises = [];
             for (let x = 0; x < tilesX; x++) {
                 for (let y = 0; y < tilesY; y++) {
-                    promises.push(TextureArray.cropImage(image, x*tileWidth, y*tileHeight, tileWidth, tileHeight));
+                    promises.push(new ImageUtils(image, tileWidth, tileHeight, x * tileWidth, y * tileHeight).save());
                 }
             }
 
@@ -38,20 +38,11 @@ class TextureArray {
 
             for (let x = 0; x < tilesX; x++) {
                 for (let y = 0; y < tilesY; y++) {
-                    GL.texSubImage3D(GL.TEXTURE_2D_ARRAY, 0, 0, 0, x+y*tilesX,
-                        tileWidth, tileHeight, 1, GL.RGBA, GL.UNSIGNED_BYTE, tiles[y+x*tilesY]);
+                    GL.texSubImage3D(GL.TEXTURE_2D_ARRAY, 0, 0, 0, x + y * tilesX,
+                        tileWidth, tileHeight, 1, GL.RGBA, GL.UNSIGNED_BYTE, tiles[y + x * tilesY]);
                 }
             }
         })();
-    }
-
-    private static cropImage(image: HTMLImageElement, offX: number, offY: number, width: number, height: number): Promise<HTMLImageElement> {
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        ctx?.drawImage(image, offX, offY, width, height, 0, 0, width, height);
-        return Texture.loadImage(canvas.toDataURL("image/png"));
     }
 
     public delete(): void {

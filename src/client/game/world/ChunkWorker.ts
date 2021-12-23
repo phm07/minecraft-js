@@ -29,11 +29,11 @@ class ChunkWorker {
                 this.world.terrain.updateChunk(chunk);
             }
 
-            for (const neighbor of neighbors) {
+            neighbors.forEach(neighbor => {
                 if (this.world.getNeighbors(neighbor).length === 4) {
                     this.world.terrain.updateChunk(neighbor);
                 }
-            }
+            });
 
             this.working = false;
         }, 20);

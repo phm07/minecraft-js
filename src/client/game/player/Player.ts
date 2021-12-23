@@ -60,10 +60,7 @@ class Player {
     }
 
     public isCollision(aabb: AABB, blocks: AABB[]): boolean {
-        for (const block of blocks) {
-            if (block.intersects(aabb)) return true;
-        }
-        return false;
+        return blocks.some(block => block.intersects(aabb));
     }
 
     public updatePosition(delta: number): void {

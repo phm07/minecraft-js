@@ -1,8 +1,10 @@
+import ImageUtils from "../../common/ImageUtils";
+
 class Texture {
 
     private readonly texture: WebGLTexture | null;
 
-    public constructor(src: string, wrap=GL.CLAMP_TO_EDGE) {
+    public constructor(src: string, wrap = GL.CLAMP_TO_EDGE) {
 
         this.texture = GL.createTexture();
         this.bind();
@@ -13,18 +15,10 @@ class Texture {
         GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, wrap);
 
         void (async (): Promise<void> => {
-            const image = await Texture.loadImage(src);
+            const image = await ImageUtils.loadImage(src);
             this.bind();
             GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, image);
         })();
-    }
-
-    public static loadImage(src: string): Promise<HTMLImageElement> {
-        const image = new Image();
-        image.src = src;
-        return new Promise<HTMLImageElement>((resolve): void => {
-            image.onload = (): void => resolve(image);
-        });
     }
 
     public delete(): void {

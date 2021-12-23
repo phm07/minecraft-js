@@ -71,8 +71,8 @@ class Client {
             (game.scene as GameScene).world.receiveChunk(new Chunk(packet.x, packet.z, new Uint8Array(packet.blocks)));
         });
 
-        this.socket.on("playerAdd", (packet: { id: number, position: PlayerPosition }) => {
-            (game.scene as GameScene).playerManager.addPlayer(packet.id, packet.position);
+        this.socket.on("playerAdd", (packet: { id: number, name: string, position: PlayerPosition }) => {
+            (game.scene as GameScene).playerManager.addPlayer(packet.id, packet.name, packet.position);
         });
 
         this.socket.on("position", (packet: { id: number, position: PlayerPosition, velocity: Vec3, onGround: boolean }) => {

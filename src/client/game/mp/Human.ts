@@ -4,6 +4,8 @@ import Vec3 from "../../../common/Vec3";
 import Shader from "../../gl/Shader";
 import Texture from "../../gl/Texture";
 import Humanoid from "../../models/Humanoid";
+import GameScene from "../../scene/GameScene";
+import Text from "../text/Text";
 import Animator from "./Animator";
 
 class Human {
@@ -13,15 +15,17 @@ class Human {
     public velocity: Vec3;
     private readonly model: Humanoid;
     private readonly animator: Animator;
+    private readonly text: Text;
     private targetPosition: PlayerPosition;
 
-    public constructor(id: number, shader: Shader, texture: Texture, position: PlayerPosition) {
+    public constructor(id: number, name: string, shader: Shader, texture: Texture, position: PlayerPosition) {
         this.id = id;
         this.position = PlayerPosition.clone(position);
         this.targetPosition = PlayerPosition.clone(position);
         this.model = new Humanoid(shader, texture, position);
         this.animator = new Animator(this, this.model);
         this.velocity = new Vec3();
+        this.text = new Text(name, (game.scene as GameScene).font, 0.5, new Vec3());
     }
 
     public setPosition(position: PlayerPosition, velocity: Vec3): void {
@@ -37,6 +41,10 @@ class Human {
         this.model.render();
     }
 
+    public renderText(): void {
+        this.text.render();
+    }
+
     public update(delta: number): void {
 
         const mix = delta * 25;
@@ -48,6 +56,9 @@ class Human {
         this.animator.update(delta);
         this.model.position = this.position;
         this.model.update();
+
+        this.text.position = new Vec3(this.position.x, this.position.y + 2.2, this.position.z);
+        this.text.update();
     }
 }
 

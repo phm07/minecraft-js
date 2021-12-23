@@ -1,3 +1,5 @@
+import glyphs from "./assets/glyphs.png";
+import Font from "./game/text/Font";
 import Client from "./network/Client";
 import HomeScene from "./scene/HomeScene";
 import IScene from "./scene/IScene";
@@ -9,10 +11,12 @@ class Game {
 
     public constructor() {
 
+        new Font(glyphs, 12);
+
         this.client = new Client();
         this.scene = new HomeScene(null);
 
-        GL.clearColor(131/255, 226/255, 252/255, 1);
+        GL.clearColor(131 / 255, 226 / 255, 252 / 255, 1);
     }
 
     public setScene(scene: IScene): void {

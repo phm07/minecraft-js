@@ -49,15 +49,17 @@ class Player {
 
         this.socket.broadcast.emit("playerAdd", {
             id: this.id,
-            position: this.position
+            position: this.position,
+            name: this.name
         });
 
-        for (const player of global.server.players) {
+        global.server.players.forEach(player => {
             this.socket.emit("playerAdd", {
                 id: player.id,
-                position: player.position
+                position: player.position,
+                name: player.name
             });
-        }
+        });
     }
 
 }
