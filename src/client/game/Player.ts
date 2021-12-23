@@ -1,4 +1,5 @@
 import PlayerPosition from "../../common/PlayerPosition";
+import Util from "../../common/Util";
 import Vec3 from "../../common/Vec3";
 import Camera from "../gl/Camera";
 import AABB from "../physics/AABB";
@@ -23,7 +24,9 @@ class Player {
 
         this.updateTimer = setInterval(() => {
             game.client.socket?.emit("position", {
-                position: this.position
+                position: this.position,
+                velocity: this.velocity,
+                onGround: this.onGround
             });
         }, 50);
     }
@@ -35,9 +38,11 @@ class Player {
 
     public update(delta: number): void {
 
-        this.controller.update();
         this.velocity.y -= delta * 25.0;
         this.velocity.y = Math.max(-25.0, this.velocity.y);
+        this.velocity.x = Util.lerp(this.velocity.x, 0, delta * 25);
+        this.velocity.z = Util.lerp(this.velocity.z, 0, delta * 25);
+        this.controller.update();
 
         const oldX = this.position.x;
         const oldZ = this.position.z;

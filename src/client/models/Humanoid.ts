@@ -12,8 +12,7 @@ class Humanoid {
     
     public position: PlayerPosition;
     public bodyYaw: number;
-    private readonly armSwing: number;
-    private readonly legSwing: number;
+    public swing: number;
     private readonly texture: Texture;
     private readonly shader: Shader;
     private readonly torso: Model;
@@ -27,8 +26,7 @@ class Humanoid {
 
         this.position = position;
         this.bodyYaw = 0;
-        this.armSwing = 0;
-        this.legSwing = 0;
+        this.swing = 0;
 
         this.texture = texture;
         this.shader = shader;
@@ -148,19 +146,19 @@ class Humanoid {
         this.torso.update();
 
         this.rightLeg.position = new Vec3(this.position.x-16/16, this.position.y-4/16, this.position.z-8/16);
-        this.rightLeg.rotation = new Vec3(-this.legSwing, -this.bodyYaw+Math.PI, 0);
+        this.rightLeg.rotation = new Vec3(-this.swing, -this.bodyYaw+Math.PI, 0);
         this.rightLeg.update();
 
         this.leftLeg.position = new Vec3(this.position.x, this.position.y-4/16, this.position.z-8/16);
-        this.leftLeg.rotation = new Vec3(this.legSwing, -this.bodyYaw+Math.PI, 0);
+        this.leftLeg.rotation = new Vec3(this.swing, -this.bodyYaw+Math.PI, 0);
         this.leftLeg.update();
 
         this.rightArm.position = new Vec3(this.position.x-32/16, this.position.y+9/16, this.position.z-8/16);
-        this.rightArm.rotation = new Vec3(this.armSwing, -this.bodyYaw+Math.PI, 0);
+        this.rightArm.rotation = new Vec3(this.swing, -this.bodyYaw+Math.PI, 0);
         this.rightArm.update();
 
         this.leftArm.position = new Vec3(this.position.x+16/16, this.position.y+9/16, this.position.z-8/16);
-        this.leftArm.rotation = new Vec3(-this.armSwing, -this.bodyYaw+Math.PI, 0);
+        this.leftArm.rotation = new Vec3(-this.swing, -this.bodyYaw+Math.PI, 0);
         this.leftArm.update();
 
         this.head.position = new Vec3(this.position.x-8/16, this.position.y+24/16, this.position.z-8/16);

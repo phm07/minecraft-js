@@ -1,9 +1,9 @@
 import Player from "./Player";
 
-const speed = 5.0;
-const sensitivity = 0.0025;
-
 class PlayerController {
+
+    public static readonly SPEED = 3.0;
+    public static readonly SENSITIVITY = 0.0025;
 
     private readonly player: Player;
     private pressed: { [index: string]: number };
@@ -31,8 +31,8 @@ class PlayerController {
 
     private mousemove(e: MouseEvent): void {
         if (!this.captureMouse) return;
-        this.player.position.yaw += e.movementX * sensitivity;
-        this.player.position.pitch += e.movementY * sensitivity;
+        this.player.position.yaw += e.movementX * PlayerController.SENSITIVITY;
+        this.player.position.pitch += e.movementY * PlayerController.SENSITIVITY;
         this.player.position.pitch = Math.min(Math.PI * 0.45, Math.max(Math.PI * -0.45, this.player.position.pitch));
     }
 
@@ -47,16 +47,21 @@ class PlayerController {
 
     public update(): void {
 
-        this.player.velocity.x = 0;
-        this.player.velocity.z = 0;
-        this.player.velocity.x += this.isPressed("KeyD") * Math.cos(this.player.position.yaw) * speed;
-        this.player.velocity.z += this.isPressed("KeyD") * Math.sin(this.player.position.yaw) * speed;
-        this.player.velocity.x -= this.isPressed("KeyA") * Math.cos(this.player.position.yaw) * speed;
-        this.player.velocity.z -= this.isPressed("KeyA") * Math.sin(this.player.position.yaw) * speed;
-        this.player.velocity.z += this.isPressed("KeyS") * Math.cos(this.player.position.yaw) * speed;
-        this.player.velocity.x -= this.isPressed("KeyS") * Math.sin(this.player.position.yaw) * speed;
-        this.player.velocity.z -= this.isPressed("KeyW") * Math.cos(this.player.position.yaw) * speed;
-        this.player.velocity.x += this.isPressed("KeyW") * Math.sin(this.player.position.yaw) * speed;
+        let dx = 0, dz = 0;
+        dx += this.isPressed("KeyD") * Math.cos(this.player.position.yaw);
+        dz += this.isPressed("KeyD") * Math.sin(this.player.position.yaw);
+        dx -= this.isPressed("KeyA") * Math.cos(this.player.position.yaw);
+        dz -= this.isPressed("KeyA") * Math.sin(this.player.position.yaw);
+        dz += this.isPressed("KeyS") * Math.cos(this.player.position.yaw);
+        dx -= this.isPressed("KeyS") * Math.sin(this.player.position.yaw);
+        dz -= this.isPressed("KeyW") * Math.cos(this.player.position.yaw);
+        dx += this.isPressed("KeyW") * Math.sin(this.player.position.yaw);
+
+        if (dx !== 0 || dz !== 0) {
+            const angle = Math.atan2(dz, dx);
+            this.player.velocity.x = Math.cos(angle) * PlayerController.SPEED;
+            this.player.velocity.z = Math.sin(angle) * PlayerController.SPEED;
+        }
         
         if (this.isPressed("Space") && this.player.onGround) {
             this.player.onGround = false;

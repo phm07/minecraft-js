@@ -1,6 +1,8 @@
 import { Socket } from "socket.io";
 
 import PlayerPosition from "../../common/PlayerPosition";
+import Util from "../../common/Util";
+import Vec3 from "../../common/Vec3";
 
 class Player {
 
@@ -8,6 +10,8 @@ class Player {
     public readonly name: string;
     public readonly id: number;
     public position: PlayerPosition;
+    public velocity: Vec3;
+    public onGround: boolean;
 
     public constructor(socket: Socket, name: string) {
 
@@ -23,23 +27,23 @@ class Player {
         });
 
         this.position = PlayerPosition.clone(global.server.world.spawnPoint);
+        this.velocity = new Vec3();
+        this.onGround = false;
         this.socket.emit("teleport", {
             position: this.position
         });
 
         this.socket.on("requestChunk", (packet: { x: number, z: number }) => {
-            const dx = packet.x*16-this.position.x;
-            const dz = packet.z*16-this.position.z;
-            if (dx*dx + dz*dz <= (256)*(256)) {
+            if (Util.distSquare(packet.x*16, packet.z*16, this.position.x, this.position.z) <= 256*256) {
                 global.server.world.getChunk(packet.x, packet.z).sendTo(this);
             }
         });
 
-        this.socket.on("position", (packet: { position: PlayerPosition }) => {
-            Object.assign(this.position, packet.position);
+        this.socket.on("position", (packet: { position: PlayerPosition, velocity: Vec3, onGround: boolean }) => {
+            Object.assign(this, packet);
             this.socket.broadcast.emit("position", {
                 id: this.id,
-                position: this.position
+                ...packet
             });
         });
 

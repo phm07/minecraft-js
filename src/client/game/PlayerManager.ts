@@ -1,4 +1,5 @@
 import PlayerPosition from "../../common/PlayerPosition";
+import Vec3 from "../../common/Vec3";
 import skin from "../assets/steve.png";
 import Shader from "../gl/Shader";
 import Texture from "../gl/Texture";
@@ -27,9 +28,9 @@ class PlayerManager {
         if (human) this.players.splice(this.players.indexOf(human), 1);
     }
 
-    public updatePlayer(id: number, position: PlayerPosition): void {
+    public updatePlayer(id: number, position: PlayerPosition, velocity: Vec3): void {
         const player = this.findPlayer(id);
-        if (player) player.setPosition(position);
+        if (player) player.setPosition(position, velocity);
     }
 
     public findPlayer(id: number): Human | null {

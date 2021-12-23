@@ -1,6 +1,7 @@
 import { io, Socket } from "socket.io-client";
 
 import PlayerPosition from "../../common/PlayerPosition";
+import Vec3 from "../../common/Vec3";
 import Chunk from "../game/Chunk";
 import GameScene from "../scene/GameScene";
 import HomeScene from "../scene/HomeScene";
@@ -74,8 +75,8 @@ class Client {
             (game.scene as GameScene).playerManager.addPlayer(packet.id, packet.position);
         });
 
-        this.socket.on("position", (packet: { id: number, position: PlayerPosition }) => {
-            (game.scene as GameScene).playerManager.updatePlayer(packet.id, packet.position);
+        this.socket.on("position", (packet: { id: number, position: PlayerPosition, velocity: Vec3, onGround: boolean }) => {
+            (game.scene as GameScene).playerManager.updatePlayer(packet.id, packet.position, packet.velocity);
         });
 
         this.socket.on("playerRemove", (packet: { id: number }) => {
