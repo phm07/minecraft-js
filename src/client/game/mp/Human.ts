@@ -25,7 +25,7 @@ class Human {
         this.model = new Humanoid(shader, texture, position);
         this.animator = new Animator(this, this.model);
         this.velocity = new Vec3();
-        this.text = new Text(name, (game.scene as GameScene).font, 0.5, new Vec3());
+        this.text = new Text(name, (game.scene as GameScene).font, 0.4, new Vec3());
     }
 
     public setPosition(position: PlayerPosition, velocity: Vec3): void {
@@ -57,7 +57,7 @@ class Human {
         this.model.position = this.position;
         this.model.update();
 
-        this.text.position = new Vec3(this.position.x, this.position.y + 2.2, this.position.z);
+        this.text.position = new Vec3(this.position.x, this.position.y + 2.1, this.position.z);
         this.text.update();
     }
 }

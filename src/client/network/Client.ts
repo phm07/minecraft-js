@@ -72,15 +72,15 @@ class Client {
         });
 
         this.socket.on("playerAdd", (packet: { id: number, name: string, position: PlayerPosition }) => {
-            (game.scene as GameScene).playerManager.addPlayer(packet.id, packet.name, packet.position);
+            (game.scene as GameScene).playerManager?.addPlayer(packet.id, packet.name, packet.position);
         });
 
         this.socket.on("position", (packet: { id: number, position: PlayerPosition, velocity: Vec3, onGround: boolean }) => {
-            (game.scene as GameScene).playerManager.updatePlayer(packet.id, packet.position, packet.velocity);
+            (game.scene as GameScene).playerManager?.updatePlayer(packet.id, packet.position, packet.velocity);
         });
 
         this.socket.on("playerRemove", (packet: { id: number }) => {
-            (game.scene as GameScene).playerManager.removePlayer(packet.id);
+            (game.scene as GameScene).playerManager?.removePlayer(packet.id);
         });
     }
 }

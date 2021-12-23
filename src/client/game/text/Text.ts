@@ -33,10 +33,10 @@ class Text {
         this.size = size;
         this.position = position;
         this.dimensions = new Vec3([...this.content]
-            .map(char => this.font.characters[char].width)
+            .map(char => this.font.characters[char]?.width ?? 0)
             .reduce((a, b) => a + b) / this.font.glyphHeight, 1);
         this.models = this.generate();
-        this.background = new Model(Text.BACKGROUND_SHADER, new Quad2D(-0.5, 0.2, 1, 1), new Vec3(),
+        this.background = new Model(Text.BACKGROUND_SHADER, new Quad2D(-0.475, 0.2, 1, 1), new Vec3(),
             new Vec3(), new Vec3((this.dimensions.x + 0.1) * this.size, (this.dimensions.y - 0.1) * this.size));
     }
 
@@ -80,7 +80,9 @@ class Text {
 
         let offX = this.dimensions.x * -0.5;
         for (const char of this.content) {
-            const { width, height, uvs: { left, top, right, bottom } } = this.font.characters[char];
+            const charInfo = this.font.characters[char];
+            if (!charInfo) continue;
+            const { width, height, uvs: { left, top, right, bottom } } = charInfo;
             const mesh = new TexturedQuad2D(0, 0, 1, 1, [
                 left, bottom, right, bottom, left, top, right, top
             ]);

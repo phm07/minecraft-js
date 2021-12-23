@@ -1,5 +1,3 @@
-import glyphs from "./assets/glyphs.png";
-import Font from "./game/text/Font";
 import Client from "./network/Client";
 import HomeScene from "./scene/HomeScene";
 import IScene from "./scene/IScene";
@@ -10,8 +8,6 @@ class Game {
     public scene: IScene;
 
     public constructor() {
-
-        new Font(glyphs, 12);
 
         this.client = new Client();
         this.scene = new HomeScene(null);
