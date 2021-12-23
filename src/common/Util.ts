@@ -19,6 +19,10 @@ class Util {
     public static map(x: number, from: number, to: number, lower: number, upper: number): number {
         return this.clamp((x-from)/(to-from), 0, 1)*(upper-lower)+lower;
     }
+
+    public static wrapRadians(angle: number): number {
+        return angle - Math.PI * 2 * Math.floor((angle + Math.PI) / (Math.PI * 2));
+    }
 }
 
 export default Util;
