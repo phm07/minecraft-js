@@ -53,8 +53,8 @@ class Player {
         this.camera.position.y += 1.7;
         this.camera.updateViewMatrix();
 
-        if (Math.floor(oldX/16) !== Math.floor(this.position.x/16)
-            || Math.floor(oldZ/16) !== Math.floor(this.position.z/16)) {
+        if (Math.floor(oldX / 16) !== Math.floor(this.position.x / 16)
+            || Math.floor(oldZ / 16) !== Math.floor(this.position.z / 16)) {
             (game.scene as GameScene).world.update();
         }
     }
@@ -68,11 +68,11 @@ class Player {
 
     public updatePosition(delta: number): void {
 
-        const aabb = new AABB(this.position.x-0.3, this.position.y, this.position.z-0.3, 0.6, 1.8, 0.6);
+        const aabb = new AABB(this.position.x - 0.3, this.position.y, this.position.z - 0.3, 0.6, 1.8, 0.6);
         const blocks = this.getWorldAABB();
 
-        const steps = Math.ceil(delta/(1/120));
-        const d = delta/steps;
+        const steps = Math.ceil(delta / (1 / 120));
+        const d = delta / steps;
 
         for (let step = 0; step < steps; step++) {
             const dx = this.velocity.x * d;
@@ -86,7 +86,7 @@ class Player {
             } else {
                 this.position.x += dx;
             }
-            
+
             aabb.y += dy;
             if (this.isCollision(aabb, blocks)) {
                 aabb.y -= dy;
@@ -114,9 +114,9 @@ class Player {
             for (let y = -1; y <= 2; y++) {
                 for (let z = -1; z <= 1; z++) {
                     if (x === 0 && z === 0 && y >= 0 && y < 2) continue;
-                    const blockX = Math.floor(this.position.x+x);
-                    const blockY = Math.floor(this.position.y+y);
-                    const blockZ = Math.floor(this.position.z+z);
+                    const blockX = Math.floor(this.position.x + x);
+                    const blockY = Math.floor(this.position.y + y);
+                    const blockZ = Math.floor(this.position.z + z);
 
                     if ((game.scene as GameScene).world.blockAt(blockX, blockY, blockZ)) {
                         blocks.push(new AABB(blockX, blockY, blockZ, 1, 1, 1));

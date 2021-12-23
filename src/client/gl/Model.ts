@@ -18,8 +18,8 @@ class Model {
     public scale: Vec3;
     public origin: Vec3;
 
-    public constructor(shader: Shader, mesh: Mesh, position: Vec3, rotation: Vec3, scale: Vec3, origin: Vec3) {
-       
+    public constructor(shader: Shader, mesh: Mesh, position: Vec3, rotation = new Vec3, scale = new Vec3(), origin = new Vec3()) {
+
         this.shader = shader;
         this.mesh = mesh;
         this.position = position;
@@ -32,7 +32,7 @@ class Model {
         this.modelMatrixUniform = shader.getUniformLocation("uModelMatrix");
         this.viewMatrixUniform = shader.getUniformLocation("uViewMatrix");
         this.projectionMatrixUniform = shader.getUniformLocation("uProjMatrix");
-        
+
         this.update();
     }
 
@@ -47,7 +47,7 @@ class Model {
     public update(): void {
 
         const rotationQuat = quat.create();
-        quat.fromEuler(rotationQuat, this.rotation.x*(180/Math.PI), this.rotation.y*(180/Math.PI), this.rotation.z*(180/Math.PI));
+        quat.fromEuler(rotationQuat, this.rotation.x * (180 / Math.PI), this.rotation.y * (180 / Math.PI), this.rotation.z * (180 / Math.PI));
 
         mat4.fromRotationTranslationScaleOrigin(
             this.modelMatrix,

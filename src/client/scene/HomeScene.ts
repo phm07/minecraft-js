@@ -102,7 +102,7 @@ class HomeScene implements IScene {
             this.backgroundQuad.delete();
         }
 
-        this.backgroundQuad = new TexturedQuad2D(-1, -1, 2, 2, [0, 0, GL.canvas.width/64, 0, 0, GL.canvas.height/64, GL.canvas.width/64, GL.canvas.height/64]);
+        this.backgroundQuad = new TexturedQuad2D(-1, -1, 2, 2, [0, 0, GL.canvas.width / 64, 0, 0, GL.canvas.height / 64, GL.canvas.width / 64, GL.canvas.height / 64]);
     }
 
     public update(): void {

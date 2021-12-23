@@ -43,7 +43,7 @@ class Block {
             if (!side) continue;
             const depth = side[0] + side[1] * 16;
             for (let i = 0; i < 4; i++) {
-                uvArray.push([texCoords[i*2], texCoords[i*2+1], depth]);
+                uvArray.push([texCoords[i * 2], texCoords[i * 2 + 1], depth]);
             }
         }
         return uvArray;

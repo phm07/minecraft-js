@@ -23,7 +23,7 @@ class Camera {
     }
 
     public updateProjectionMatrix(): void {
-        mat4.perspective(this.projectionMatrix, this.fov, GL.canvas.clientWidth/GL.canvas.clientHeight, this.near, this.far);
+        mat4.perspective(this.projectionMatrix, this.fov, GL.canvas.clientWidth / GL.canvas.clientHeight, this.near, this.far);
     }
 
     public updateViewMatrix(): void {

@@ -2,7 +2,7 @@ import IndexBuffer from "./IndexBuffer";
 import VertexBuffer from "./VertexBuffer";
 
 class Mesh {
-    
+
     public readonly numIndices: number;
     private readonly vertexBuffer: VertexBuffer;
     private readonly indexBuffer: IndexBuffer;

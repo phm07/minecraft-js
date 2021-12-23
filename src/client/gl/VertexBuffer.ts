@@ -12,7 +12,7 @@ class VertexBuffer {
         GL.bindBuffer(GL.ARRAY_BUFFER, this.buffer);
         GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(vertices), GL.STATIC_DRAW);
 
-        const stride = attributes.reduce((a, b) => a+b)*4;
+        const stride = attributes.reduce((a, b) => a + b) * 4;
         let offset = 0;
 
         for (let i = 0; i < attributes.length; i++) {

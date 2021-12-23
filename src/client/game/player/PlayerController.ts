@@ -62,7 +62,7 @@ class PlayerController {
             this.player.velocity.x = Math.cos(angle) * PlayerController.SPEED;
             this.player.velocity.z = Math.sin(angle) * PlayerController.SPEED;
         }
-        
+
         if (this.isPressed("Space") && this.player.onGround) {
             this.player.onGround = false;
             this.player.velocity.y = 8.0;

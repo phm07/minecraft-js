@@ -29,7 +29,7 @@ class World {
     }
 
     public blockAt(x: number, y: number, z: number): number {
-        const chunk = this.chunkMap[[Math.floor(x/16), Math.floor(z/16)].toString()];
+        const chunk = this.chunkMap[[Math.floor(x / 16), Math.floor(z / 16)].toString()];
         return chunk?.blockAt(x & 15, y, z & 15) ?? 0;
     }
 
@@ -63,13 +63,13 @@ class World {
 
         for (let r = 0; r <= World.RENDER_DISTANCE; r++) {
             for (let x = -1; x <= 1; x += 2) {
-                for (let z = chunkZ-r; z <= chunkZ+r; z++) {
-                    this.requestChunk(chunkX+x*r, z);
+                for (let z = chunkZ - r; z <= chunkZ + r; z++) {
+                    this.requestChunk(chunkX + x * r, z);
                 }
             }
             for (let z = -1; z <= 1; z += 2) {
-                for (let x = chunkX-r; x <= chunkX+r; x++) {
-                    this.requestChunk(x, chunkZ+z*r);
+                for (let x = chunkX - r; x <= chunkX + r; x++) {
+                    this.requestChunk(x, chunkZ + z * r);
                 }
             }
         }

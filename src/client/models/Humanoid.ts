@@ -9,7 +9,7 @@ type Side = { left: number, right: number, top: number, bottom: number };
 type UV = { front: Side, back: Side, top: Side, bottom: Side, right: Side, left: Side };
 
 class Humanoid {
-    
+
     public position: PlayerPosition;
     public bodyYaw: number;
     public swing: number;
@@ -32,28 +32,28 @@ class Humanoid {
         this.shader = shader;
 
         this.torso = new Model(this.shader,
-            new ShadedTexturedCuboid(Humanoid.map(16/64, 16/64, 8, 12, 4)),
-            new Vec3(), new Vec3(), new Vec3(8/16, 12/16, 4/16), new Vec3(0.5, 0, 0.5));
+            new ShadedTexturedCuboid(Humanoid.map(16 / 64, 16 / 64, 8, 12, 4)),
+            new Vec3(), new Vec3(), new Vec3(8 / 16, 12 / 16, 4 / 16), new Vec3(0.5, 0, 0.5));
 
         this.rightLeg = new Model(this.shader,
-            new ShadedTexturedCuboid(Humanoid.map(0/64, 16/64, 4, 12, 4)),
-            new Vec3(), new Vec3(), new Vec3(4/16, 12/16, 4/16), new Vec3(1, 1, 0.5));
+            new ShadedTexturedCuboid(Humanoid.map(0 / 64, 16 / 64, 4, 12, 4)),
+            new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(1, 1, 0.5));
 
         this.leftLeg = new Model(this.shader,
-            new ShadedTexturedCuboid(Humanoid.map(16/64, 48/64, 4, 12, 4)),
-            new Vec3(), new Vec3(), new Vec3(4/16, 12/16, 4/16), new Vec3(0, 1, 0.5));
+            new ShadedTexturedCuboid(Humanoid.map(16 / 64, 48 / 64, 4, 12, 4)),
+            new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(0, 1, 0.5));
 
         this.rightArm = new Model(this.shader,
-            new ShadedTexturedCuboid(Humanoid.map(40/64, 16/64, 4, 12, 4)),
-            new Vec3(), new Vec3(), new Vec3(4/16, 12/16, 4/16), new Vec3(2, 12/16, 0.5));
+            new ShadedTexturedCuboid(Humanoid.map(40 / 64, 16 / 64, 4, 12, 4)),
+            new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(2, 12 / 16, 0.5));
 
         this.leftArm = new Model(this.shader,
-            new ShadedTexturedCuboid(Humanoid.map(32/64, 48/64, 4, 12, 4)),
-            new Vec3(), new Vec3(), new Vec3(4/16, 12/16, 4/16), new Vec3(-1, 12/16, 0.5));
+            new ShadedTexturedCuboid(Humanoid.map(32 / 64, 48 / 64, 4, 12, 4)),
+            new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(-1, 12 / 16, 0.5));
 
         this.head = new Model(this.shader,
-            new ShadedTexturedCuboid(Humanoid.map(0/64, 0/64, 8, 8, 8)),
-            new Vec3(), new Vec3(), new Vec3(8/16, 8/16, 8/16), new Vec3(0.5, 0, 0.5));
+            new ShadedTexturedCuboid(Humanoid.map(0 / 64, 0 / 64, 8, 8, 8)),
+            new Vec3(), new Vec3(), new Vec3(8 / 16, 8 / 16, 8 / 16), new Vec3(0.5, 0, 0.5));
 
         this.update();
     }
@@ -61,40 +61,40 @@ class Humanoid {
     private static map(x: number, y: number, w: number, h: number, d: number): number[][] {
         return Humanoid.mapUvs({
             front: {
-                left: x+d/64,
-                right: x+(d+w)/64,
-                top: y+d/64,
-                bottom: y+(d+h)/64
+                left: x + d / 64,
+                right: x + (d + w) / 64,
+                top: y + d / 64,
+                bottom: y + (d + h) / 64
             },
             back: {
-                left: x+(2*d+w)/64,
-                right: x+(2*(d+w))/64,
-                top: y+d/64,
-                bottom: y+(d+h)/64
+                left: x + (2 * d + w) / 64,
+                right: x + (2 * (d + w)) / 64,
+                top: y + d / 64,
+                bottom: y + (d + h) / 64
             },
             top: {
-                left: x+d/64,
-                right: x+(d+w)/64,
+                left: x + d / 64,
+                right: x + (d + w) / 64,
                 top: y,
-                bottom: y+d/64
+                bottom: y + d / 64
             },
             bottom: {
-                left: x+(d+w)/64,
-                right: x+(d+2*w)/64,
+                left: x + (d + w) / 64,
+                right: x + (d + 2 * w) / 64,
                 top: y,
-                bottom: y+d/64
+                bottom: y + d / 64
             },
             left: {
                 left: x,
-                right: x+d/64,
-                top: y+d/64,
-                bottom: y+(d+h)/64
+                right: x + d / 64,
+                top: y + d / 64,
+                bottom: y + (d + h) / 64
             },
             right: {
-                left: x+(d+w)/64,
-                right: x+(2*d+w)/64,
-                top: y+d/64,
-                bottom: y+(d+h)/64
+                left: x + (d + w) / 64,
+                right: x + (2 * d + w) / 64,
+                top: y + d / 64,
+                bottom: y + (d + h) / 64
             }
         });
     }
@@ -141,28 +141,28 @@ class Humanoid {
 
     public update(): void {
 
-        this.torso.position = new Vec3(this.position.x-8/16, this.position.y+12/16, this.position.z-8/16);
-        this.torso.rotation = new Vec3(0, -this.bodyYaw+Math.PI, 0);
+        this.torso.position = new Vec3(this.position.x - 8 / 16, this.position.y + 12 / 16, this.position.z - 8 / 16);
+        this.torso.rotation = new Vec3(0, -this.bodyYaw + Math.PI, 0);
         this.torso.update();
 
-        this.rightLeg.position = new Vec3(this.position.x-16/16, this.position.y-4/16, this.position.z-8/16);
-        this.rightLeg.rotation = new Vec3(-this.swing, -this.bodyYaw+Math.PI, 0);
+        this.rightLeg.position = new Vec3(this.position.x - 16 / 16, this.position.y - 4 / 16, this.position.z - 8 / 16);
+        this.rightLeg.rotation = new Vec3(-this.swing, -this.bodyYaw + Math.PI, 0);
         this.rightLeg.update();
 
-        this.leftLeg.position = new Vec3(this.position.x, this.position.y-4/16, this.position.z-8/16);
-        this.leftLeg.rotation = new Vec3(this.swing, -this.bodyYaw+Math.PI, 0);
+        this.leftLeg.position = new Vec3(this.position.x, this.position.y - 4 / 16, this.position.z - 8 / 16);
+        this.leftLeg.rotation = new Vec3(this.swing, -this.bodyYaw + Math.PI, 0);
         this.leftLeg.update();
 
-        this.rightArm.position = new Vec3(this.position.x-32/16, this.position.y+9/16, this.position.z-8/16);
-        this.rightArm.rotation = new Vec3(this.swing, -this.bodyYaw+Math.PI, 0);
+        this.rightArm.position = new Vec3(this.position.x - 32 / 16, this.position.y + 9 / 16, this.position.z - 8 / 16);
+        this.rightArm.rotation = new Vec3(this.swing, -this.bodyYaw + Math.PI, 0);
         this.rightArm.update();
 
-        this.leftArm.position = new Vec3(this.position.x+16/16, this.position.y+9/16, this.position.z-8/16);
-        this.leftArm.rotation = new Vec3(-this.swing, -this.bodyYaw+Math.PI, 0);
+        this.leftArm.position = new Vec3(this.position.x + 16 / 16, this.position.y + 9 / 16, this.position.z - 8 / 16);
+        this.leftArm.rotation = new Vec3(-this.swing, -this.bodyYaw + Math.PI, 0);
         this.leftArm.update();
 
-        this.head.position = new Vec3(this.position.x-8/16, this.position.y+24/16, this.position.z-8/16);
-        this.head.rotation = new Vec3(this.position.pitch, -this.position.yaw+Math.PI, 0);
+        this.head.position = new Vec3(this.position.x - 8 / 16, this.position.y + 24 / 16, this.position.z - 8 / 16);
+        this.head.rotation = new Vec3(this.position.pitch, -this.position.yaw + Math.PI, 0);
         this.head.update();
     }
 

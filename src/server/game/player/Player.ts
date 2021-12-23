@@ -34,7 +34,7 @@ class Player {
         });
 
         this.socket.on("requestChunk", (packet: { x: number, z: number }) => {
-            if (Util.distSquare(packet.x*16, packet.z*16, this.position.x, this.position.z) <= 256*256) {
+            if (Util.distSquare(packet.x * 16, packet.z * 16, this.position.x, this.position.z) <= 256 * 256) {
                 global.server.world.getChunk(packet.x, packet.z).sendTo(this);
             }
         });

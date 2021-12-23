@@ -6,9 +6,9 @@ class TexturedQuad2D extends Mesh {
 
         const vertices = [
             x, y, uvs[0], uvs[1],
-            x+width, y, uvs[2], uvs[3],
-            x, y+height, uvs[4], uvs[5],
-            x+width, y+height, uvs[6], uvs[7]
+            x + width, y, uvs[2], uvs[3],
+            x, y + height, uvs[4], uvs[5],
+            x + width, y + height, uvs[6], uvs[7]
         ];
 
         const attributes = [2, 2];

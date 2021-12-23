@@ -15,7 +15,7 @@ class ChunkWorker {
 
         this.timer = setInterval(() => {
 
-            const chunk = this.queue[this.queue.length-1];
+            const chunk = this.queue[this.queue.length - 1];
             if (!chunk || this.working) return;
 
             this.working = true;
