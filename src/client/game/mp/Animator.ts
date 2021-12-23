@@ -1,6 +1,6 @@
-import Interpolator from "../../common/Interpolator";
-import Util from "../../common/Util";
-import Humanoid from "../models/Humanoid";
+import Interpolator from "../../../common/Interpolator";
+import Util from "../../../common/Util";
+import Humanoid from "../../models/Humanoid";
 import Human from "./Human";
 
 class Animator {

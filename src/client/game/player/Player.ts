@@ -1,9 +1,9 @@
-import PlayerPosition from "../../common/PlayerPosition";
-import Util from "../../common/Util";
-import Vec3 from "../../common/Vec3";
-import Camera from "../gl/Camera";
-import AABB from "../physics/AABB";
-import GameScene from "../scene/GameScene";
+import PlayerPosition from "../../../common/PlayerPosition";
+import Util from "../../../common/Util";
+import Vec3 from "../../../common/Vec3";
+import Camera from "../../gl/Camera";
+import AABB from "../../physics/AABB";
+import GameScene from "../../scene/GameScene";
 import PlayerController from "./PlayerController";
 
 class Player {

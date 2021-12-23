@@ -1,8 +1,8 @@
 import { Socket } from "socket.io";
 
-import PlayerPosition from "../../common/PlayerPosition";
-import Util from "../../common/Util";
-import Vec3 from "../../common/Vec3";
+import PlayerPosition from "../../../common/PlayerPosition";
+import Util from "../../../common/Util";
+import Vec3 from "../../../common/Vec3";
 
 class Player {
 

@@ -1,7 +1,7 @@
 import PlayerPosition from "../../common/PlayerPosition";
-import Player from "../game/Player";
-import PlayerManager from "../game/PlayerManager";
-import World from "../game/World";
+import PlayerManager from "../game/mp/PlayerManager";
+import Player from "../game/player/Player";
+import World from "../game/world/World";
 import Camera from "../gl/Camera";
 import IScene from "./IScene";
 

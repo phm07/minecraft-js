@@ -1,8 +1,8 @@
 import * as crypto from "crypto";
 
 import LoginHandler from "./connection/LoginHandler";
-import Player from "./game/Player";
-import World from "./game/World";
+import Player from "./game/player/Player";
+import World from "./game/world/World";
 
 class GameServer {
 

@@ -1,5 +1,5 @@
+import Player from "../player/Player";
 import Blocks from "./Blocks";
-import Player from "./Player";
 
 class Chunk {
 

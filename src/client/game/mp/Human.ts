@@ -1,9 +1,9 @@
-import PlayerPosition from "../../common/PlayerPosition";
-import Util from "../../common/Util";
-import Vec3 from "../../common/Vec3";
-import Shader from "../gl/Shader";
-import Texture from "../gl/Texture";
-import Humanoid from "../models/Humanoid";
+import PlayerPosition from "../../../common/PlayerPosition";
+import Util from "../../../common/Util";
+import Vec3 from "../../../common/Vec3";
+import Shader from "../../gl/Shader";
+import Texture from "../../gl/Texture";
+import Humanoid from "../../models/Humanoid";
 import Animator from "./Animator";
 
 class Human {

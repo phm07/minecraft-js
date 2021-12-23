@@ -1,4 +1,4 @@
-import PlayerPosition from "../../common/PlayerPosition";
+import PlayerPosition from "../../../common/PlayerPosition";
 import Chunk from "./Chunk";
 import WorldGenerator from "./WorldGenerator";
 

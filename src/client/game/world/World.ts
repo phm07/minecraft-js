@@ -1,4 +1,4 @@
-import GameScene from "../scene/GameScene";
+import GameScene from "../../scene/GameScene";
 import Chunk from "./Chunk";
 import ChunkWorker from "./ChunkWorker";
 import Terrain from "./Terrain";

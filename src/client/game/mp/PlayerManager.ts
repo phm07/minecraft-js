@@ -1,10 +1,10 @@
-import PlayerPosition from "../../common/PlayerPosition";
-import Vec3 from "../../common/Vec3";
-import skin from "../assets/steve.png";
-import Shader from "../gl/Shader";
-import Texture from "../gl/Texture";
-import fragmentShader from "../shaders/human.fs";
-import vertexShader from "../shaders/human.vs";
+import PlayerPosition from "../../../common/PlayerPosition";
+import Vec3 from "../../../common/Vec3";
+import skin from "../../assets/steve.png";
+import Shader from "../../gl/Shader";
+import Texture from "../../gl/Texture";
+import fragmentShader from "../../shaders/human.fs";
+import vertexShader from "../../shaders/human.vs";
 import Human from "./Human";
 
 class PlayerManager {

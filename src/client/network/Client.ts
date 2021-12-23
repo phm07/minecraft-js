@@ -2,7 +2,7 @@ import { io, Socket } from "socket.io-client";
 
 import PlayerPosition from "../../common/PlayerPosition";
 import Vec3 from "../../common/Vec3";
-import Chunk from "../game/Chunk";
+import Chunk from "../game/world/Chunk";
 import GameScene from "../scene/GameScene";
 import HomeScene from "../scene/HomeScene";
 
