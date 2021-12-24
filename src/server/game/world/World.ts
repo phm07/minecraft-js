@@ -9,9 +9,24 @@ class World {
     private readonly chunkMap: { [index: string]: Chunk };
 
     public constructor() {
-        this.spawnPoint = new PlayerPosition(0, 100, 0, 0, 0);
         this.generator = new WorldGenerator("");
         this.chunkMap = {};
+        for (let x = -3; x <= 3; x++) {
+            for (let z = -3; z <= 3; z++) {
+                this.getChunk(x, z);
+            }
+        }
+        this.spawnPoint = new PlayerPosition(0, this.highestPointAt(0, 0), 0, 0, 0);
+    }
+
+    public highestPointAt(x: number, z: number): number {
+        const chunk = this.getChunk(Math.floor(x / 16), Math.floor(z / 16));
+        if (!chunk) return 128;
+        const x1 = x - chunk.x * 16;
+        const z1 = z - chunk.z * 16;
+        let y = 0;
+        while (chunk.blockAt(x1, y, z1)) y++;
+        return y;
     }
 
     public getChunk(x: number, z: number): Chunk {

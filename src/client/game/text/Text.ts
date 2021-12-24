@@ -22,7 +22,7 @@ class Text {
     private readonly font: Font;
     private readonly size: number;
     private readonly models: Model[];
-    private readonly background: Model;
+    private readonly background: Model | null;
     private readonly dimensions: Vec3;
 
     public position: Vec3;
@@ -32,12 +32,12 @@ class Text {
         this.font = font;
         this.size = size;
         this.position = position;
-        this.dimensions = new Vec3([...this.content]
-            .map(char => this.font.characters[char]?.width ?? 0)
-            .reduce((a, b) => a + b) / this.font.glyphHeight, 1);
-        this.models = this.generate();
-        this.background = new Model(Text.BACKGROUND_SHADER, new Quad2D(-0.475, 0.2, 1, 1), new Vec3(),
-            new Vec3(), new Vec3((this.dimensions.x + 0.1) * this.size, (this.dimensions.y - 0.1) * this.size));
+        this.dimensions = new Vec3(1, 1);
+        this.background = new Model(Text.BACKGROUND_SHADER, new Quad2D(-0.475, 0.2, 1, 1));
+
+        this.models = [];
+
+        void this.generate();
     }
 
     public static init(): void {
@@ -55,15 +55,15 @@ class Text {
 
     public update(): void {
 
-        this.models.forEach(model => model.update());
-        this.background.update();
+        this.models?.forEach(model => model.update());
+        this.background?.update();
     }
 
     public render(): void {
 
         Text.BACKGROUND_SHADER.bind();
         GL.uniform3fv(Text.BACKGROUND_CENTER_UNIFORM, [this.position.x, this.position.y, this.position.z]);
-        this.background.render();
+        this.background?.render();
 
         Text.TEXT_SHADER.bind();
         GL.uniform1f(Text.SIZE_UNIFORM, this.size);
@@ -71,26 +71,29 @@ class Text {
         GL.uniform1i(Text.SAMPLER_UNIFORM, 0);
         GL.activeTexture(GL.TEXTURE0);
         this.font.texture?.bind();
-        this.models.forEach(model => model.render());
+        this.models?.forEach(model => model.render());
     }
 
-    private generate(): Model[] {
+    private async generate(): Promise<void> {
 
-        const models: Model[] = [];
+        const fontData = await this.font.getFontData();
+
+        this.dimensions.x = [...this.content].map(char => fontData[char]?.width ?? 0).reduce((a, b) => a + b) / this.font.glyphHeight;
+        if (this.background) {
+            this.background.scale = new Vec3((this.dimensions.x + 0.1) * this.size, (this.dimensions.y - 0.1) * this.size);
+        }
 
         let offX = this.dimensions.x * -0.5;
         for (const char of this.content) {
-            const charInfo = this.font.characters[char];
+            const charInfo = fontData[char];
             if (!charInfo) continue;
             const { width, height, uvs: { left, top, right, bottom } } = charInfo;
             const mesh = new TexturedQuad2D(0, 0, 1, 1, [
                 left, bottom, right, bottom, left, top, right, top
             ]);
-            models.push(new Model(Text.TEXT_SHADER, mesh, new Vec3(offX), new Vec3(), new Vec3(width / height, 1)));
+            this.models.push(new Model(Text.TEXT_SHADER, mesh, new Vec3(offX), new Vec3(), new Vec3(width / height, 1)));
             offX += width / height;
         }
-
-        return models;
     }
 }
 

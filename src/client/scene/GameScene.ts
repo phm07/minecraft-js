@@ -14,7 +14,7 @@ class GameScene implements IScene {
     public readonly player: Player;
     public readonly world: World;
     public readonly font: Font;
-    public playerManager: PlayerManager | null;
+    public readonly playerManager: PlayerManager;
 
     public constructor() {
 
@@ -22,10 +22,8 @@ class GameScene implements IScene {
         this.player = new Player(this.camera);
         this.world = new World();
 
-        this.playerManager = null;
-        this.font = new Font(defaultFont, 12, () => {
-            this.playerManager = new PlayerManager();
-        });
+        this.playerManager = new PlayerManager();
+        this.font = new Font(defaultFont, 12);
 
         Text.init();
 
@@ -37,7 +35,7 @@ class GameScene implements IScene {
     public delete(): void {
         this.player.delete();
         this.world.delete();
-        this.playerManager?.delete();
+        this.playerManager.delete();
 
         GL.enable(GL.DEPTH_TEST);
         GL.disable(GL.CULL_FACE);
@@ -45,12 +43,12 @@ class GameScene implements IScene {
 
     public update(delta: number): void {
         this.player.update(delta);
-        this.playerManager?.update(delta);
+        this.playerManager.update(delta);
     }
 
     public render(): void {
         this.world.render();
-        this.playerManager?.render();
+        this.playerManager.render();
     }
 
     public onWindowResize(): void {

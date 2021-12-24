@@ -6,6 +6,7 @@ class PlayerController {
     public static readonly SENSITIVITY = 0.0025;
 
     private readonly player: Player;
+    private readonly removeListeners: () => void;
     private pressed: { [index: string]: number };
     private captureMouse: boolean;
 
@@ -15,11 +16,30 @@ class PlayerController {
         this.pressed = {};
         this.captureMouse = false;
 
-        window.addEventListener("keydown", e => this.key(e, 1));
-        window.addEventListener("keyup", e => this.key(e, 0));
-        window.addEventListener("mousemove", e => this.mousemove(e));
-        GL.canvas.addEventListener("click", () => GL.canvas.requestPointerLock());
-        document.addEventListener("pointerlockchange", () => this.pointerLockChange());
+        const onWindowKeyDown = (e: KeyboardEvent): void => this.key(e, 1);
+        const onWindowKeyUp = (e: KeyboardEvent): void => this.key(e, 0);
+        const onWindowMouseMove = (e: MouseEvent): void => this.mousemove(e);
+        const onCanvasClick = (): void => GL.canvas.requestPointerLock();
+        const onDocumentPointerLockChange = (): void => this.pointerLockChange();
+
+        window.addEventListener("keydown", onWindowKeyDown);
+        window.addEventListener("keyup", onWindowKeyUp);
+        window.addEventListener("mousemove", onWindowMouseMove);
+        GL.canvas.addEventListener("click", onCanvasClick);
+        document.addEventListener("pointerlockchange", onDocumentPointerLockChange);
+
+        this.removeListeners = (): void => {
+            window.removeEventListener("keydown", onWindowKeyDown);
+            window.removeEventListener("keyup", onWindowKeyUp);
+            window.removeEventListener("mousemove", onWindowMouseMove);
+            GL.canvas.removeEventListener("click", onCanvasClick);
+            document.addEventListener("pointerlockchange", onDocumentPointerLockChange);
+        };
+    }
+
+    public delete(): void {
+        this.removeListeners();
+        document.exitPointerLock();
     }
 
     private pointerLockChange(): void {

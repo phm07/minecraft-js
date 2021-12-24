@@ -1,53 +1,66 @@
 import ImageUtils from "../../../common/ImageUtils";
 import Texture from "../../gl/Texture";
 
+type FontData = { [index: string]: { uvs: { left: number, right: number, top: number, bottom: number }, width: number, height: number } | null };
+
 class Font {
 
-    declare public readonly characters: { [index: string]: { uvs: { left: number, right: number, top: number, bottom: number }, width: number, height: number } | null };
+    private readonly fontData: FontData;
+    private readonly waiting: ((data: FontData) => void)[];
+    private ready: boolean;
     public readonly glyphHeight: number;
     public texture: Texture | null;
 
-    public constructor(src: string, glyphHeight: number, onload: () => void) {
+    public constructor(src: string, glyphHeight: number) {
 
-        this.characters = {};
+        this.ready = false;
+        this.fontData = {};
+        this.waiting = [];
         this.glyphHeight = glyphHeight;
         this.texture = null;
+        void this.load(src);
+    }
 
-        void (async (): Promise<void> => {
+    private async load(src: string): Promise<void> {
 
-            const image = new ImageUtils(await ImageUtils.loadImage(src));
-            image.updateImageData();
+        const image = new ImageUtils(await ImageUtils.loadImage(src));
+        image.updateImageData();
 
-            const inset = 0.001;
-            const red = 0xff0000ff;
-            let char = 32;
-            for (let y = 0; y < image.height; y += glyphHeight) {
+        const inset = 0.001;
+        const red = 0xff0000ff;
+        let char = 32;
+        for (let y = 0; y < image.height; y += this.glyphHeight) {
 
-                let x = 0;
-                while (x < image.width) {
-                    if (image.pixelAt(x, y) === red) {
-                        image.setPixel(x, y, 0);
-                        const x1 = x++;
-                        while (image.pixelAt(x, y) !== red && x < image.width) x++;
-                        if (x < image.width) {
-                            this.characters[String.fromCharCode(char++)] = {
-                                uvs: {
-                                    left: x1 / image.width + inset,
-                                    right: x / image.width - inset,
-                                    top: y / image.height + inset,
-                                    bottom: (y + glyphHeight) / image.height - inset
-                                },
-                                width: x - x1,
-                                height: glyphHeight
-                            };
-                        }
-                    } else x++;
-                }
+            let x = 0;
+            while (x < image.width) {
+                if (image.pixelAt(x, y) === red) {
+                    image.setPixel(x, y, 0);
+                    const x1 = x++;
+                    while (image.pixelAt(x, y) !== red && x < image.width) x++;
+                    if (x < image.width) {
+                        this.fontData[String.fromCharCode(char++)] = {
+                            uvs: {
+                                left: x1 / image.width + inset,
+                                right: x / image.width - inset,
+                                top: y / image.height + inset,
+                                bottom: (y + this.glyphHeight) / image.height - inset
+                            },
+                            width: x - x1,
+                            height: this.glyphHeight
+                        };
+                    }
+                } else x++;
             }
+        }
 
-            this.texture = new Texture(image.toBase64());
-            onload();
-        })();
+        this.texture = new Texture(image.toBase64());
+        this.ready = true;
+        this.waiting.forEach(resolve => resolve(this.fontData));
+    }
+
+    public getFontData(): Promise<FontData> {
+        if (this.ready) return new Promise((resolve) => resolve(this.fontData));
+        else return new Promise((resolve) => this.waiting.push(resolve));
     }
 }
 

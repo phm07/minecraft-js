@@ -17,9 +17,9 @@ class AABB {
     }
 
     public intersects(that: AABB): boolean {
-        return (this.x <= that.x + that.w && this.x + this.w >= that.x) &&
-                (this.y <= that.y + that.h && this.y + this.h >= that.y) &&
-                (this.z <= that.z + that.l && this.z + this.l >= that.z);
+        return (this.x < that.x + that.w && this.x + this.w > that.x) &&
+                (this.y < that.y + that.h && this.y + this.h > that.y) &&
+                (this.z < that.z + that.l && this.z + this.l > that.z);
     }
 }
 

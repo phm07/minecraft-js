@@ -53,7 +53,9 @@ class WorldGenerator {
                     }
                 }
 
-                chunk.setBlockAt(x, surface, z, Blocks.GRASS);
+                if (chunk.blockAt(x, surface, z) === Blocks.DIRT) {
+                    chunk.setBlockAt(x, surface, z, Blocks.GRASS);
+                }
             }
         }
     }

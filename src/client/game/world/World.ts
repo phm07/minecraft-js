@@ -28,6 +28,10 @@ class World {
         this.terrain.render();
     }
 
+    public isLoaded(chunkX: number, chunkZ: number): boolean {
+        return !!this.chunkMap[[chunkX, chunkZ].toString()];
+    }
+
     public blockAt(x: number, y: number, z: number): number {
         const chunk = this.chunkMap[[Math.floor(x / 16), Math.floor(z / 16)].toString()];
         return chunk?.blockAt(x & 15, y, z & 15) ?? 0;
