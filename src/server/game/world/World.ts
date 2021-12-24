@@ -10,7 +10,7 @@ class World {
 
     public constructor() {
         this.spawnPoint = new PlayerPosition(0, 100, 0, 0, 0);
-        this.generator = new WorldGenerator();
+        this.generator = new WorldGenerator("");
         this.chunkMap = {};
     }
 

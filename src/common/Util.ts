@@ -8,12 +8,20 @@ class Util {
         return a + (b - a) * this.clamp(mix, 0, 1);
     }
 
-    public static distSquare(x1: number, y1: number, x2: number, y2: number): number {
+    public static dist3Square(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number): number {
+        return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
+    }
+
+    public static dist3(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number): number {
+        return Math.sqrt(Util.dist3Square(x1, y1, z1, x2, y2, z2));
+    }
+
+    public static dist2Square(x1: number, y1: number, x2: number, y2: number): number {
         return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
     }
 
-    public static dist(x1: number, y1: number, x2: number, y2: number): number {
-        return Math.sqrt(Util.distSquare(x1, y1, x2, y2));
+    public static dist2(x1: number, y1: number, x2: number, y2: number): number {
+        return Math.sqrt(Util.dist2Square(x1, y1, x2, y2));
     }
 
     public static map(x: number, from: number, to: number, lower: number, upper: number): number {

@@ -8,6 +8,10 @@
     "sourceMap": true,
     "alwaysStrict": true,
     "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
   "ts-node": {
     "compilerOptions": {

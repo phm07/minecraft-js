@@ -57,7 +57,7 @@ class Player {
 
         this.updatePosition(delta);
 
-        if (Util.distSquare(this.velocity.x, this.velocity.z, 0, 0) >= 1 && this.onGround) {
+        if (Util.dist2Square(this.velocity.x, this.velocity.z, 0, 0) >= 1 && this.onGround) {
             this.interpolator.animate("bob", 1, 0.1);
         } else {
             this.interpolator.animate("bob", 0, 0.1);

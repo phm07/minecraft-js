@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "lint": "npx eslint --fix",
-    "buildDev": "webpack --mode development --config webpack.client.config.ts && webpack --mode development --config webpack.server.config.ts",
+    "buildDev": "webpack --mode development --config webpack.server.config.ts",
     "build": "webpack --mode production --config webpack.client.config.ts && webpack --mode production --config webpack.server.config.ts",
     "start": "node ./dist/server.bundle.js"
   },
@@ -15,6 +15,7 @@
     "express": "^4.17.1",
     "fast-simplex-noise": "^4.0.0",
     "gl-matrix": "^3.4.3",
+    "rand-seed": "^1.0.1",
     "socket.io": "^4.4.0",
     "socket.io-client": "^4.4.0"
   },

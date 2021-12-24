@@ -1,8 +1,8 @@
-const ESLintWebpackPlugin = require("eslint-webpack-plugin");
-import * as webpack from "webpack";
-import * as TerserPlugin from "terser-webpack-plugin";
-import * as HtmlWebpackPlugin from "html-webpack-plugin";
-import * as path from "path";
+import ESLintWebpackPlugin from "eslint-webpack-plugin";
+import webpack from "webpack";
+import TerserPlugin from "terser-webpack-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import path from "path";
 
 export default (env: any, argv: {mode: string}): webpack.Configuration => ({
 

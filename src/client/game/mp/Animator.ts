@@ -19,7 +19,7 @@ class Animator {
 
     public update(delta: number): void {
 
-        const speed = Util.dist(this.human.velocity.x, this.human.velocity.z, 0, 0);
+        const speed = Util.dist2(this.human.velocity.x, this.human.velocity.z, 0, 0);
         const walking = this.human.velocity.y >= -10 && speed > 10e-3;
 
         this.interpolator.update(delta);

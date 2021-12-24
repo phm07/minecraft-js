@@ -1,3 +1,5 @@
+import Util from "./Util";
+
 class PlayerPosition {
 
     public x: number;
@@ -18,8 +20,8 @@ class PlayerPosition {
         return JSON.parse(JSON.stringify(position)) as PlayerPosition;
     }
 
-    public static distSquare(a: PlayerPosition, b: PlayerPosition): number {
-        return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) + (a.z - b.z) * (a.z - b.z);
+    public static distSquare({ x: x1, y: y1, z: z1 }: PlayerPosition, { x: x2, y: y2, z: z2 }: PlayerPosition): number {
+        return Util.dist3Square(x1, y1, z1, x2, y2, z2);
     }
 
     public static dist(a: PlayerPosition, b: PlayerPosition): number {
