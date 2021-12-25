@@ -34,6 +34,7 @@ window.onload = (): void => {
     const loop = (): void => {
         const now = window.performance.now();
         const delta = (now - last) / 1000;
+        game.fps = 1 / delta;
         last = now;
         game.update(delta);
         game.render();

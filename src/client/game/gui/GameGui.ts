@@ -1,3 +1,5 @@
+import "../../styles/game_gui.scss";
+
 import PlayerPosition from "../../../common/PlayerPosition";
 import Vec2 from "../../../common/Vec2";
 import Vec3 from "../../../common/Vec3";
@@ -20,6 +22,9 @@ class GameGui implements IGui {
     private readonly camera: Camera;
     private readonly texture: Texture;
     private readonly arm: Model;
+    private readonly fpsCounter: HTMLDivElement;
+    private showFps: boolean;
+    private readonly lastFpsValues: number[];
 
     public constructor() {
 
@@ -28,13 +33,31 @@ class GameGui implements IGui {
         this.crosshair = new Model2D(GuiManager.GUI_SHADER, new TexturedQuad2D(1 / 64, 10 / 64, 1 / 64, 10 / 64));
         this.camera = new Camera(new PlayerPosition(), 90 / 360 * Math.PI * 2, 0.1, 100);
         this.texture = new Texture(gui);
+        this.showFps = false;
+        this.lastFpsValues = [];
+
+        this.fpsCounter = document.createElement("div");
+        this.fpsCounter.classList.add("fpsCounter");
+        document.body.appendChild(this.fpsCounter);
+
+        this.fpsCounter.textContent = "FPS: 69";
 
         this.arm = new Model(Human.HUMAN_SHADER, this.camera,
             new ShadedTexturedCuboid(Humanoid.map(40 / 64, 16 / 64, 4, 12, 4)),
             new Vec3(3.5, -1.5, -3), new Vec3(Math.PI / 2, Math.PI / 4, -Math.PI / 2), new Vec3(1, 3, 1));
+
+        window.addEventListener("keydown", e => {
+            if (e.code === "KeyF") {
+                this.showFps = !this.showFps;
+                this.fpsCounter.style.opacity = this.showFps ? "1" : "0";
+            }
+        });
     }
 
     public delete(): void {
+        document.body.removeChild(this.fpsCounter);
+        this.texture.delete();
+        this.arm.delete();
         this.crosshair.delete();
     }
 
@@ -59,7 +82,12 @@ class GameGui implements IGui {
     }
 
     public update(): void {
-        // do nothing
+        if (this.showFps) {
+            this.lastFpsValues.push(game.fps);
+            if (this.lastFpsValues.length > 60) this.lastFpsValues.unshift();
+            const fps = Math.round(this.lastFpsValues.reduce((a, b) => a + b) / this.lastFpsValues.length);
+            this.fpsCounter.textContent = `FPS: ${fps}`;
+        }
     }
 }
 

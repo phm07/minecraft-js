@@ -9,6 +9,8 @@ class Game {
     public readonly client: Client;
     public guiManager: GuiManager;
     public scene: IScene;
+    private frameStart: number;
+    public fps: number;
 
     public constructor() {
 
@@ -18,6 +20,8 @@ class Game {
         this.client = new Client();
         this.guiManager = new GuiManager();
         this.scene = new HomeScene(this, "");
+        this.frameStart = 0;
+        this.fps = 0;
 
         GL.clearColor(131 / 255, 226 / 255, 252 / 255, 1);
     }
@@ -29,6 +33,7 @@ class Game {
     }
 
     public update(delta: number): void {
+        this.frameStart = window.performance.now();
         this.scene.update(delta);
         this.guiManager.update(delta);
     }
