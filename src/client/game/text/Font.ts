@@ -6,7 +6,7 @@ type FontData = { [index: string]: { uvs: { left: number, right: number, top: nu
 class Font {
 
     private readonly fontData: FontData;
-    private readonly waiting: ((data: FontData) => void)[];
+    private waiting: ((data: FontData) => void)[];
     private ready: boolean;
     public readonly glyphHeight: number;
     public texture: Texture | null;
@@ -56,10 +56,11 @@ class Font {
         this.texture = new Texture(image.toBase64());
         this.ready = true;
         this.waiting.forEach(resolve => resolve(this.fontData));
+        this.waiting = [];
     }
 
     public getFontData(): Promise<FontData> {
-        if (this.ready) return new Promise((resolve) => resolve(this.fontData));
+        if (this.ready) return Promise.resolve(this.fontData);
         else return new Promise((resolve) => this.waiting.push(resolve));
     }
 }

@@ -4,7 +4,7 @@ class LoginHandler {
 
     public constructor() {
 
-        global.io.on("connection", socket => {
+        global.io.on("connection", (socket) => {
 
             const timeout = setTimeout(() => {
                 socket.disconnect();

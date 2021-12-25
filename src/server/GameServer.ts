@@ -18,7 +18,7 @@ class GameServer {
     }
 
     public getPlayerByName(name: string): Player | null {
-        return this.players.find(player => player.name === name) ?? null;
+        return this.players.find((player) => player.name === name) ?? null;
     }
 
     public newEntityId(): number {
@@ -30,7 +30,7 @@ class GameServer {
     }
 
     public findEntity(id: number): Player | null {
-        return this.players.find(player => player.id === id) ?? null;
+        return this.players.find((player) => player.id === id) ?? null;
     }
 }
 

@@ -6,7 +6,7 @@ class World {
 
     public readonly spawnPoint: PlayerPosition;
     private readonly generator: WorldGenerator;
-    private readonly chunkMap: { [index: string]: Chunk };
+    private readonly chunkMap: Record<string, Chunk | undefined>;
 
     public constructor() {
         this.generator = new WorldGenerator("");
@@ -21,7 +21,6 @@ class World {
 
     public highestPointAt(x: number, z: number): number {
         const chunk = this.getChunk(Math.floor(x / 16), Math.floor(z / 16));
-        if (!chunk) return 128;
         const x1 = x - chunk.x * 16;
         const z1 = z - chunk.z * 16;
         let y = 0;

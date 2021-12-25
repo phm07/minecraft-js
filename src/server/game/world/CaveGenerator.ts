@@ -13,8 +13,8 @@ class CaveGenerator {
     private static readonly CHUNK_RADIUS = Math.floor(CaveGenerator.CAVE_LENGTH / 16);
 
     private readonly generator: WorldGenerator;
-    private readonly generated: { [index: string]: boolean };
-    private readonly caveData: { [index: string]: Uint8Array };
+    private readonly generated: Record<string, boolean | undefined>;
+    private readonly caveData: Record<string, Uint8Array | undefined>;
 
     public constructor(generator: WorldGenerator) {
         this.generator = generator;
@@ -25,7 +25,7 @@ class CaveGenerator {
     private setData(x: number, y: number, z: number, data: number): void {
         const chunkX = Math.floor(x / 16);
         const chunkZ = Math.floor(z / 16);
-        (this.caveData[[chunkX, chunkZ].toString()] ??= new Uint8Array(16 * 16 * 128))[(x - chunkX * 16) + (z - chunkZ * 16) * 16 + y * 256] = data;
+        (this.caveData[[chunkX, chunkZ].toString()] ??= new Uint8Array(16 * 16 * 128))[x - chunkX * 16 + (z - chunkZ * 16) * 16 + y * 256] = data;
     }
 
     private generate(chunkX: number, chunkZ: number): void {
@@ -62,11 +62,11 @@ class CaveGenerator {
                 [x, y, z] = Vec3.toArray(Vec3.add(Vec3.normalize(new Vec3(dx, dy, dz)), new Vec3(x, y, z)));
 
                 const r = Util.map(noiseR(x / 10, y / 10, z / 10), 0, 1, 2, 4);
-                for (let dx = Math.floor(x - r); dx <= Math.floor(x + r); dx++) {
-                    for (let dy = Math.max(2, Math.floor(y - r)); dy <= Math.min(127, Math.floor(y + r)); dy++) {
-                        for (let dz = Math.floor(z - r); dz <= Math.floor(z + r); dz++) {
-                            if (Util.dist3Square(dx, dy, dz, x, y, z) <= r * r) {
-                                this.setData(dx, dy, dz, 1);
+                for (let blockX = Math.floor(x - r); blockX <= Math.floor(x + r); blockX++) {
+                    for (let blockY = Math.max(2, Math.floor(y - r)); blockY <= Math.min(127, Math.floor(y + r)); blockY++) {
+                        for (let blockZ = Math.floor(z - r); blockZ <= Math.floor(z + r); blockZ++) {
+                            if (Util.dist3Square(blockX, blockY, blockZ, x, y, z) <= r * r) {
+                                this.setData(blockX, blockY, blockZ, 1);
                             }
                         }
                     }
@@ -83,7 +83,7 @@ class CaveGenerator {
             }
         }
 
-        const data = this.caveData[[chunk.x, chunk.z].toString()];
+        const data = this.caveData[[chunk.x, chunk.z].toString()] ?? new Uint8Array(16 * 128 * 16);
         delete this.caveData[[chunk.x, chunk.z].toString()];
         return data;
     }

@@ -34,9 +34,9 @@ class WorldGenerator {
                 const worldZ = z + chunk.z * 16;
 
                 const height = Math.floor(
-                    (this.heightNoise1(worldX / 100, worldZ / 100)) * 12
-                    + (this.heightNoise2(worldX / 50, worldZ / 50)) * 6
-                    + (this.heightNoise3(worldX / 25, worldZ / 25)) * 3
+                    this.heightNoise1(worldX / 100, worldZ / 100) * 12
+                    + this.heightNoise2(worldX / 50, worldZ / 50) * 6
+                    + this.heightNoise3(worldX / 25, worldZ / 25) * 3
                     + 48
                 );
 

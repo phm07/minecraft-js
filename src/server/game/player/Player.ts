@@ -53,7 +53,7 @@ class Player {
             name: this.name
         });
 
-        global.server.players.forEach(player => {
+        global.server.players.forEach((player) => {
             this.socket.emit("playerAdd", {
                 id: player.id,
                 position: player.position,
