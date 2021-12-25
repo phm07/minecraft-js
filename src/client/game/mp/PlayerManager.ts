@@ -1,27 +1,24 @@
 import PlayerPosition from "../../../common/PlayerPosition";
 import Vec3 from "../../../common/Vec3";
 import skin from "../../assets/steve.png";
-import Shader from "../../gl/Shader";
 import Texture from "../../gl/Texture";
 import GameScene from "../../scene/GameScene";
-import fragmentShader from "../../shaders/human.fs";
-import vertexShader from "../../shaders/human.vs";
 import Human from "./Human";
 
 class PlayerManager {
 
     private readonly players: Human[];
-    private readonly shader: Shader;
-    private readonly texture: Texture;
+    public readonly texture: Texture;
 
     public constructor() {
+        Human.init();
+
         this.players = [];
-        this.shader = new Shader(vertexShader, fragmentShader);
         this.texture = new Texture(skin);
     }
 
     public addPlayer(id: number, name: string, position: PlayerPosition): void {
-        this.players.push(new Human(id, name, this.shader, this.texture, position));
+        this.players.push(new Human(id, name, position));
     }
 
     public removePlayer(id: number): void {
@@ -48,10 +45,14 @@ class PlayerManager {
 
     public render(): void {
 
+        Human.HUMAN_SHADER.bind();
+        GL.uniform1i(Human.HUMAN_SAMPLER, 0);
+        GL.activeTexture(GL.TEXTURE0);
+        this.texture.bind();
+
         this.players.forEach(player => player.render());
 
         GL.disable(GL.DEPTH_TEST);
-        GL.disable(GL.CULL_FACE);
         GL.enable(GL.BLEND);
 
         const camPos = (game.scene as GameScene).camera.position;
@@ -61,7 +62,6 @@ class PlayerManager {
             .forEach(player => player.renderText());
 
         GL.enable(GL.DEPTH_TEST);
-        GL.enable(GL.CULL_FACE);
         GL.disable(GL.BLEND);
     }
 }

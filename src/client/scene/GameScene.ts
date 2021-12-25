@@ -1,9 +1,9 @@
 import PlayerPosition from "../../common/PlayerPosition";
 import defaultFont from "../assets/glyphs.png";
+import GameGui from "../game/gui/GameGui";
 import PlayerManager from "../game/mp/PlayerManager";
 import Player from "../game/player/Player";
 import Font from "../game/text/Font";
-import Text from "../game/text/Text";
 import World from "../game/world/World";
 import Camera from "../gl/Camera";
 import IScene from "./IScene";
@@ -25,10 +25,9 @@ class GameScene implements IScene {
         this.playerManager = new PlayerManager();
         this.font = new Font(defaultFont, 12);
 
-        Text.init();
+        game.guiManager.setGui(new GameGui());
 
         GL.enable(GL.DEPTH_TEST);
-        GL.enable(GL.CULL_FACE);
         GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
     }
 
@@ -38,7 +37,6 @@ class GameScene implements IScene {
         this.playerManager.delete();
 
         GL.enable(GL.DEPTH_TEST);
-        GL.disable(GL.CULL_FACE);
     }
 
     public update(delta: number): void {

@@ -2,7 +2,6 @@ import PlayerPosition from "../../common/PlayerPosition";
 import Vec3 from "../../common/Vec3";
 import Model from "../gl/Model";
 import Shader from "../gl/Shader";
-import Texture from "../gl/Texture";
 import ShadedTexturedCuboid from "./ShadedTexturedCuboid";
 
 type Side = { left: number, right: number, top: number, bottom: number };
@@ -13,7 +12,6 @@ class Humanoid {
     public position: PlayerPosition;
     public bodyYaw: number;
     public swing: number;
-    private readonly texture: Texture;
     private readonly shader: Shader;
     private readonly torso: Model;
     private readonly rightLeg: Model;
@@ -22,43 +20,41 @@ class Humanoid {
     private readonly leftArm: Model;
     private readonly head: Model;
 
-    public constructor(shader: Shader, texture: Texture, position: PlayerPosition) {
+    public constructor(position: PlayerPosition, shader: Shader) {
 
         this.position = position;
+        this.shader = shader;
         this.bodyYaw = 0;
         this.swing = 0;
 
-        this.texture = texture;
-        this.shader = shader;
-
-        this.torso = new Model(this.shader,
+        this.torso = new Model(this.shader, null,
             new ShadedTexturedCuboid(Humanoid.map(16 / 64, 16 / 64, 8, 12, 4)),
             new Vec3(), new Vec3(), new Vec3(8 / 16, 12 / 16, 4 / 16), new Vec3(0.5, 0, 0.5));
 
-        this.rightLeg = new Model(this.shader,
+        this.rightLeg = new Model(this.shader, null,
             new ShadedTexturedCuboid(Humanoid.map(0 / 64, 16 / 64, 4, 12, 4)),
             new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(1, 1, 0.5));
 
-        this.leftLeg = new Model(this.shader,
+        this.leftLeg = new Model(this.shader, null,
             new ShadedTexturedCuboid(Humanoid.map(16 / 64, 48 / 64, 4, 12, 4)),
             new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(0, 1, 0.5));
 
-        this.rightArm = new Model(this.shader,
+        this.rightArm = new Model(this.shader, null,
             new ShadedTexturedCuboid(Humanoid.map(40 / 64, 16 / 64, 4, 12, 4)),
             new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(2, 12 / 16, 0.5));
 
-        this.leftArm = new Model(this.shader,
+        this.leftArm = new Model(this.shader, null,
             new ShadedTexturedCuboid(Humanoid.map(32 / 64, 48 / 64, 4, 12, 4)),
             new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(-1, 12 / 16, 0.5));
 
-        this.head = new Model(this.shader,
+        this.head = new Model(this.shader, null,
             new ShadedTexturedCuboid(Humanoid.map(0 / 64, 0 / 64, 8, 8, 8)),
             new Vec3(), new Vec3(), new Vec3(8 / 16, 8 / 16, 8 / 16), new Vec3(0.5, 0, 0.5));
 
         this.update();
     }
 
-    private static map(x: number, y: number, w: number, h: number, d: number): number[][] {
+    public static map(x: number, y: number, w: number, h: number, d: number): number[][] {
         return Humanoid.mapUvs({
             front: {
                 left: x + d / 64,
@@ -134,7 +130,6 @@ class Humanoid {
     }
 
     public delete(): void {
-        this.texture.delete();
         this.shader.delete();
         this.torso.delete();
     }
@@ -167,11 +162,6 @@ class Humanoid {
     }
 
     public render(): void {
-
-        this.shader.bind();
-        GL.activeTexture(GL.TEXTURE0);
-        this.texture.bind();
-
         this.torso.render();
         this.leftLeg.render();
         this.rightLeg.render();

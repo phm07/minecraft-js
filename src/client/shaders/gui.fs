@@ -10,4 +10,5 @@ out vec4 outColor;
 
 void main() {
     outColor = texture(uTexture, vTexCoord);
+    if(outColor.a < 0.5) discard;
 }

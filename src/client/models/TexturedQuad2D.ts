@@ -2,13 +2,13 @@ import Mesh from "../gl/Mesh";
 
 class TexturedQuad2D extends Mesh {
 
-    public constructor(x: number, y: number, width: number, height: number, uvs: number[]) {
+    public constructor(left: number, right: number, top: number, bottom: number, x = 0, y = 0, width = 1, height = 1) {
 
         const vertices = [
-            x, y, uvs[0], uvs[1],
-            x + width, y, uvs[2], uvs[3],
-            x, y + height, uvs[4], uvs[5],
-            x + width, y + height, uvs[6], uvs[7]
+            x, y, left, bottom,
+            x + width, y, right, bottom,
+            x, y + height, left, top,
+            x + width, y + height, right, top
         ];
 
         const attributes = [2, 2];

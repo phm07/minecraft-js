@@ -4,7 +4,7 @@ class Vec3 {
     public y: number;
     public z: number;
 
-    public constructor(x = 0, y = 0, z = 0) {
+    public constructor(x = 0, y = x, z = x) {
         this.x = x;
         this.y = y;
         this.z = z;

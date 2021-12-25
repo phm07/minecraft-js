@@ -2,7 +2,7 @@ import Mesh from "../gl/Mesh";
 
 class Quad2D extends Mesh {
 
-    public constructor(x: number, y: number, width: number, height: number) {
+    public constructor(x = 0, y = 0, width = 1, height = 1) {
 
         const vertices = [
             x, y,

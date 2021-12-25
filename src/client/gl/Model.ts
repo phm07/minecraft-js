@@ -2,6 +2,7 @@ import { mat4, quat } from "gl-matrix";
 
 import Vec3 from "../../common/Vec3";
 import GameScene from "../scene/GameScene";
+import Camera from "./Camera";
 import Mesh from "./Mesh";
 import Shader from "./Shader";
 
@@ -9,6 +10,7 @@ class Model {
 
     private readonly shader: Shader;
     private readonly mesh: Mesh;
+    private readonly camera: Camera;
     private readonly modelMatrix: mat4;
     private readonly modelMatrixUniform: WebGLUniformLocation | null;
     private readonly viewMatrixUniform: WebGLUniformLocation | null;
@@ -18,9 +20,10 @@ class Model {
     public scale: Vec3;
     public origin: Vec3;
 
-    public constructor(shader: Shader, mesh: Mesh, position: Vec3 = new Vec3(), rotation = new Vec3, scale = new Vec3(1, 1, 1), origin = new Vec3()) {
+    public constructor(shader: Shader, camera: Camera | null, mesh: Mesh, position = new Vec3(), rotation = new Vec3, scale = new Vec3(1), origin = new Vec3()) {
 
         this.shader = shader;
+        this.camera = camera ?? (game.scene as GameScene).camera;
         this.mesh = mesh;
         this.position = position;
         this.rotation = rotation;
@@ -59,12 +62,11 @@ class Model {
     }
 
     public render(): void {
+
         this.bind();
-
         GL.uniformMatrix4fv(this.modelMatrixUniform, false, this.modelMatrix);
-        GL.uniformMatrix4fv(this.viewMatrixUniform, false, (game.scene as GameScene).camera.viewMatrix);
-        GL.uniformMatrix4fv(this.projectionMatrixUniform, false, (game.scene as GameScene).camera.projectionMatrix);
-
+        GL.uniformMatrix4fv(this.viewMatrixUniform, false, this.camera.viewMatrix);
+        GL.uniformMatrix4fv(this.projectionMatrixUniform, false, this.camera.projectionMatrix);
         GL.drawElements(GL.TRIANGLES, this.mesh.numIndices, GL.UNSIGNED_INT, 0);
     }
 }

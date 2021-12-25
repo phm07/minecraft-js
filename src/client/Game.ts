@@ -1,3 +1,5 @@
+import GuiManager from "./game/gui/GuiManager";
+import Text from "./game/text/Text";
 import Client from "./network/Client";
 import HomeScene from "./scene/HomeScene";
 import IScene from "./scene/IScene";
@@ -5,12 +7,17 @@ import IScene from "./scene/IScene";
 class Game {
 
     public readonly client: Client;
+    public guiManager: GuiManager;
     public scene: IScene;
 
     public constructor() {
 
+        GuiManager.init();
+        Text.init();
+
         this.client = new Client();
-        this.scene = new HomeScene(null);
+        this.guiManager = new GuiManager();
+        this.scene = new HomeScene(this, "");
 
         GL.clearColor(131 / 255, 226 / 255, 252 / 255, 1);
     }
@@ -23,6 +30,7 @@ class Game {
 
     public update(delta: number): void {
         this.scene.update(delta);
+        this.guiManager.update(delta);
     }
 
     public render(): void {
@@ -31,11 +39,13 @@ class Game {
         GL.clear(GL.DEPTH_BUFFER_BIT);
 
         this.scene.render();
+        this.guiManager.render();
     }
 
     public onWindowResize(): void {
         GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
         this.scene.onWindowResize();
+        this.guiManager.onWindowResize();
     }
 }
 

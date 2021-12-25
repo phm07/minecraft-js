@@ -60,7 +60,7 @@ class Client {
         });
 
         this.socket.on("disconnect", () => {
-            game.setScene(new HomeScene(err));
+            game.setScene(new HomeScene(game, err));
         });
 
         this.socket.on("teleport", (packet: { position: PlayerPosition }) => {
