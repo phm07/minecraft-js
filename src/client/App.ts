@@ -9,12 +9,12 @@ window.onload = (): void => {
 
     document.body.appendChild(canvas);
 
-    const webGL = canvas.getContext("webgl2", { antialias: true });
-    if (!webGL) {
+    const gl = canvas.getContext("webgl2", { antialias: true });
+    if (!gl) {
         alert("No WebGL2 support");
         return;
     } else {
-        window.GL = webGL;
+        window.GL = gl;
     }
 
     window.game = new Game();

@@ -1,5 +1,4 @@
 import GuiManager from "./game/gui/GuiManager";
-import Text from "./game/text/Text";
 import Client from "./network/Client";
 import HomeScene from "./scene/HomeScene";
 import IScene from "./scene/IScene";
@@ -14,9 +13,6 @@ class Game {
 
     public constructor() {
 
-        GuiManager.init();
-        Text.init();
-
         this.client = new Client();
         this.guiManager = new GuiManager();
         this.scene = new HomeScene(this, "");
@@ -24,6 +20,7 @@ class Game {
         this.fps = 0;
 
         GL.clearColor(131 / 255, 226 / 255, 252 / 255, 1);
+        GL.enable(GL.CULL_FACE);
     }
 
     public setScene(scene: IScene): void {

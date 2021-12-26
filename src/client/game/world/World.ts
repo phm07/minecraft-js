@@ -7,9 +7,9 @@ class World {
 
     public static readonly RENDER_DISTANCE = 8;
 
-    private readonly requested: { [index: string]: boolean };
+    private readonly requested: Record<string, boolean | undefined>;
     private readonly worker: ChunkWorker;
-    public readonly chunkMap: { [index: string]: Chunk };
+    public readonly chunkMap: Record<string, Chunk | undefined>;
     public readonly terrain: Terrain;
 
     public constructor() {
@@ -29,7 +29,7 @@ class World {
     }
 
     public isLoaded(chunkX: number, chunkZ: number): boolean {
-        return !!this.chunkMap[[chunkX, chunkZ].toString()];
+        return Boolean(this.chunkMap[[chunkX, chunkZ].toString()]);
     }
 
     public blockAt(x: number, y: number, z: number): number {
@@ -58,6 +58,7 @@ class World {
 
         for (const chunkCoord in this.chunkMap) {
             const chunk = this.chunkMap[chunkCoord];
+            if (!chunk) continue;
             const dx = Math.abs(chunk.x - chunkX);
             const dz = Math.abs(chunk.z - chunkZ);
             if (dx > World.RENDER_DISTANCE || dz > World.RENDER_DISTANCE) {
@@ -91,7 +92,7 @@ class World {
             this.chunkMap[[chunk.x + 1, chunk.z].toString()],
             this.chunkMap[[chunk.x, chunk.z - 1].toString()],
             this.chunkMap[[chunk.x, chunk.z + 1].toString()]
-        ].filter(e => !!e);
+        ].filter((e): e is Chunk => e !== undefined);
     }
 }
 

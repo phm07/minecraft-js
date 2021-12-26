@@ -1,17 +1,17 @@
 import { mat4 } from "gl-matrix";
 
-import PlayerPosition from "../../common/PlayerPosition";
+import Position from "../../common/Position";
 
 class Camera {
 
-    public position: PlayerPosition;
+    public position: Position;
     public readonly projectionMatrix: mat4;
     public readonly viewMatrix: mat4;
     private readonly fov: number;
     private readonly near: number;
     private readonly far: number;
 
-    public constructor(position: PlayerPosition, fov: number, near: number, far: number) {
+    public constructor(position: Position, fov: number, near: number, far: number) {
         this.position = position;
         this.fov = fov;
         this.near = near;

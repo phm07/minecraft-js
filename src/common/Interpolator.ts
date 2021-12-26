@@ -2,15 +2,15 @@ import Util from "./Util";
 
 class Interpolator {
 
-    private readonly animators: { [index: string]: { from: number, to: number, start: number, end: number } };
+    private readonly animators: Record<string, { from: number, to: number, start: number, end: number } | undefined>;
     private time: number;
 
-    public constructor(values: { [index: string]: number }) {
+    public constructor(values: Record<string, number>) {
 
         this.animators = {};
-        for (const index in values) {
-            this.animators[index] = { from: values[index], to: values[index], start: 0, end: 0 };
-        }
+        Object.entries(values).forEach(([index, value]) => {
+            this.animators[index] = { from: value, to: value, start: 0, end: 0 };
+        });
 
         this.time = 0;
     }

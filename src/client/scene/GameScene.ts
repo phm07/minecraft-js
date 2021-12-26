@@ -1,9 +1,10 @@
-import PlayerPosition from "../../common/PlayerPosition";
+import Position from "../../common/Position";
 import defaultFont from "../assets/glyphs.png";
 import GameGui from "../game/gui/GameGui";
-import PlayerManager from "../game/mp/PlayerManager";
+import HumanFactory from "../game/mp/HumanFactory";
 import Player from "../game/player/Player";
 import Font from "../game/text/Font";
+import TextFactory from "../game/text/TextFactory";
 import World from "../game/world/World";
 import Camera from "../gl/Camera";
 import IScene from "./IScene";
@@ -14,18 +15,20 @@ class GameScene implements IScene {
     public readonly player: Player;
     public readonly world: World;
     public readonly font: Font;
-    public readonly playerManager: PlayerManager;
+    public readonly textFactory: TextFactory;
+    public readonly humanFactory: HumanFactory;
 
     public constructor() {
 
-        this.camera = new Camera(new PlayerPosition(), 110 / 360 * Math.PI * 2, 0.1, 1000);
+        this.camera = new Camera(new Position(), 110 / 360 * Math.PI * 2, 0.01, 1000);
         this.player = new Player(this.camera);
         this.world = new World();
 
-        this.playerManager = new PlayerManager();
         this.font = new Font(defaultFont, 12);
+        this.textFactory = new TextFactory(this.font);
+        this.humanFactory = new HumanFactory(this.textFactory);
 
-        game.guiManager.setGui(new GameGui());
+        game.guiManager.setGui(GameGui, { humanFactory: this.humanFactory });
 
         GL.enable(GL.DEPTH_TEST);
         GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
@@ -34,19 +37,21 @@ class GameScene implements IScene {
     public delete(): void {
         this.player.delete();
         this.world.delete();
-        this.playerManager.delete();
+        this.font.delete();
+        this.humanFactory.delete();
+        this.textFactory.delete();
 
         GL.enable(GL.DEPTH_TEST);
     }
 
     public update(delta: number): void {
         this.player.update(delta);
-        this.playerManager.update(delta);
+        this.humanFactory.update(delta);
     }
 
     public render(): void {
         this.world.render();
-        this.playerManager.render();
+        this.humanFactory.render();
     }
 
     public onWindowResize(): void {

@@ -15,6 +15,7 @@
       }
     }
   ],
+  "ignorePatterns": ["node_modules/**/*.*", "*.d.ts"],
   "plugins": [
     "@typescript-eslint",
     "simple-import-sort"

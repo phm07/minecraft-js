@@ -1,4 +1,5 @@
-import {Server} from "socket.io";
+import { Server } from "socket.io";
+
 import GameServer from "./GameServer";
 
 declare global {

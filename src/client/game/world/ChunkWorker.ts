@@ -15,12 +15,13 @@ class ChunkWorker {
 
         this.timer = setInterval(() => {
 
-            const chunk = this.queue[this.queue.length - 1];
-            if (!chunk || this.working) return;
+            if (this.working) return;
+
+            const chunk = this.queue.pop();
+
+            if (!chunk) return;
 
             this.working = true;
-            this.queue.pop();
-
             this.world.chunkMap[[chunk.x, chunk.z].toString()] = chunk;
 
             const neighbors = this.world.getNeighbors(chunk);
@@ -29,7 +30,7 @@ class ChunkWorker {
                 this.world.terrain.updateChunk(chunk);
             }
 
-            neighbors.forEach(neighbor => {
+            neighbors.forEach((neighbor) => {
                 if (this.world.getNeighbors(neighbor).length === 4) {
                     this.world.terrain.updateChunk(neighbor);
                 }

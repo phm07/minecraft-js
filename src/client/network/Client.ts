@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 
-import PlayerPosition from "../../common/PlayerPosition";
+import Position from "../../common/Position";
 import Vec3 from "../../common/Vec3";
 import Chunk from "../game/world/Chunk";
 import GameScene from "../scene/GameScene";
@@ -63,7 +63,7 @@ class Client {
             game.setScene(new HomeScene(game, err));
         });
 
-        this.socket.on("teleport", (packet: { position: PlayerPosition }) => {
+        this.socket.on("teleport", (packet: { position: Position }) => {
             (game.scene as GameScene).player.teleport(packet.position);
         });
 
@@ -71,16 +71,16 @@ class Client {
             (game.scene as GameScene).world.receiveChunk(new Chunk(packet.x, packet.z, new Uint8Array(packet.blocks)));
         });
 
-        this.socket.on("playerAdd", (packet: { id: number, name: string, position: PlayerPosition }) => {
-            (game.scene as GameScene).playerManager?.addPlayer(packet.id, packet.name, packet.position);
+        this.socket.on("playerAdd", (packet: { id: number, name: string, position: Position }) => {
+            (game.scene as GameScene).humanFactory.addPlayer(packet.id, packet.name, packet.position);
         });
 
-        this.socket.on("position", (packet: { id: number, position: PlayerPosition, velocity: Vec3, onGround: boolean }) => {
-            (game.scene as GameScene).playerManager?.updatePlayer(packet.id, packet.position, packet.velocity);
+        this.socket.on("position", (packet: { id: number, position: Position, velocity: Vec3, onGround: boolean }) => {
+            (game.scene as GameScene).humanFactory.updateHuman(packet.id, packet.position, packet.velocity);
         });
 
         this.socket.on("playerRemove", (packet: { id: number }) => {
-            (game.scene as GameScene).playerManager?.removePlayer(packet.id);
+            (game.scene as GameScene).humanFactory.removeHuman(packet.id);
         });
     }
 }

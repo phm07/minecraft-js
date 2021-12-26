@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 
-import PlayerPosition from "../../../common/PlayerPosition";
+import Position from "../../../common/Position";
 import Util from "../../../common/Util";
 import Vec3 from "../../../common/Vec3";
 
@@ -9,7 +9,7 @@ class Player {
     public readonly socket: Socket;
     public readonly name: string;
     public readonly id: number;
-    public position: PlayerPosition;
+    public position: Position;
     public velocity: Vec3;
     public onGround: boolean;
 
@@ -26,7 +26,7 @@ class Player {
             });
         });
 
-        this.position = PlayerPosition.clone(global.server.world.spawnPoint);
+        this.position = Position.clone(global.server.world.spawnPoint);
         this.velocity = new Vec3();
         this.onGround = false;
         this.socket.emit("teleport", {
@@ -39,7 +39,7 @@ class Player {
             }
         });
 
-        this.socket.on("position", (packet: { position: PlayerPosition, velocity: Vec3, onGround: boolean }) => {
+        this.socket.on("position", (packet: { position: Position, velocity: Vec3, onGround: boolean }) => {
             Object.assign(this, packet);
             this.socket.broadcast.emit("position", {
                 id: this.id,

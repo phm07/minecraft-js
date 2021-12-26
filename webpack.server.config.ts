@@ -1,4 +1,3 @@
-import ESLintWebpackPlugin from "eslint-webpack-plugin";
 import path from "path";
 import webpack from "webpack";
 import TerserPlugin from "terser-webpack-plugin";
@@ -23,9 +22,6 @@ export default (env: any, argv: {mode: string}): webpack.Configuration => ({
         minimize: argv.mode === "production",
         minimizer: [new TerserPlugin()]
     },
-    plugins: [
-        new ESLintWebpackPlugin({ extensions: ["ts"], fix: true })
-    ],
     externalsPresets: {
         node: true,
     },

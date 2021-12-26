@@ -2,7 +2,7 @@ import Mesh from "../gl/Mesh";
 
 class OutlineCuboid extends Mesh {
 
-    constructor() {
+    public constructor() {
         const vertices = [
             0, 0, 0,
             1, 0, 0,

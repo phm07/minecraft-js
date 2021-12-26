@@ -7,28 +7,26 @@ import IGui from "./IGui";
 
 class GuiManager {
 
-    declare public static GUI_SHADER: Shader;
-    declare public static GUI_SAMPLER_UNIFORM: WebGLUniformLocation | null;
-
     private gui: IGui | null;
     public readonly projectionMatrix: mat4;
+    public readonly shader: Shader;
+    public readonly samplerUniform: WebGLUniformLocation | null;
 
     public constructor() {
         this.gui = null;
         this.projectionMatrix = mat4.create();
+        this.shader = new Shader(guiVertexShader, guiFragmentShader);
+        this.samplerUniform = this.shader.getUniformLocation("uTexture");
     }
 
-    public static init(): void {
-        if (!GuiManager.GUI_SHADER) {
-            GuiManager.GUI_SHADER = new Shader(guiVertexShader, guiFragmentShader);
-            GuiManager.GUI_SAMPLER_UNIFORM = GuiManager.GUI_SHADER.getUniformLocation("uTexture");
-        }
-    }
-
-    public setGui(gui: IGui | null): void {
+    public setGui<T extends IGui, U>(constructor: (new (manager: GuiManager, options: U) => T) | null, options: U): void {
         this.gui?.delete();
-        this.gui = gui;
-        this.gui?.onWindowResize();
+        if (constructor) {
+            this.gui = new constructor(this, options);
+            this.gui.onWindowResize();
+        } else {
+            this.gui = null;
+        }
     }
 
     public render(): void {
@@ -42,6 +40,7 @@ class GuiManager {
 
     public delete(): void {
         this.gui?.delete();
+        this.shader.delete();
     }
 
     public onWindowResize(): void {

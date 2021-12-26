@@ -7,7 +7,7 @@ import IScene from "./IScene";
 class HomeScene implements IScene {
 
     public constructor(game: Game, error: string) {
-        game.guiManager.setGui(new HomeGui(error));
+        game.guiManager.setGui(HomeGui, { error });
     }
 
     public async startGame(name: string): Promise<void> {

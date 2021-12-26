@@ -1,4 +1,4 @@
-import PlayerPosition from "../../common/PlayerPosition";
+import Position from "../../common/Position";
 import Vec3 from "../../common/Vec3";
 import Model from "../gl/Model";
 import Shader from "../gl/Shader";
@@ -9,7 +9,7 @@ type UV = { front: Side, back: Side, top: Side, bottom: Side, right: Side, left:
 
 class Humanoid {
 
-    public position: PlayerPosition;
+    public position: Position;
     public bodyYaw: number;
     public swing: number;
     private readonly shader: Shader;
@@ -20,7 +20,7 @@ class Humanoid {
     private readonly leftArm: Model;
     private readonly head: Model;
 
-    public constructor(position: PlayerPosition, shader: Shader) {
+    public constructor(position: Position, shader: Shader) {
 
         this.position = position;
         this.shader = shader;
@@ -64,7 +64,7 @@ class Humanoid {
             },
             back: {
                 left: x + (2 * d + w) / 64,
-                right: x + (2 * (d + w)) / 64,
+                right: x + 2 * (d + w) / 64,
                 top: y + d / 64,
                 bottom: y + (d + h) / 64
             },

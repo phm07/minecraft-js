@@ -21,7 +21,7 @@ class ImageUtils {
         this.imageData = null;
     }
 
-    public static loadImage(src: string): Promise<HTMLImageElement> {
+    public static async loadImage(src: string): Promise<HTMLImageElement> {
         const image = new Image();
         image.src = src;
         return new Promise<HTMLImageElement>((resolve): void => {
@@ -39,18 +39,18 @@ class ImageUtils {
 
         const index = (x + y * this.canvas.width) * 4;
 
-        return ((this.imageData[index] << 24)
-                | (this.imageData[index + 1] << 16)
-                | (this.imageData[index + 2] << 8)
+        return (this.imageData[index] << 24
+                | this.imageData[index + 1] << 16
+                | this.imageData[index + 2] << 8
                 | this.imageData[index + 3]) >>> 0;
     }
 
     public setPixel(x: number, y: number, rgba: number): void {
 
         const data = new Uint8ClampedArray(4);
-        data[0] = (rgba & (0xff << 24)) >>> 24;
-        data[1] = (rgba & (0xff << 16)) >>> 16;
-        data[2] = (rgba & (0xff << 8)) >>> 8;
+        data[0] = (rgba & 0xff << 24) >>> 24;
+        data[1] = (rgba & 0xff << 16) >>> 16;
+        data[2] = (rgba & 0xff << 8) >>> 8;
         data[3] = rgba & 0xff;
         this.context?.putImageData(new ImageData(data, 1, 1), x, y);
     }
@@ -59,7 +59,7 @@ class ImageUtils {
         return this.canvas.toDataURL("image/png");
     }
 
-    public save(): Promise<HTMLImageElement> {
+    public async save(): Promise<HTMLImageElement> {
         return ImageUtils.loadImage(this.toBase64());
     }
 }

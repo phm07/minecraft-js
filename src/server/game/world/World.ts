@@ -1,10 +1,10 @@
-import PlayerPosition from "../../../common/PlayerPosition";
+import Position from "../../../common/Position";
 import Chunk from "./Chunk";
 import WorldGenerator from "./WorldGenerator";
 
 class World {
 
-    public readonly spawnPoint: PlayerPosition;
+    public readonly spawnPoint: Position;
     private readonly generator: WorldGenerator;
     private readonly chunkMap: Record<string, Chunk | undefined>;
 
@@ -16,7 +16,7 @@ class World {
                 this.getChunk(x, z);
             }
         }
-        this.spawnPoint = new PlayerPosition(0, this.highestPointAt(0, 0), 0, 0, 0);
+        this.spawnPoint = new Position(0, this.highestPointAt(0, 0), 0, 0, 0);
     }
 
     public highestPointAt(x: number, z: number): number {

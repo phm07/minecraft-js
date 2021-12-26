@@ -2,7 +2,7 @@ type UV = { all?: number[], sides?: number[], top?: number[], bottom?: number[] 
 
 class Block {
 
-    public static readonly BLOCKS: { [index: number]: Block } = [];
+    public static readonly BLOCKS: Record<number, Block | undefined> = [];
     public static readonly DIRT = new Block(1, { all: [0, 0] });
     public static readonly GRASS = new Block(2, { sides: [1, 0], top: [2, 0], bottom: [0, 0] });
     public static readonly STONE = new Block(3, { all: [3, 0] });
@@ -16,7 +16,7 @@ class Block {
         this.uvs = Block.toUvArray(uvs);
     }
 
-    public static ofId(id: number): Block {
+    public static ofId(id: number): Block | undefined {
         return Block.BLOCKS[id];
     }
 

@@ -1,51 +1,41 @@
-import PlayerPosition from "../../../common/PlayerPosition";
+import Position from "../../../common/Position";
 import Util from "../../../common/Util";
 import Vec3 from "../../../common/Vec3";
-import Shader from "../../gl/Shader";
 import Humanoid from "../../models/Humanoid";
-import GameScene from "../../scene/GameScene";
-import fragmentShader from "../../shaders/human.fs";
-import vertexShader from "../../shaders/human.vs";
 import Text from "../text/Text";
 import Animator from "./Animator";
+import HumanFactory from "./HumanFactory";
 
 class Human {
 
-    declare public static HUMAN_SHADER: Shader;
-    declare public static HUMAN_SAMPLER: WebGLUniformLocation | null;
-
-    public readonly id: number;
-    public position: PlayerPosition;
-    public velocity: Vec3;
+    private readonly factory: HumanFactory;
     private readonly model: Humanoid;
     private readonly animator: Animator;
     private readonly text: Text;
-    private targetPosition: PlayerPosition;
+    private targetPosition: Position;
+    public readonly id: number;
+    public position: Position;
+    public velocity: Vec3;
 
-    public constructor(id: number, name: string, position: PlayerPosition) {
+    public constructor(factory: HumanFactory, id: number, name: string, position: Position) {
+        this.factory = factory;
         this.id = id;
-        this.position = PlayerPosition.clone(position);
-        this.targetPosition = PlayerPosition.clone(position);
-        this.model = new Humanoid(position, Human.HUMAN_SHADER);
+        this.position = Position.clone(position);
+        this.targetPosition = Position.clone(position);
+        this.model = new Humanoid(position, factory.shader);
         this.animator = new Animator(this, this.model);
         this.velocity = new Vec3();
-        this.text = new Text(name, (game.scene as GameScene).font, 0.4, new Vec3());
+        this.text = factory.textFactory.createText(name, 0.4, new Vec3());
     }
 
-    public static init(): void {
-        if (!Human.HUMAN_SHADER) {
-            Human.HUMAN_SHADER = new Shader(vertexShader, fragmentShader);
-            Human.HUMAN_SAMPLER = Human.HUMAN_SHADER.getUniformLocation("uTexture");
-        }
-    }
-
-    public setPosition(position: PlayerPosition, velocity: Vec3): void {
+    public setPosition(position: Position, velocity: Vec3): void {
         this.velocity = velocity;
         this.targetPosition = position;
     }
 
     public delete(): void {
         this.model.delete();
+        this.text.delete();
     }
 
     public render(): void {

@@ -1,5 +1,5 @@
 import Interpolator from "../../../common/Interpolator";
-import PlayerPosition from "../../../common/PlayerPosition";
+import Position from "../../../common/Position";
 import Util from "../../../common/Util";
 import Vec3 from "../../../common/Vec3";
 import Camera from "../../gl/Camera";
@@ -15,14 +15,14 @@ class Player {
     private readonly interpolator: Interpolator;
     public readonly velocity: Vec3;
     private bobTime: number;
-    public position: PlayerPosition;
+    public position: Position;
     public onGround: boolean;
 
     public constructor(camera: Camera) {
         this.camera = camera;
         this.interpolator = new Interpolator({ bob: 0 });
         this.controller = new PlayerController(this);
-        this.position = new PlayerPosition();
+        this.position = new Position();
         this.velocity = new Vec3();
         this.onGround = false;
         this.bobTime = 0;
@@ -67,7 +67,7 @@ class Player {
         }
 
         const bob = this.interpolator.getValue("bob");
-        this.camera.position = PlayerPosition.clone(this.position);
+        this.camera.position = Position.clone(this.position);
         this.camera.position.y += 1.7 + Math.sin(this.bobTime * 2) * Math.cos(this.position.pitch) * bob;
         this.camera.position.x += Math.cos(this.camera.position.yaw) * Math.sin(this.bobTime) * bob;
         this.camera.position.z += Math.sin(this.camera.position.yaw) * Math.sin(this.bobTime) * bob;
@@ -82,13 +82,13 @@ class Player {
     }
 
     public isCollision(aabb: AABB, blocks: AABB[]): boolean {
-        return blocks.some(block => block.intersects(aabb));
+        return blocks.some((block) => block.intersects(aabb));
     }
 
     public updatePosition(delta: number): void {
 
         const aabb = new AABB(this.position.x - 0.3, this.position.y, this.position.z - 0.3, 0.6, 1.8, 0.6);
-        const blocks = this.getWorldAABB();
+        const blocks = this.getWorldCollisionBox();
 
         const steps = Math.ceil(delta / (1 / 120));
         const d = delta / steps;
@@ -126,7 +126,7 @@ class Player {
         }
     }
 
-    public getWorldAABB(): AABB[] {
+    public getWorldCollisionBox(): AABB[] {
 
         const blocks = [];
         for (let x = -1; x <= 1; x++) {
@@ -147,7 +147,7 @@ class Player {
         return blocks;
     }
 
-    public teleport(position: PlayerPosition): void {
+    public teleport(position: Position): void {
         Object.assign(this.position, position);
     }
 }

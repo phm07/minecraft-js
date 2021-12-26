@@ -14,8 +14,8 @@ class Quad2D extends Mesh {
         const attributes = [2];
 
         const indices = [
-            0, 2, 1,
-            1, 2, 3
+            1, 2, 0,
+            3, 2, 1
         ];
 
         super(vertices, attributes, indices);

@@ -1,4 +1,3 @@
-import ESLintWebpackPlugin from "eslint-webpack-plugin";
 import webpack from "webpack";
 import TerserPlugin from "terser-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
@@ -13,8 +12,7 @@ export default (env: any, argv: {mode: string}): webpack.Configuration => ({
     plugins: [
         new HtmlWebpackPlugin({
             title: "Game"
-        }),
-        new ESLintWebpackPlugin({ extensions: ["ts"], fix: true })
+        })
     ],
     output: {
         path: path.join(__dirname, "dist"),

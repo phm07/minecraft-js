@@ -9,17 +9,19 @@ import IGui from "./IGui";
 
 class HomeGui implements IGui {
 
+    private readonly manager: GuiManager;
     private readonly error: string;
     private readonly backgroundTexture: Texture;
     private readonly background: Model2D;
     private readonly loginBox: HTMLDivElement;
 
-    public constructor(error: string) {
+    public constructor(manager: GuiManager, { error }: { error: string }) {
 
+        this.manager = manager;
         this.error = error;
         this.backgroundTexture = new Texture(background, GL.REPEAT);
 
-        this.background = new Model2D(GuiManager.GUI_SHADER, new TexturedQuad2D(0, 20, 0, 20));
+        this.background = new Model2D(manager.shader, new TexturedQuad2D(0, 20, 0, 20));
 
         this.loginBox = document.createElement("div");
         this.loginBox.className = "loginBox";
@@ -69,15 +71,15 @@ class HomeGui implements IGui {
     }
 
     public delete(): void {
-        if (this.loginBox) document.body.removeChild(this.loginBox);
+        document.body.removeChild(this.loginBox);
         this.backgroundTexture.delete();
         this.background.delete();
     }
 
     public render(): void {
 
-        GuiManager.GUI_SHADER.bind();
-        GL.uniform1i(GuiManager.GUI_SAMPLER_UNIFORM, 0);
+        this.manager.shader.bind();
+        GL.uniform1i(this.manager.samplerUniform, 0);
         GL.activeTexture(GL.TEXTURE0);
 
         this.backgroundTexture.bind();

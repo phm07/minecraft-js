@@ -1,7 +1,7 @@
 import ImageUtils from "../../../common/ImageUtils";
 import Texture from "../../gl/Texture";
 
-type FontData = { [index: string]: { uvs: { left: number, right: number, top: number, bottom: number }, width: number, height: number } | null };
+type FontData = Record<string, { uvs: { left: number, right: number, top: number, bottom: number }, width: number, height: number } | undefined>;
 
 class Font {
 
@@ -19,6 +19,12 @@ class Font {
         this.glyphHeight = glyphHeight;
         this.texture = null;
         void this.load(src);
+    }
+
+    public delete(): void {
+        if (this.texture) {
+            this.texture.delete();
+        }
     }
 
     private async load(src: string): Promise<void> {
@@ -55,11 +61,11 @@ class Font {
 
         this.texture = new Texture(image.toBase64());
         this.ready = true;
-        this.waiting.forEach(resolve => resolve(this.fontData));
+        this.waiting.forEach((resolve) => resolve(this.fontData));
         this.waiting = [];
     }
 
-    public getFontData(): Promise<FontData> {
+    public async getFontData(): Promise<FontData> {
         if (this.ready) return Promise.resolve(this.fontData);
         else return new Promise((resolve) => this.waiting.push(resolve));
     }

@@ -7,7 +7,7 @@ class PlayerController {
 
     private readonly player: Player;
     private readonly removeListeners: () => void;
-    private pressed: { [index: string]: number };
+    private pressed: Record<string, number | undefined>;
     private captureMouse: boolean;
 
     public constructor(player: Player) {

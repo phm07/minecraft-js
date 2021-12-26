@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "lint": "npx eslint --fix",
-    "buildDev": "webpack --mode development --config webpack.server.config.ts",
-    "build": "webpack --mode production --config webpack.client.config.ts && webpack --mode production --config webpack.server.config.ts",
+    "lint": "npx eslint . --fix --ext .ts",
+    "buildDev": "npx eslint . --fix --ext .ts && webpack --mode development --config webpack.server.config.ts",
+    "build": "npx eslint . --fix --ext .ts && webpack --mode production --config webpack.client.config.ts && webpack --mode production --config webpack.server.config.ts",
     "start": "node ./dist/server.bundle.js"
   },
   "keywords": [],
@@ -29,7 +29,6 @@
     "css-loader": "^6.5.1",
     "eslint": "^8.5.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "eslint-webpack-plugin": "^3.1.1",
     "html-loader": "^3.0.1",
     "html-webpack-plugin": "^5.5.0",
     "raw-loader": "^4.0.2",

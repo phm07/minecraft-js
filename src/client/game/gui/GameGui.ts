@@ -1,6 +1,6 @@
 import "../../styles/game_gui.scss";
 
-import PlayerPosition from "../../../common/PlayerPosition";
+import Position from "../../../common/Position";
 import Vec2 from "../../../common/Vec2";
 import Vec3 from "../../../common/Vec3";
 import gui from "../../assets/gui.png";
@@ -12,26 +12,27 @@ import Humanoid from "../../models/Humanoid";
 import ShadedTexturedCuboid from "../../models/ShadedTexturedCuboid";
 import TexturedQuad2D from "../../models/TexturedQuad2D";
 import GameScene from "../../scene/GameScene";
-import Human from "../mp/Human";
+import HumanFactory from "../mp/HumanFactory";
 import GuiManager from "./GuiManager";
 import IGui from "./IGui";
 
 class GameGui implements IGui {
 
+    private readonly manager: GuiManager;
     private readonly crosshair: Model2D;
     private readonly camera: Camera;
     private readonly texture: Texture;
-    private readonly arm: Model;
+    private readonly arm: Model | null;
     private readonly fpsCounter: HTMLDivElement;
-    private showFps: boolean;
     private readonly lastFpsValues: number[];
+    private readonly removeListeners: () => void;
+    private showFps: boolean;
 
-    public constructor() {
+    public constructor(manager: GuiManager, { humanFactory }: { humanFactory: HumanFactory }) {
 
-        GL.uniform1i(GuiManager.GUI_SAMPLER_UNIFORM, 0);
-
-        this.crosshair = new Model2D(GuiManager.GUI_SHADER, new TexturedQuad2D(1 / 64, 10 / 64, 1 / 64, 10 / 64));
-        this.camera = new Camera(new PlayerPosition(), 90 / 360 * Math.PI * 2, 0.1, 100);
+        this.manager = manager;
+        this.crosshair = new Model2D(manager.shader, new TexturedQuad2D(1 / 64, 10 / 64, 1 / 64, 10 / 64));
+        this.camera = new Camera(new Position(), 90 / 360 * Math.PI * 2, 0.1, 100);
         this.texture = new Texture(gui);
         this.showFps = false;
         this.lastFpsValues = [];
@@ -42,40 +43,50 @@ class GameGui implements IGui {
 
         this.fpsCounter.textContent = "FPS: 69";
 
-        this.arm = new Model(Human.HUMAN_SHADER, this.camera,
+        this.arm = new Model(humanFactory.shader, this.camera,
             new ShadedTexturedCuboid(Humanoid.map(40 / 64, 16 / 64, 4, 12, 4)),
             new Vec3(3.5, -1.5, -3), new Vec3(Math.PI / 2, Math.PI / 4, -Math.PI / 2), new Vec3(1, 3, 1));
 
-        window.addEventListener("keydown", e => {
+        const onWindowKeydown = (e: KeyboardEvent): void => {
             if (e.code === "KeyF") {
                 this.showFps = !this.showFps;
                 this.fpsCounter.style.opacity = this.showFps ? "1" : "0";
             }
-        });
+        };
+
+        window.addEventListener("keydown", onWindowKeydown);
+
+        this.removeListeners = (): void => {
+            window.removeEventListener("keydown", onWindowKeydown);
+        };
     }
 
     public delete(): void {
         document.body.removeChild(this.fpsCounter);
         this.texture.delete();
-        this.arm.delete();
+        this.arm?.delete();
         this.crosshair.delete();
+        this.removeListeners();
     }
 
     public render(): void {
 
-        GuiManager.GUI_SHADER.bind();
+        this.manager.shader.bind();
         GL.activeTexture(GL.TEXTURE0);
+        GL.uniform1i(this.manager.samplerUniform, 0);
         this.texture.bind();
         this.crosshair.render();
 
-        Human.HUMAN_SHADER.bind();
+        const { shader: humanShader, samplerUniform: humanSamplerUniform, texture: humanTexture } = (game.scene as GameScene).humanFactory;
+        humanShader.bind();
         GL.activeTexture(GL.TEXTURE0);
-        (game.scene as GameScene).playerManager.texture.bind();
-        this.arm.render();
+        GL.uniform1i(humanSamplerUniform, 0);
+        humanTexture.bind();
+        this.arm?.render();
     }
 
     public onWindowResize(): void {
-        this.crosshair.scale = new Vec2(Math.max(GL.canvas.width, GL.canvas.height) / 100);
+        this.crosshair.scale = new Vec2(Math.min(GL.canvas.width, GL.canvas.height) / 40);
         this.crosshair.position = new Vec2(GL.canvas.width / 2 - this.crosshair.scale.x / 2, GL.canvas.height / 2 - this.crosshair.scale.y / 2);
         this.crosshair.update();
         this.camera.updateProjectionMatrix();

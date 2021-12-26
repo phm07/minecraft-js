@@ -12,7 +12,7 @@ import World from "./World";
 class Terrain {
 
     private readonly world: World;
-    private readonly meshes: { [index: string]: Mesh };
+    private readonly meshes: Record<string, Mesh | undefined>;
     private readonly shader: Shader;
     private readonly viewMatrixUniform: WebGLUniformLocation | null;
     private readonly projectionMatrixUniform: WebGLUniformLocation | null;
@@ -41,8 +41,10 @@ class Terrain {
 
         for (const coord in this.meshes) {
             const mesh = this.meshes[coord];
-            mesh.bind();
-            GL.drawElements(GL.TRIANGLES, mesh.numIndices, GL.UNSIGNED_INT, 0);
+            if (mesh) {
+                mesh.bind();
+                GL.drawElements(GL.TRIANGLES, mesh.numIndices, GL.UNSIGNED_INT, 0);
+            }
         }
     }
 
@@ -62,7 +64,7 @@ class Terrain {
         const back = this.world.chunkMap[[chunk.x, chunk.z - 1].toString()];
         const front = this.world.chunkMap[[chunk.x, chunk.z + 1].toString()];
 
-        const isSolid = new Uint8Array((18) * (130) * (18));
+        const isSolid = new Uint8Array(18 * 130 * 18);
 
         for (let x = -1; x <= 16; x++) {
             for (let z = -1; z <= 16; z++) {
@@ -72,24 +74,22 @@ class Terrain {
                     if (y < 0 || y >= 128) {
                         solid = 0;
                     } else if (x >= 0 && x < 16 && z >= 0 && z < 16) {
-                        solid = !!chunk.blockAt(x, y, z);
+                        solid = Boolean(chunk.blockAt(x, y, z));
                     } else if (x < 0) {
-                        solid = !!left?.blockAt(x + 16, y, z);
+                        solid = Boolean(left?.blockAt(x + 16, y, z));
                     } else if (x >= 16) {
-                        solid = !!right?.blockAt(x - 16, y, z);
+                        solid = Boolean(right?.blockAt(x - 16, y, z));
                     } else if (z < 0) {
-                        solid = !!back?.blockAt(x, y, z + 16);
+                        solid = Boolean(back?.blockAt(x, y, z + 16));
                     } else if (z >= 16) {
-                        solid = !!front?.blockAt(x, y, z - 16);
+                        solid = Boolean(front?.blockAt(x, y, z - 16));
                     }
-                    isSolid[(x + 1) + (z + 1) * 18 + (y + 1) * 324] = solid ? 1 : 0;
+                    isSolid[x + 1 + (z + 1) * 18 + (y + 1) * 324] = solid ? 1 : 0;
                 }
             }
         }
 
         const vertices = [], indices = [];
-
-        if (!chunk) return;
 
         let offset = 0;
         for (let x = 0; x < 16; x++) {
@@ -103,7 +103,7 @@ class Terrain {
                     const offX = chunk.x * 16 + x;
                     const offZ = chunk.z * 16 + z;
 
-                    if (!isSolid[(x + 1) + (z + 2) * 18 + (y + 1) * 324]) {
+                    if (!isSolid[x + 1 + (z + 2) * 18 + (y + 1) * 324]) {
                         vertices.push(
                             // front
                             offX + 0.0, y + 1.0, offZ + 1.0, ...uv[3], 0.9,
@@ -114,7 +114,7 @@ class Terrain {
                         indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
                         offset += 4;
                     }
-                    if (!isSolid[(x + 1) + (z) * 18 + (y + 1) * 324]) {
+                    if (!isSolid[x + 1 + z * 18 + (y + 1) * 324]) {
                         vertices.push(
                             // back
                             offX + 0.0, y + 0.0, offZ + 0.0, ...uv[5], 0.9,
@@ -125,7 +125,7 @@ class Terrain {
                         indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
                         offset += 4;
                     }
-                    if (!isSolid[(x + 1) + (z + 1) * 18 + (y + 2) * 324]) {
+                    if (!isSolid[x + 1 + (z + 1) * 18 + (y + 2) * 324]) {
                         vertices.push(
                             // top
                             offX + 0.0, y + 1.0, offZ + 0.0, ...uv[8], 1.0,
@@ -136,7 +136,7 @@ class Terrain {
                         indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
                         offset += 4;
                     }
-                    if (!isSolid[(x + 1) + (z + 1) * 18 + (y) * 324]) {
+                    if (!isSolid[x + 1 + (z + 1) * 18 + y * 324]) {
                         vertices.push(
                             // bottom
                             offX + 0.0, y + 0.0, offZ + 0.0, ...uv[12], 0.7,
@@ -147,7 +147,7 @@ class Terrain {
                         indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
                         offset += 4;
                     }
-                    if (!isSolid[(x + 2) + (z + 1) * 18 + (y + 1) * 324]) {
+                    if (!isSolid[x + 2 + (z + 1) * 18 + (y + 1) * 324]) {
                         vertices.push(
                             // right
                             offX + 1.0, y + 0.0, offZ + 0.0, ...uv[17], 0.8,
@@ -158,7 +158,7 @@ class Terrain {
                         indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
                         offset += 4;
                     }
-                    if (!isSolid[(x) + (z + 1) * 18 + (y + 1) * 324]) {
+                    if (!isSolid[x + (z + 1) * 18 + (y + 1) * 324]) {
                         vertices.push(
                             // left
                             offX + 0.0, y + 0.0, offZ + 0.0, ...uv[20], 0.8,
