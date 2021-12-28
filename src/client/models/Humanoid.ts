@@ -130,8 +130,12 @@ class Humanoid {
     }
 
     public delete(): void {
-        this.shader.delete();
         this.torso.delete();
+        this.rightLeg.delete();
+        this.leftLeg.delete();
+        this.rightArm.delete();
+        this.leftArm.delete();
+        this.head.delete();
     }
 
     public update(): void {
