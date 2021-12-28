@@ -16,7 +16,7 @@ class World {
                 this.getChunk(x, z);
             }
         }
-        this.spawnPoint = new Position(0, this.highestPointAt(0, 0), 0, 0, 0);
+        this.spawnPoint = new Position(0.5, this.highestPointAt(0, 0), 0.5, 0, 0);
     }
 
     public blockAt(x: number, y: number, z: number): number {
@@ -32,8 +32,8 @@ class World {
 
     public highestPointAt(x: number, z: number): number {
         const chunk = this.getChunk(x >> 4, z >> 4);
-        let y = 0;
-        while (chunk.blockAt(x & 15, y, z & 15)) y++;
+        let y = 128;
+        while (y > 1 && !chunk.blockAt(x & 15, y - 1, z & 15)) y--;
         return y;
     }
 

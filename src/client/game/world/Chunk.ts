@@ -1,3 +1,5 @@
+import Block from "./Block";
+
 class Chunk {
 
     public readonly x: number;
@@ -10,8 +12,8 @@ class Chunk {
         this.blocks = blocks;
     }
 
-    public blockAt(x: number, y: number, z: number): number {
-        return this.blocks[x + z * 16 + y * 256];
+    public blockAt(x: number, y: number, z: number): Block | undefined {
+        return Block.ofId(this.blocks[x + z * 16 + y * 256]);
     }
 
     public setBlockAt(x: number, y: number, z: number, block: number): void {

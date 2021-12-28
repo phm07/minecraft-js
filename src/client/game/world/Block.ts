@@ -6,14 +6,17 @@ class Block {
     public static readonly DIRT = new Block(1, { all: [0, 0] });
     public static readonly GRASS = new Block(2, { sides: [1, 0], top: [2, 0], bottom: [0, 0] });
     public static readonly STONE = new Block(3, { all: [3, 0] });
+    public static readonly BEDROCK = new Block(4, { all: [4, 0] }, false);
 
-    private readonly id: number;
+    public readonly id: number;
     public readonly uvs: number[][];
+    public readonly breakable: boolean;
 
-    public constructor(id: number, uvs: UV) {
+    public constructor(id: number, uvs: UV, breakable = true) {
         Block.BLOCKS[id] = this;
         this.id = id;
         this.uvs = Block.toUvArray(uvs);
+        this.breakable = breakable;
     }
 
     public static ofId(id: number): Block | undefined {

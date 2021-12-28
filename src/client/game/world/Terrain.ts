@@ -5,7 +5,6 @@ import TextureArray from "../../gl/TextureArray";
 import GameScene from "../../scene/GameScene";
 import fragmentShader from "../../shaders/terrain.fs";
 import vertexShader from "../../shaders/terrain.vs";
-import Block from "./Block";
 import Chunk from "./Chunk";
 import World from "./World";
 
@@ -98,8 +97,7 @@ class Terrain {
             for (let y = 0; y < 128; y++) {
                 for (let z = 0; z < 16; z++) {
 
-                    const id = chunk.blockAt(x, y, z);
-                    const uv = Block.ofId(id)?.uvs;
+                    const uv = chunk.blockAt(x, y, z)?.uvs;
                     if (!uv) continue;
 
                     const offX = chunk.x * 16 + x;

@@ -48,14 +48,17 @@ class CaveGenerator {
             const noiseR = makeNoise3D(() => random.next());
 
             let x = chunkX * 16 + Math.floor(random.next() * 16);
-            let y = Math.floor(random.next() * 64);
+            let y = Math.floor(random.next() * 48) + 16;
             let z = chunkZ * 16 + Math.floor(random.next() * 16);
 
             for (let j = 0; j < CaveGenerator.CAVE_LENGTH; j++) {
 
                 const dx = noiseX1(x / 50, y / 50, z / 50) - noiseX2(x / 50, y / 50, z / 50);
-                const dy = noiseY1(x / 50, y / 50, z / 50) - noiseY2(x / 50, y / 50, z / 50);
                 const dz = noiseZ1(x / 50, y / 50, z / 50) - noiseZ2(x / 50, y / 50, z / 50);
+
+                const yGradient = Util.map(y, 8, 16, 0, 1);
+                const yNoise = noiseY1(x / 50, y / 50, z / 50) - noiseY2(x / 50, y / 50, z / 50);
+                const dy = Util.lerp(1, yNoise, yGradient);
 
                 [x, y, z] = Vec3.toArray(Vec3.add(Vec3.normalize(new Vec3(dx, dy, dz)), new Vec3(x, y, z)));
 

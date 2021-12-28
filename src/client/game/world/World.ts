@@ -1,4 +1,5 @@
 import GameScene from "../../scene/GameScene";
+import Block from "./Block";
 import Chunk from "./Chunk";
 import ChunkWorker from "./ChunkWorker";
 import Terrain from "./Terrain";
@@ -32,9 +33,9 @@ class World {
         return Boolean(this.chunkMap[[chunkX, chunkZ].toString()]);
     }
 
-    public blockAt(x: number, y: number, z: number): number {
+    public blockAt(x: number, y: number, z: number): Block | undefined {
         const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
-        return chunk?.blockAt(x & 15, y, z & 15) ?? 0;
+        return chunk?.blockAt(x & 15, y, z & 15);
     }
 
     public setBlock(x: number, y: number, z: number, block: number): void {

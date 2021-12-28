@@ -25,6 +25,8 @@ class WorldGenerator {
 
     public generateChunk(chunk: Chunk): void {
 
+        const chunkSeed = this.seed + ":" + chunk.x.toString() + "," + chunk.z.toString();
+        const chunkRandom = new Random(chunkSeed);
         const caveData = this.caveGenerator.getAndRemoveCaveData(chunk);
 
         for (let x = 0; x < 16; x++) {
@@ -40,22 +42,26 @@ class WorldGenerator {
                     + 48
                 );
 
-                let surface = 0;
-                for (let y = 0; y < height; y++) {
+                let surface = 1;
+                for (let y = 1; y < height; y++) {
 
                     if (caveData[x + z * 16 + y * 256]) continue;
                     surface = y;
 
                     if (y >= height - 4) {
                         chunk.setBlockAt(x, y, z, Blocks.DIRT);
-                    } else {
+                    } else if (y > 2) {
                         chunk.setBlockAt(x, y, z, Blocks.STONE);
+                    } else {
+                        chunk.setBlockAt(x, y, z, chunkRandom.next() > 0.5 ? Blocks.BEDROCK : Blocks.STONE);
                     }
                 }
 
                 if (chunk.blockAt(x, surface, z) === Blocks.DIRT) {
                     chunk.setBlockAt(x, surface, z, Blocks.GRASS);
                 }
+
+                chunk.setBlockAt(x, 0, z, Blocks.BEDROCK);
             }
         }
     }

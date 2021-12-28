@@ -114,8 +114,10 @@ class Player {
         if (!this.targetedBlock) return;
         const world = (game.scene as GameScene).world;
         const { x, y, z } = this.targetedBlock.position;
-        world.setBlock(x, y, z, 0);
-        game.client.socket?.emit("blockUpdate", { position: { x, y, z }, type: 0 });
+        if (world.blockAt(x, y, z)?.breakable) {
+            world.setBlock(x, y, z, 0);
+            game.client.socket?.emit("blockUpdate", { position: { x, y, z }, type: 0 });
+        }
     }
 
     private isCollision(aabb: AABB, blocks: AABB[]): boolean {
