@@ -82,6 +82,10 @@ class Client {
         this.socket.on("playerRemove", (packet: { id: number }) => {
             (game.scene as GameScene).humanFactory.removeHuman(packet.id);
         });
+
+        this.socket.on("blockUpdate", ({ position: { x, y, z }, type }: { position: { x: number, y: number, z: number }, type: number }) => {
+            (game.scene as GameScene).world.setBlock(x, y, z, type);
+        });
     }
 }
 

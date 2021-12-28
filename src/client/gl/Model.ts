@@ -63,11 +63,10 @@ class Model {
 
     public render(): void {
 
-        this.bind();
         GL.uniformMatrix4fv(this.modelMatrixUniform, false, this.modelMatrix);
         GL.uniformMatrix4fv(this.viewMatrixUniform, false, this.camera.viewMatrix);
         GL.uniformMatrix4fv(this.projectionMatrixUniform, false, this.camera.projectionMatrix);
-        GL.drawElements(GL.TRIANGLES, this.mesh.numIndices, GL.UNSIGNED_INT, 0);
+        this.mesh.render();
     }
 }
 

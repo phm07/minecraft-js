@@ -19,12 +19,21 @@ class World {
         this.spawnPoint = new Position(0, this.highestPointAt(0, 0), 0, 0, 0);
     }
 
+    public blockAt(x: number, y: number, z: number): number {
+        const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
+        return chunk?.blockAt(x & 15, y, z & 15) ?? 0;
+    }
+
+    public setBlock(x: number, y: number, z: number, block: number): void {
+        const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
+        if (!chunk) return;
+        chunk.setBlockAt(x & 15, y, z & 15, block);
+    }
+
     public highestPointAt(x: number, z: number): number {
-        const chunk = this.getChunk(Math.floor(x / 16), Math.floor(z / 16));
-        const x1 = x - chunk.x * 16;
-        const z1 = z - chunk.z * 16;
+        const chunk = this.getChunk(x >> 4, z >> 4);
         let y = 0;
-        while (chunk.blockAt(x1, y, z1)) y++;
+        while (chunk.blockAt(x & 15, y, z & 15)) y++;
         return y;
     }
 

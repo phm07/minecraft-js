@@ -52,6 +52,7 @@ class GameScene implements IScene {
     public render(): void {
         this.world.render();
         this.humanFactory.render();
+        this.player.render();
     }
 
     public onWindowResize(): void {

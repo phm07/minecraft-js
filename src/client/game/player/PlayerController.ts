@@ -19,12 +19,14 @@ class PlayerController {
         const onWindowKeyDown = (e: KeyboardEvent): void => this.key(e, 1);
         const onWindowKeyUp = (e: KeyboardEvent): void => this.key(e, 0);
         const onWindowMouseMove = (e: MouseEvent): void => this.mousemove(e);
+        const onWindowMouseDown = (e: MouseEvent): void => this.mousedown(e);
         const onCanvasClick = (): void => GL.canvas.requestPointerLock();
         const onDocumentPointerLockChange = (): void => this.pointerLockChange();
 
         window.addEventListener("keydown", onWindowKeyDown);
         window.addEventListener("keyup", onWindowKeyUp);
         window.addEventListener("mousemove", onWindowMouseMove);
+        window.addEventListener("mousedown", onWindowMouseDown);
         GL.canvas.addEventListener("click", onCanvasClick);
         document.addEventListener("pointerlockchange", onDocumentPointerLockChange);
 
@@ -32,6 +34,7 @@ class PlayerController {
             window.removeEventListener("keydown", onWindowKeyDown);
             window.removeEventListener("keyup", onWindowKeyUp);
             window.removeEventListener("mousemove", onWindowMouseMove);
+            window.removeEventListener("mousedown", onWindowMouseDown);
             GL.canvas.removeEventListener("click", onCanvasClick);
             document.addEventListener("pointerlockchange", onDocumentPointerLockChange);
         };
@@ -40,6 +43,12 @@ class PlayerController {
     public delete(): void {
         this.removeListeners();
         document.exitPointerLock();
+    }
+
+    private mousedown(e: MouseEvent): void {
+        if (e.button === 0) {
+            this.player.breakBlock();
+        }
     }
 
     private pointerLockChange(): void {

@@ -33,8 +33,28 @@ class World {
     }
 
     public blockAt(x: number, y: number, z: number): number {
-        const chunk = this.chunkMap[[Math.floor(x / 16), Math.floor(z / 16)].toString()];
+        const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
         return chunk?.blockAt(x & 15, y, z & 15) ?? 0;
+    }
+
+    public setBlock(x: number, y: number, z: number, block: number): void {
+
+        const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
+        if (!chunk) return;
+        chunk.setBlockAt(x & 15, y, z & 15, block);
+        this.terrain.updateChunk(chunk);
+
+        if ((x & 15) === 0) {
+            this.terrain.updateChunk(this.chunkMap[[(x >> 4) - 1, z >> 4].toString()]);
+        } else if ((x & 15) === 15) {
+            this.terrain.updateChunk(this.chunkMap[[(x >> 4) + 1, z >> 4].toString()]);
+        }
+
+        if ((z & 15) === 0) {
+            this.terrain.updateChunk(this.chunkMap[[x >> 4, (z >> 4) - 1].toString()]);
+        } else {
+            this.terrain.updateChunk(this.chunkMap[[x >> 4, (z >> 4) + 1].toString()]);
+        }
     }
 
     public requestChunk(x: number, z: number): void {
@@ -53,8 +73,8 @@ class World {
 
     public update(): void {
 
-        const chunkX = Math.floor((game.scene as GameScene).player.position.x / 16);
-        const chunkZ = Math.floor((game.scene as GameScene).player.position.z / 16);
+        const chunkX = (game.scene as GameScene).player.position.x >> 4;
+        const chunkZ = (game.scene as GameScene).player.position.z >> 4;
 
         for (const chunkCoord in this.chunkMap) {
             const chunk = this.chunkMap[chunkCoord];

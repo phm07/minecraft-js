@@ -4,7 +4,7 @@ class LoginHandler {
 
     public constructor() {
 
-        global.io.on("connection", (socket) => {
+        io.on("connection", (socket) => {
 
             const timeout = setTimeout(() => {
                 socket.disconnect();
@@ -13,7 +13,7 @@ class LoginHandler {
             socket.on("login", (event: { name: string, timestamp: number }) => {
 
                 clearTimeout(timeout);
-                const existing = global.server.getPlayerByName(event.name);
+                const existing = server.getPlayerByName(event.name);
 
                 if (event.name.length < 3 || event.name.length > 24) {
                     socket.emit("error", "Invalid name");
@@ -28,7 +28,7 @@ class LoginHandler {
                 }
 
                 socket.emit("login", { timestamp: event.timestamp });
-                global.server.players.push(new Player(socket, event.name));
+                server.players.push(new Player(socket, event.name));
             });
         });
 

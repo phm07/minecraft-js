@@ -23,9 +23,7 @@ class CaveGenerator {
     }
 
     private setData(x: number, y: number, z: number, data: number): void {
-        const chunkX = Math.floor(x / 16);
-        const chunkZ = Math.floor(z / 16);
-        (this.caveData[[chunkX, chunkZ].toString()] ??= new Uint8Array(16 * 16 * 128))[x - chunkX * 16 + (z - chunkZ * 16) * 16 + y * 256] = data;
+        (this.caveData[[x >> 4, z >> 4].toString()] ??= new Uint8Array(16 * 16 * 128))[(x & 15) + (z & 15) * 16 + y * 256] = data;
     }
 
     private generate(chunkX: number, chunkZ: number): void {

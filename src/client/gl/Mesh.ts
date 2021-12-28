@@ -13,6 +13,11 @@ class Mesh {
         this.indexBuffer = new IndexBuffer(indices);
     }
 
+    public render(): void {
+        this.bind();
+        GL.drawElements(GL.TRIANGLES, this.numIndices, GL.UNSIGNED_INT, 0);
+    }
+
     public delete(): void {
         this.vertexBuffer.delete();
         this.indexBuffer.delete();

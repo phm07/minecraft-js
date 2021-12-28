@@ -15,18 +15,18 @@ class Player {
 
     public constructor(socket: Socket, name: string) {
 
-        this.id = global.server.newEntityId();
+        this.id = server.newEntityId();
         this.name = name;
         this.socket = socket;
 
         this.socket.on("disconnect", () => {
-            global.server.players.splice(global.server.players.indexOf(this), 1);
+            server.players.splice(server.players.indexOf(this), 1);
             this.socket.broadcast.emit("playerRemove", {
                 id: this.id
             });
         });
 
-        this.position = Position.clone(global.server.world.spawnPoint);
+        this.position = Position.clone(server.world.spawnPoint);
         this.velocity = new Vec3();
         this.onGround = false;
         this.socket.emit("teleport", {
@@ -35,7 +35,7 @@ class Player {
 
         this.socket.on("requestChunk", (packet: { x: number, z: number }) => {
             if (Util.dist2Square(packet.x * 16, packet.z * 16, this.position.x, this.position.z) <= 256 * 256) {
-                global.server.world.getChunk(packet.x, packet.z).sendTo(this);
+                server.world.getChunk(packet.x, packet.z).sendTo(this);
             }
         });
 
@@ -47,13 +47,18 @@ class Player {
             });
         });
 
+        this.socket.on("blockUpdate", (packet: { position: { x: number, y: number, z: number }, type: number }) => {
+            server.world.setBlock(packet.position.x, packet.position.y, packet.position.z, packet.type);
+            this.socket.broadcast.emit("blockUpdate", packet);
+        });
+
         this.socket.broadcast.emit("playerAdd", {
             id: this.id,
             position: this.position,
             name: this.name
         });
 
-        global.server.players.forEach((player) => {
+        server.players.forEach((player) => {
             this.socket.emit("playerAdd", {
                 id: player.id,
                 position: player.position,

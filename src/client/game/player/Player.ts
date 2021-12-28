@@ -3,20 +3,31 @@ import Position from "../../../common/Position";
 import Util from "../../../common/Util";
 import Vec3 from "../../../common/Vec3";
 import Camera from "../../gl/Camera";
+import Model from "../../gl/Model";
+import Shader from "../../gl/Shader";
+import WireframeCuboid from "../../models/WireframeCuboid";
 import AABB from "../../physics/AABB";
 import GameScene from "../../scene/GameScene";
+import fragmentShader from "../../shaders/wireframe.fs";
+import vertexShader from "../../shaders/wireframe.vs";
+import BlockFace from "../world/BlockFace";
 import PlayerController from "./PlayerController";
+
+type TargetBlock = { position: Vec3, face: BlockFace } | null;
 
 class Player {
 
+    private readonly wireframeShader;
     private readonly camera: Camera;
     private readonly controller: PlayerController;
     private readonly updateTimer: NodeJS.Timer;
     private readonly interpolator: Interpolator;
+    private readonly blockOutline: Model;
     public readonly velocity: Vec3;
     private bobTime: number;
     public position: Position;
     public onGround: boolean;
+    public targetedBlock: TargetBlock;
 
     public constructor(camera: Camera) {
         this.camera = camera;
@@ -24,8 +35,11 @@ class Player {
         this.controller = new PlayerController(this);
         this.position = new Position();
         this.velocity = new Vec3();
+        this.wireframeShader = new Shader(vertexShader, fragmentShader);
+        this.blockOutline = new Model(this.wireframeShader, camera, new WireframeCuboid(new Vec3(-0.001), new Vec3(1.002)));
         this.onGround = false;
         this.bobTime = 0;
+        this.targetedBlock = null;
 
         this.updateTimer = setInterval(() => {
             game.client.socket?.emit("position", {
@@ -39,6 +53,8 @@ class Player {
     public delete(): void {
         clearInterval(this.updateTimer);
         this.controller.delete();
+        this.blockOutline.delete();
+        this.wireframeShader.delete();
     }
 
     public update(delta: number): void {
@@ -54,7 +70,7 @@ class Player {
         const oldX = this.position.x;
         const oldZ = this.position.z;
 
-        if ((game.scene as GameScene).world.isLoaded(Math.floor(oldX / 16), Math.floor(oldZ / 16))) {
+        if ((game.scene as GameScene).world.isLoaded(oldX >> 4, oldZ >> 4)) {
             this.updatePosition(delta);
         }
 
@@ -75,13 +91,34 @@ class Player {
 
         this.bobTime += bob * delta * 100;
 
-        if (Math.floor(oldX / 16) !== Math.floor(this.position.x / 16)
-            || Math.floor(oldZ / 16) !== Math.floor(this.position.z / 16)) {
+        if (oldX >> 4 !== this.position.x >> 4
+            || oldZ >> 4 !== this.position.z >> 4) {
             (game.scene as GameScene).world.update();
+        }
+
+        this.targetedBlock = this.findTargetedBlock();
+        if (this.targetedBlock) {
+            this.blockOutline.position = this.targetedBlock.position;
+            this.blockOutline.update();
         }
     }
 
-    public isCollision(aabb: AABB, blocks: AABB[]): boolean {
+    public render(): void {
+        if (this.targetedBlock) {
+            this.wireframeShader.bind();
+            this.blockOutline.render();
+        }
+    }
+
+    public breakBlock(): void {
+        if (!this.targetedBlock) return;
+        const world = (game.scene as GameScene).world;
+        const { x, y, z } = this.targetedBlock.position;
+        world.setBlock(x, y, z, 0);
+        game.client.socket?.emit("blockUpdate", { position: { x, y, z }, type: 0 });
+    }
+
+    private isCollision(aabb: AABB, blocks: AABB[]): boolean {
         return blocks.some((block) => block.intersects(aabb));
     }
 
@@ -126,7 +163,7 @@ class Player {
         }
     }
 
-    public getWorldCollisionBox(): AABB[] {
+    private getWorldCollisionBox(): AABB[] {
 
         const blocks = [];
         for (let x = -1; x <= 1; x++) {
@@ -149,6 +186,31 @@ class Player {
 
     public teleport(position: Position): void {
         Object.assign(this.position, position);
+    }
+
+    private findTargetedBlock(): TargetBlock {
+
+        const range = 5;
+
+        const { x, y, z, pitch, yaw } = this.camera.position;
+
+        const dx = Math.cos(pitch) * Math.cos(yaw + Math.PI / 2);
+        const dy = Math.sin(pitch);
+        const dz = Math.cos(pitch) * Math.sin(yaw + Math.PI / 2);
+
+        let blockPos;
+        for (let d = 0; d <= range && !blockPos; d += 0.025) {
+            const blockX = Math.floor(x - dx * d);
+            const blockY = Math.floor(y - dy * d);
+            const blockZ = Math.floor(z - dz * d);
+            if ((game.scene as GameScene).world.blockAt(blockX, blockY, blockZ)) {
+                blockPos = new Vec3(blockX, blockY, blockZ);
+            }
+        }
+
+        if (blockPos) {
+            return { position: blockPos, face: BlockFace.NORTH };
+        } else return null;
     }
 }
 

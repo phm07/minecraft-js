@@ -57,7 +57,9 @@ class Terrain {
         }
     }
 
-    public updateChunk(chunk: Chunk): void {
+    public updateChunk(chunk?: Chunk): void {
+
+        if (!chunk) return;
 
         const left = this.world.chunkMap[[chunk.x - 1, chunk.z].toString()];
         const right = this.world.chunkMap[[chunk.x + 1, chunk.z].toString()];
