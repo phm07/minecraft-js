@@ -49,7 +49,10 @@ class World {
         const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
         if (!chunk) return;
         chunk.setBlockAt(x & 15, y, z & 15, block);
-        this.terrain.requestChunkUpdate(chunk, true);
+
+        if(block === 0) {
+            this.terrain.requestChunkUpdate(chunk, true);
+        }
 
         if ((x & 15) === 0) {
             this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) - 1, z >> 4].toString()], true);
@@ -61,6 +64,10 @@ class World {
             this.terrain.requestChunkUpdate(this.chunkMap[[x >> 4, (z >> 4) - 1].toString()], true);
         } else {
             this.terrain.requestChunkUpdate(this.chunkMap[[x >> 4, (z >> 4) + 1].toString()], true);
+        }
+
+        if(block !== 0) {
+            this.terrain.requestChunkUpdate(chunk, true);
         }
     }
 
@@ -122,6 +129,7 @@ class World {
                 this.terrain.requestChunkUpdate(neighbor);
             }
         });
+
     }
 
     public getNeighbors(chunk: Chunk): Chunk[] {
