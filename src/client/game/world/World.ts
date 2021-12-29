@@ -1,3 +1,4 @@
+import AABB from "../../physics/AABB";
 import GameScene from "../../scene/GameScene";
 import Block from "./Block";
 import Chunk from "./Chunk";
@@ -36,6 +37,13 @@ class World {
     public blockAt(x: number, y: number, z: number): Block | undefined {
         const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
         return chunk?.blockAt(x & 15, y, z & 15);
+    }
+
+    public isPlaceable(x: number, y: number, z: number): boolean {
+        const aabb = new AABB(x, y, z, 1, 1, 1);
+        return y >= 0 && y <= 127
+            && !(game.scene as GameScene).player.getBoundingBox().intersects(aabb)
+            && !(game.scene as GameScene).humanFactory.humans.some((human) => human.getBoundingBox().intersects(aabb));
     }
 
     public setBlock(x: number, y: number, z: number, block: number): void {

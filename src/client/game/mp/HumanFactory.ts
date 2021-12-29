@@ -11,7 +11,7 @@ import Human from "./Human";
 
 class HumanFactory {
 
-    private readonly humans: Human[];
+    public readonly humans: Human[];
     public readonly textFactory: TextFactory;
     public readonly texture: Texture;
     public readonly shader: Shader;

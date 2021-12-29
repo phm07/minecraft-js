@@ -31,6 +31,10 @@ class Util {
     public static wrapRadians(angle: number): number {
         return angle - Math.PI * 2 * Math.floor((angle + Math.PI) / (Math.PI * 2));
     }
+
+    public static mod(n: number, d: number): number {
+        return (n % d + d) % d;
+    }
 }
 
 export default Util;

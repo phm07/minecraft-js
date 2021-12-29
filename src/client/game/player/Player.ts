@@ -2,6 +2,7 @@ import Interpolator from "../../../common/Interpolator";
 import Position from "../../../common/Position";
 import Util from "../../../common/Util";
 import Vec3 from "../../../common/Vec3";
+import Blocks from "../../../server/game/world/Blocks";
 import Camera from "../../gl/Camera";
 import Model from "../../gl/Model";
 import Shader from "../../gl/Shader";
@@ -110,6 +111,16 @@ class Player {
         }
     }
 
+    public placeBlock(): void {
+        if (!this.targetedBlock) return;
+        const world = (game.scene as GameScene).world;
+        const pos = Vec3.add(this.targetedBlock.position, this.targetedBlock.face.dir);
+        if (world.isPlaceable(pos.x, pos.y, pos.z)) {
+            world.setBlock(pos.x, pos.y, pos.z, Blocks.DIRT);
+            game.client.socket?.emit("blockUpdate", { position: pos, type: Blocks.DIRT });
+        }
+    }
+
     public breakBlock(): void {
         if (!this.targetedBlock) return;
         const world = (game.scene as GameScene).world;
@@ -120,13 +131,17 @@ class Player {
         }
     }
 
+    public getBoundingBox(): AABB {
+        return new AABB(this.position.x - 0.3, this.position.y, this.position.z - 0.3, 0.6, 1.8, 0.6);
+    }
+
     private isCollision(aabb: AABB, blocks: AABB[]): boolean {
         return blocks.some((block) => block.intersects(aabb));
     }
 
-    public updatePosition(delta: number): void {
+    private updatePosition(delta: number): void {
 
-        const aabb = new AABB(this.position.x - 0.3, this.position.y, this.position.z - 0.3, 0.6, 1.8, 0.6);
+        const aabb = this.getBoundingBox();
         const blocks = this.getWorldCollisionBox();
 
         const steps = Math.ceil(delta / (1 / 120));
@@ -200,18 +215,22 @@ class Player {
         const dy = Math.sin(pitch);
         const dz = Math.cos(pitch) * Math.sin(yaw + Math.PI / 2);
 
-        let blockPos;
+        let blockPos, probePos;
         for (let d = 0; d <= range && !blockPos; d += 0.025) {
-            const blockX = Math.floor(x - dx * d);
-            const blockY = Math.floor(y - dy * d);
-            const blockZ = Math.floor(z - dz * d);
+            const x1 = x - dx * d;
+            const y1 = y - dy * d;
+            const z1 = z - dz * d;
+            const blockX = Math.floor(x1);
+            const blockY = Math.floor(y1);
+            const blockZ = Math.floor(z1);
             if ((game.scene as GameScene).world.blockAt(blockX, blockY, blockZ)) {
                 blockPos = new Vec3(blockX, blockY, blockZ);
+                probePos = new Vec3(x1, y1, z1);
             }
         }
 
-        if (blockPos) {
-            return { position: blockPos, face: BlockFace.NORTH };
+        if (blockPos && probePos) {
+            return { position: blockPos, face: BlockFace.getNearestFace(probePos) };
         } else return null;
     }
 }

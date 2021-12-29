@@ -26,7 +26,7 @@ class Player {
             });
         });
 
-        this.position = Position.clone(server.world.spawnPoint);
+        this.position = Position.clone(server.world.getSpawnPoint());
         this.velocity = new Vec3();
         this.onGround = false;
         this.socket.emit("teleport", {

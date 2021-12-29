@@ -2,6 +2,7 @@ import Position from "../../../common/Position";
 import Util from "../../../common/Util";
 import Vec3 from "../../../common/Vec3";
 import Humanoid from "../../models/Humanoid";
+import AABB from "../../physics/AABB";
 import Text from "../text/Text";
 import Animator from "./Animator";
 import HumanFactory from "./HumanFactory";
@@ -26,6 +27,10 @@ class Human {
         this.animator = new Animator(this, this.model);
         this.velocity = new Vec3();
         this.text = factory.textFactory.createText(name, 0.4, new Vec3());
+    }
+
+    public getBoundingBox(): AABB {
+        return new AABB(this.position.x - 0.3, this.position.y, this.position.z - 0.3, 0.6, 1.8, 0.6);
     }
 
     public setPosition(position: Position, velocity: Vec3): void {

@@ -4,7 +4,6 @@ import WorldGenerator from "./WorldGenerator";
 
 class World {
 
-    public readonly spawnPoint: Position;
     private readonly generator: WorldGenerator;
     private readonly chunkMap: Record<string, Chunk | undefined>;
 
@@ -16,7 +15,10 @@ class World {
                 this.getChunk(x, z);
             }
         }
-        this.spawnPoint = new Position(0.5, this.highestPointAt(0, 0), 0.5, 0, 0);
+    }
+
+    public getSpawnPoint(): Position {
+        return new Position(0.5, this.highestPointAt(0, 0), 0.5, 0, 0);
     }
 
     public blockAt(x: number, y: number, z: number): number {

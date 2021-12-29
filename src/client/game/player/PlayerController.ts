@@ -48,6 +48,8 @@ class PlayerController {
     private mousedown(e: MouseEvent): void {
         if (e.button === 0) {
             this.player.breakBlock();
+        } else if (e.button === 2) {
+            this.player.placeBlock();
         }
     }
 
