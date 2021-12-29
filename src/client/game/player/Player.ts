@@ -177,7 +177,7 @@ class Player {
                 this.velocity.y = 0;
             } else {
                 this.position.y += dy;
-                if (dy > 0) this.onGround = false;
+                if (Math.abs(dy) > 10e-9) this.onGround = false;
             }
 
             aabb.z += dz;

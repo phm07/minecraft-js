@@ -7,45 +7,28 @@ class ChunkWorker {
     private readonly queue: Chunk[];
     private readonly timer: NodeJS.Timer;
 
-    private working = false;
+    public constructor(world: World, updateFunction: (chunk: Chunk) => void) {
 
-    public constructor(world: World) {
         this.world = world;
         this.queue = [];
 
         this.timer = setInterval(() => {
-
-            if (this.working) return;
-
             const chunk = this.queue.pop();
-
             if (!chunk) return;
-
-            this.working = true;
-            this.world.chunkMap[[chunk.x, chunk.z].toString()] = chunk;
-
-            const neighbors = this.world.getNeighbors(chunk);
-
-            if (neighbors.length === 4) {
-                this.world.terrain.updateChunk(chunk);
-            }
-
-            neighbors.forEach((neighbor) => {
-                if (this.world.getNeighbors(neighbor).length === 4) {
-                    this.world.terrain.updateChunk(neighbor);
-                }
-            });
-
-            this.working = false;
-        }, 20);
+            updateFunction(chunk);
+        }, 5);
     }
 
-    public stop(): void {
+    public delete(): void {
         clearInterval(this.timer);
     }
 
-    public push(chunk: Chunk): void {
-        this.queue.unshift(chunk);
+    public push(chunk: Chunk, priority: boolean): void {
+        if (priority) {
+            this.queue.push(chunk);
+        } else {
+            this.queue.unshift(chunk);
+        }
     }
 }
 

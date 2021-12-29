@@ -2,7 +2,6 @@ import AABB from "../../physics/AABB";
 import GameScene from "../../scene/GameScene";
 import Block from "./Block";
 import Chunk from "./Chunk";
-import ChunkWorker from "./ChunkWorker";
 import Terrain from "./Terrain";
 
 class World {
@@ -10,7 +9,6 @@ class World {
     public static readonly RENDER_DISTANCE = 8;
 
     private readonly requested: Record<string, boolean | undefined>;
-    private readonly worker: ChunkWorker;
     public readonly chunkMap: Record<string, Chunk | undefined>;
     public readonly terrain: Terrain;
 
@@ -18,12 +16,11 @@ class World {
         this.chunkMap = {};
         this.requested = {};
         this.terrain = new Terrain(this);
-        this.worker = new ChunkWorker(this);
         setTimeout(this.update.bind(this), 0);
     }
 
     public delete(): void {
-        this.worker.stop();
+        this.terrain.delete();
     }
 
     public render(): void {
@@ -36,12 +33,13 @@ class World {
 
     public blockAt(x: number, y: number, z: number): Block | undefined {
         const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
-        return chunk?.blockAt(x & 15, y, z & 15);
+        return Block.ofId(chunk?.blockAt(x & 15, y, z & 15) ?? 0);
     }
 
     public isPlaceable(x: number, y: number, z: number): boolean {
         const aabb = new AABB(x, y, z, 1, 1, 1);
         return y >= 0 && y <= 127
+            && !this.blockAt(x, y, z)
             && !(game.scene as GameScene).player.getBoundingBox().intersects(aabb)
             && !(game.scene as GameScene).humanFactory.humans.some((human) => human.getBoundingBox().intersects(aabb));
     }
@@ -51,18 +49,18 @@ class World {
         const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
         if (!chunk) return;
         chunk.setBlockAt(x & 15, y, z & 15, block);
-        this.terrain.updateChunk(chunk);
+        this.terrain.requestChunkUpdate(chunk, true);
 
         if ((x & 15) === 0) {
-            this.terrain.updateChunk(this.chunkMap[[(x >> 4) - 1, z >> 4].toString()]);
+            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) - 1, z >> 4].toString()], true);
         } else if ((x & 15) === 15) {
-            this.terrain.updateChunk(this.chunkMap[[(x >> 4) + 1, z >> 4].toString()]);
+            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) + 1, z >> 4].toString()], true);
         }
 
         if ((z & 15) === 0) {
-            this.terrain.updateChunk(this.chunkMap[[x >> 4, (z >> 4) - 1].toString()]);
+            this.terrain.requestChunkUpdate(this.chunkMap[[x >> 4, (z >> 4) - 1].toString()], true);
         } else {
-            this.terrain.updateChunk(this.chunkMap[[x >> 4, (z >> 4) + 1].toString()]);
+            this.terrain.requestChunkUpdate(this.chunkMap[[x >> 4, (z >> 4) + 1].toString()], true);
         }
     }
 
@@ -109,10 +107,21 @@ class World {
         }
     }
 
-    public receiveChunk(chunkData: Chunk): void {
+    public receiveChunk(x: number, z: number, blocks: Uint8Array): void {
 
-        const chunk = new Chunk(chunkData.x, chunkData.z, chunkData.blocks);
-        this.worker.push(chunk);
+        const chunk = new Chunk(x, z, blocks);
+        this.chunkMap[[chunk.x, chunk.z].toString()] = chunk;
+
+        const neighbors = this.getNeighbors(chunk);
+        if (neighbors.length === 4) {
+            this.terrain.requestChunkUpdate(chunk);
+        }
+
+        neighbors.forEach((neighbor) => {
+            if (this.getNeighbors(neighbor).length === 4) {
+                this.terrain.requestChunkUpdate(neighbor);
+            }
+        });
     }
 
     public getNeighbors(chunk: Chunk): Chunk[] {

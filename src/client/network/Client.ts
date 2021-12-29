@@ -2,7 +2,6 @@ import { io, Socket } from "socket.io-client";
 
 import Position from "../../common/Position";
 import Vec3 from "../../common/Vec3";
-import Chunk from "../game/world/Chunk";
 import GameScene from "../scene/GameScene";
 import HomeScene from "../scene/HomeScene";
 
@@ -67,8 +66,8 @@ class Client {
             (game.scene as GameScene).player.teleport(packet.position);
         });
 
-        this.socket.on("chunk", (packet: { x: number, z: number, blocks: number[] }) => {
-            (game.scene as GameScene).world.receiveChunk(new Chunk(packet.x, packet.z, new Uint8Array(packet.blocks)));
+        this.socket.on("chunk", (packet: { x: number, z: number, blocks: ArrayBuffer }) => {
+            (game.scene as GameScene).world.receiveChunk(packet.x, packet.z, new Uint8Array(packet.blocks));
         });
 
         this.socket.on("playerAdd", (packet: { id: number, name: string, position: Position }) => {
