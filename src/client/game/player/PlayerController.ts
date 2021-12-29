@@ -64,7 +64,7 @@ class PlayerController {
         if (!this.captureMouse) return;
         this.player.position.yaw += e.movementX * PlayerController.SENSITIVITY;
         this.player.position.pitch += e.movementY * PlayerController.SENSITIVITY;
-        this.player.position.pitch = Math.min(Math.PI * 0.45, Math.max(Math.PI * -0.45, this.player.position.pitch));
+        this.player.position.pitch = Math.min(Math.PI / 2, Math.max(-Math.PI / 2, this.player.position.pitch));
     }
 
     private key(e: KeyboardEvent, down: number): void {

@@ -26,6 +26,7 @@ class Player {
     private readonly blockOutline: Model;
     public readonly velocity: Vec3;
     private bobTime: number;
+    private accumulator: number;
     public position: Position;
     public onGround: boolean;
     public targetedBlock: TargetBlock;
@@ -41,6 +42,7 @@ class Player {
         this.onGround = false;
         this.bobTime = 0;
         this.targetedBlock = null;
+        this.accumulator = 0;
 
         this.updateTimer = setInterval(() => {
             game.client.socket?.emit("position", {
@@ -62,8 +64,7 @@ class Player {
 
         this.interpolator.update(delta);
 
-        this.velocity.y -= delta * 25.0;
-        this.velocity.y = Math.max(-25.0, this.velocity.y);
+        this.velocity.y = Math.max(-25, this.velocity.y - delta * 25);
         this.velocity.x = Util.lerp(this.velocity.x, 0, delta * 25);
         this.velocity.z = Util.lerp(this.velocity.z, 0, delta * 25);
         this.controller.update();
@@ -141,16 +142,25 @@ class Player {
 
     private updatePosition(delta: number): void {
 
+        this.accumulator += delta;
+
+        const step = 1 / 500;
         const aabb = this.getBoundingBox();
-        const blocks = this.getWorldCollisionBox();
+        let blocks = this.getWorldCollisionBox();
 
-        const steps = Math.ceil(delta / (1 / 120));
-        const d = delta / steps;
+        while (this.accumulator > step) {
 
-        for (let step = 0; step < steps; step++) {
-            const dx = this.velocity.x * d;
-            const dy = this.velocity.y * d;
-            const dz = this.velocity.z * d;
+            this.accumulator -= step;
+            const dx = this.velocity.x * step;
+            const dy = this.velocity.y * step;
+            const dz = this.velocity.z * step;
+
+            if (Math.floor(this.position.x) !== Math.floor(this.position.x - dx)
+                || Math.floor(this.position.y) !== Math.floor(this.position.y - dy)
+                || Math.floor(this.position.z) !== Math.floor(this.position.z - dz)) {
+
+                blocks = this.getWorldCollisionBox();
+            }
 
             aabb.x += dx;
             if (this.isCollision(aabb, blocks)) {
