@@ -1,5 +1,6 @@
 import Vec2 from "../../../common/Vec2";
-import background from "../../assets/background.png";
+import backgroundImg from "../../assets/background.png";
+import logoImg from "../../assets/logo.png";
 import Model2D from "../../gl/Model2D";
 import Texture from "../../gl/Texture";
 import TexturedQuad2D from "../../models/TexturedQuad2D";
@@ -13,15 +14,18 @@ class HomeGui implements IGui {
     private readonly error: string;
     private readonly backgroundTexture: Texture;
     private readonly background: Model2D;
+    private readonly logoTexture: Texture;
+    private readonly logo: Model2D;
     private readonly loginBox: HTMLDivElement;
 
     public constructor(manager: GuiManager, { error }: { error: string }) {
 
         this.manager = manager;
         this.error = error;
-        this.backgroundTexture = new Texture(background, GL.REPEAT);
-
+        this.backgroundTexture = new Texture(backgroundImg, GL.REPEAT);
         this.background = new Model2D(manager.shader, new TexturedQuad2D(0, 20, 0, 20));
+        this.logoTexture = new Texture(logoImg);
+        this.logo = new Model2D(manager.shader, new TexturedQuad2D(0, 1, 0, 1));
 
         this.loginBox = document.createElement("div");
         this.loginBox.className = "loginBox";
@@ -74,9 +78,13 @@ class HomeGui implements IGui {
         document.body.removeChild(this.loginBox);
         this.backgroundTexture.delete();
         this.background.delete();
+        this.logoTexture.delete();
+        this.logo.delete();
     }
 
     public render(): void {
+
+        GL.enable(GL.BLEND);
 
         this.manager.shader.bind();
         GL.uniform1i(this.manager.samplerUniform, 0);
@@ -84,12 +92,21 @@ class HomeGui implements IGui {
 
         this.backgroundTexture.bind();
         this.background.render();
+
+        this.logoTexture.bind();
+
+        this.logo.render();
+        GL.disable(GL.BLEND);
     }
 
     public onWindowResize(): void {
         this.background.position = new Vec2(0, 0);
         this.background.scale = new Vec2(Math.max(GL.canvas.width, GL.canvas.height));
         this.background.update();
+
+        this.logo.scale = new Vec2(GL.canvas.width / 4, GL.canvas.width / 4 * 78 / 466);
+        this.logo.position = new Vec2(GL.canvas.width / 2 - this.logo.scale.x / 2, GL.canvas.height * 3 / 4 - this.logo.scale.y / 2);
+        this.logo.update();
     }
 
     public update(): void {

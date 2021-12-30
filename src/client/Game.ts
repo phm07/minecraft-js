@@ -21,6 +21,7 @@ class Game {
 
         GL.clearColor(131 / 255, 226 / 255, 252 / 255, 1);
         GL.enable(GL.CULL_FACE);
+        GL.blendFuncSeparate(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA, GL.ONE, GL.ONE);
     }
 
     public setScene(scene: IScene): void {
