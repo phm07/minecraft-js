@@ -1,5 +1,7 @@
 import "../../styles/game_gui.scss";
 
+import { mat4 } from "gl-matrix";
+
 import Position from "../../../common/Position";
 import Vec2 from "../../../common/Vec2";
 import Vec3 from "../../../common/Vec3";
@@ -7,7 +9,9 @@ import gui from "../../assets/gui.png";
 import Camera from "../../gl/Camera";
 import Model from "../../gl/Model";
 import Model2D from "../../gl/Model2D";
+import Shader from "../../gl/Shader";
 import Texture from "../../gl/Texture";
+import Axes from "../../models/Axes";
 import Humanoid from "../../models/Humanoid";
 import ShadedTexturedCuboid from "../../models/ShadedTexturedCuboid";
 import TexturedQuad2D from "../../models/TexturedQuad2D";
@@ -20,19 +24,21 @@ class GameGui implements IGui {
 
     private readonly manager: GuiManager;
     private readonly crosshair: Model2D;
+    private readonly axes: Model;
     private readonly camera: Camera;
     private readonly texture: Texture;
-    private readonly arm: Model | null;
+    private readonly arm: Model;
     private readonly fpsCounter: HTMLDivElement;
     private readonly lastFpsValues: number[];
     private readonly removeListeners: () => void;
     private showFps: boolean;
 
-    public constructor(manager: GuiManager, { humanFactory }: { humanFactory: HumanFactory }) {
+    public constructor(manager: GuiManager, { humanFactory, wireframeShader }: { humanFactory: HumanFactory, wireframeShader: Shader }) {
 
         this.manager = manager;
-        this.crosshair = new Model2D(manager.shader, new TexturedQuad2D(1 / 64, 10 / 64, 1 / 64, 10 / 64));
         this.camera = new Camera(new Position(), 90 / 360 * Math.PI * 2, 0.1, 100);
+        this.crosshair = new Model2D(manager.shader, new TexturedQuad2D(1 / 64, 10 / 64, 1 / 64, 10 / 64));
+        this.axes = new Model(wireframeShader, this.camera, new Axes());
         this.texture = new Texture(gui);
         this.showFps = false;
         this.lastFpsValues = [];
@@ -64,25 +70,31 @@ class GameGui implements IGui {
     public delete(): void {
         document.body.removeChild(this.fpsCounter);
         this.texture.delete();
-        this.arm?.delete();
+        this.arm.delete();
         this.crosshair.delete();
+        this.axes.delete();
         this.removeListeners();
     }
 
     public render(): void {
 
-        this.manager.shader.bind();
-        GL.activeTexture(GL.TEXTURE0);
-        GL.uniform1i(this.manager.samplerUniform, 0);
-        this.texture.bind();
-        this.crosshair.render();
+        if (this.showFps) {
+            this.axes.shader.bind();
+            this.axes.render();
+        } else {
+            this.manager.shader.bind();
+            GL.activeTexture(GL.TEXTURE0);
+            GL.uniform1i(this.manager.samplerUniform, 0);
+            this.texture.bind();
+            this.crosshair.render();
+        }
 
         const { shader: humanShader, samplerUniform: humanSamplerUniform, texture: humanTexture } = (game.scene as GameScene).humanFactory;
         humanShader.bind();
         GL.activeTexture(GL.TEXTURE0);
         GL.uniform1i(humanSamplerUniform, 0);
         humanTexture.bind();
-        this.arm?.render();
+        this.arm.render();
     }
 
     public onWindowResize(): void {
@@ -94,10 +106,17 @@ class GameGui implements IGui {
 
     public update(): void {
         if (this.showFps) {
+
             this.lastFpsValues.push(game.fps);
             if (this.lastFpsValues.length > 60) this.lastFpsValues.unshift();
             const fps = Math.round(this.lastFpsValues.reduce((a, b) => a + b) / this.lastFpsValues.length);
             this.fpsCounter.textContent = `FPS: ${fps}`;
+
+            const { pitch, yaw } = (game.scene as GameScene).camera.position;
+            mat4.identity(this.axes.modelMatrix);
+            mat4.translate(this.axes.modelMatrix, this.axes.modelMatrix, [0, 0, -15]);
+            mat4.rotate(this.axes.modelMatrix, this.axes.modelMatrix, pitch, [1, 0, 0]);
+            mat4.rotate(this.axes.modelMatrix, this.axes.modelMatrix, yaw, [0, 1, 0]);
         }
     }
 }

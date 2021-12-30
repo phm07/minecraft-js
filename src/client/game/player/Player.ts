@@ -9,8 +9,6 @@ import Shader from "../../gl/Shader";
 import WireframeCuboid from "../../models/WireframeCuboid";
 import AABB from "../../physics/AABB";
 import GameScene from "../../scene/GameScene";
-import fragmentShader from "../../shaders/wireframe.fs";
-import vertexShader from "../../shaders/wireframe.vs";
 import BlockFace from "../world/BlockFace";
 import PlayerController from "./PlayerController";
 
@@ -18,12 +16,11 @@ type TargetBlock = { position: Vec3, face: BlockFace } | null;
 
 class Player {
 
-    private readonly wireframeShader;
     private readonly camera: Camera;
     private readonly controller: PlayerController;
     private readonly updateTimer: NodeJS.Timer;
     private readonly interpolator: Interpolator;
-    private readonly blockOutline: Model;
+    private readonly wireframe: Model;
     public readonly velocity: Vec3;
     private bobTime: number;
     private accumulator: number;
@@ -31,14 +28,13 @@ class Player {
     public onGround: boolean;
     public targetedBlock: TargetBlock;
 
-    public constructor(camera: Camera) {
+    public constructor(camera: Camera, wireframeShader: Shader) {
         this.camera = camera;
         this.interpolator = new Interpolator({ bob: 0 });
         this.controller = new PlayerController(this);
         this.position = new Position();
         this.velocity = new Vec3();
-        this.wireframeShader = new Shader(vertexShader, fragmentShader);
-        this.blockOutline = new Model(this.wireframeShader, camera, new WireframeCuboid(new Vec3(-0.001), new Vec3(1.002)));
+        this.wireframe = new Model(wireframeShader, camera, new WireframeCuboid(new Vec3(-0.001), new Vec3(1.002)));
         this.onGround = false;
         this.bobTime = 0;
         this.targetedBlock = null;
@@ -56,8 +52,7 @@ class Player {
     public delete(): void {
         clearInterval(this.updateTimer);
         this.controller.delete();
-        this.blockOutline.delete();
-        this.wireframeShader.delete();
+        this.wireframe.delete();
     }
 
     public update(delta: number): void {
@@ -100,15 +95,15 @@ class Player {
 
         this.targetedBlock = this.findTargetedBlock();
         if (this.targetedBlock) {
-            this.blockOutline.position = this.targetedBlock.position;
-            this.blockOutline.update();
+            this.wireframe.position = this.targetedBlock.position;
+            this.wireframe.update();
         }
     }
 
     public render(): void {
         if (this.targetedBlock) {
-            this.wireframeShader.bind();
-            this.blockOutline.render();
+            this.wireframe.shader.bind();
+            this.wireframe.render();
         }
     }
 

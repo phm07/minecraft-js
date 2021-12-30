@@ -5,16 +5,16 @@ class WireframeCuboid extends Mesh {
 
     public constructor({ x, y, z } = new Vec3(), { x: w, y: h, z: d } = new Vec3(1)) {
         const vertices = [
-            x, y, z,
-            x + w, y, z,
-            x, y + h, z,
-            x + w, y + h, z,
-            x, y, z + d,
-            x + w, y, z + d,
-            x, y + h, z + d,
-            x + w, y + h, z + d
+            x, y, z, 0, 0, 0,
+            x + w, y, z, 0, 0, 0,
+            x, y + h, z, 0, 0, 0,
+            x + w, y + h, z, 0, 0, 0,
+            x, y, z + d, 0, 0, 0,
+            x + w, y, z + d, 0, 0, 0,
+            x, y + h, z + d, 0, 0, 0,
+            x + w, y + h, z + d, 0, 0, 0
         ];
-        const attributes = [3];
+        const attributes = [3, 3];
         const indices = [
             0, 1,
             1, 3,

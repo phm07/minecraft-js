@@ -8,10 +8,10 @@ import Shader from "./Shader";
 
 class Model {
 
-    private readonly shader: Shader;
+    public readonly shader: Shader;
     private readonly mesh: Mesh;
     private readonly camera: Camera;
-    private readonly modelMatrix: mat4;
+    public readonly modelMatrix: mat4;
     private readonly modelMatrixUniform: WebGLUniformLocation | null;
     private readonly viewMatrixUniform: WebGLUniformLocation | null;
     private readonly projectionMatrixUniform: WebGLUniformLocation | null;
