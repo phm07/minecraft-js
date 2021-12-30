@@ -48,9 +48,10 @@ class World {
 
         const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
         if (!chunk) return;
+
         chunk.setBlockAt(x & 15, y, z & 15, block);
 
-        if(block === 0) {
+        if (block === 0) {
             this.terrain.requestChunkUpdate(chunk, true);
         }
 
@@ -66,7 +67,17 @@ class World {
             this.terrain.requestChunkUpdate(this.chunkMap[[x >> 4, (z >> 4) + 1].toString()], true);
         }
 
-        if(block !== 0) {
+        if ((x & 15) === 0 && (z & 15) === 0) {
+            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) - 1, (z >> 4) - 1].toString()], true);
+        } else if ((x & 15) === 15 && (z & 15) === 0) {
+            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) + 1, (z >> 4) - 1].toString()], true);
+        } else if ((x & 15) === 0 && (z & 15) === 15) {
+            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) - 1, (z >> 4) + 1].toString()], true);
+        } else if ((x & 15) === 15 && (z & 15) === 15) {
+            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) + 1, (z >> 4) + 1].toString()], true);
+        }
+
+        if (block !== 0) {
             this.terrain.requestChunkUpdate(chunk, true);
         }
     }
@@ -120,24 +131,27 @@ class World {
         this.chunkMap[[chunk.x, chunk.z].toString()] = chunk;
 
         const neighbors = this.getNeighbors(chunk);
-        if (neighbors.length === 4) {
+        if (neighbors.length === 8) {
             this.terrain.requestChunkUpdate(chunk);
         }
 
         neighbors.forEach((neighbor) => {
-            if (this.getNeighbors(neighbor).length === 4) {
+            if (this.getNeighbors(neighbor).length === 8) {
                 this.terrain.requestChunkUpdate(neighbor);
             }
         });
-
     }
 
     public getNeighbors(chunk: Chunk): Chunk[] {
         return [
-            this.chunkMap[[chunk.x - 1, chunk.z].toString()],
-            this.chunkMap[[chunk.x + 1, chunk.z].toString()],
             this.chunkMap[[chunk.x, chunk.z - 1].toString()],
-            this.chunkMap[[chunk.x, chunk.z + 1].toString()]
+            this.chunkMap[[chunk.x + 1, chunk.z - 1].toString()],
+            this.chunkMap[[chunk.x + 1, chunk.z].toString()],
+            this.chunkMap[[chunk.x + 1, chunk.z + 1].toString()],
+            this.chunkMap[[chunk.x, chunk.z + 1].toString()],
+            this.chunkMap[[chunk.x - 1, chunk.z + 1].toString()],
+            this.chunkMap[[chunk.x - 1, chunk.z].toString()],
+            this.chunkMap[[chunk.x - 1, chunk.z - 1].toString()]
         ].filter((e): e is Chunk => e !== undefined);
     }
 }

@@ -7,9 +7,9 @@ uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjMatrix;
 
-out vec3 vertexColor;
+out vec3 vColor;
 
 void main() {
     gl_Position = uProjMatrix * uViewMatrix * uModelMatrix * vec4(inVertexPos, 1.0f);
-    vertexColor = inVertexColor;
+    vColor = inVertexColor;
 }

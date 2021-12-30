@@ -75,36 +75,57 @@ class Terrain {
 
     private updateChunk(chunk: Chunk): void {
 
-        const left = this.world.chunkMap[[chunk.x - 1, chunk.z].toString()];
-        const right = this.world.chunkMap[[chunk.x + 1, chunk.z].toString()];
-        const back = this.world.chunkMap[[chunk.x, chunk.z - 1].toString()];
-        const front = this.world.chunkMap[[chunk.x, chunk.z + 1].toString()];
+        const blocks = new Array<number>(18 * 130 * 18).fill(0);
 
-        const blocks = new Array<number>(18 * 130 * 18);
+        {
+            const north = this.world.chunkMap[[chunk.x, chunk.z - 1].toString()];
+            const northeast = this.world.chunkMap[[chunk.x + 1, chunk.z - 1].toString()];
+            const east = this.world.chunkMap[[chunk.x + 1, chunk.z].toString()];
+            const southeast = this.world.chunkMap[[chunk.x + 1, chunk.z + 1].toString()];
+            const south = this.world.chunkMap[[chunk.x, chunk.z + 1].toString()];
+            const southwest = this.world.chunkMap[[chunk.x - 1, chunk.z + 1].toString()];
+            const west = this.world.chunkMap[[chunk.x - 1, chunk.z].toString()];
+            const northwest = this.world.chunkMap[[chunk.x - 1, chunk.z - 1].toString()];
 
-        for (let x = -1; x <= 16; x++) {
-            for (let z = -1; z <= 16; z++) {
-                if ((x < 0 || x > 15) && (z < 0 || z > 15)) continue;
-                for (let y = -1; y <= 128; y++) {
-                    const idx = x + 1 + (z + 1) * 18 + (y + 1) * 324;
-                    if (y < 0 || y >= 128) {
-                        blocks[idx] = 0;
-                    } else if (x >= 0 && x < 16 && z >= 0 && z < 16) {
-                        blocks[idx] = chunk.blockAt(x, y, z);
-                    } else if (x < 0) {
-                        blocks[idx] = left?.blockAt(x + 16, y, z) ?? 0;
-                    } else if (x >= 16) {
-                        blocks[idx] = right?.blockAt(x - 16, y, z) ?? 0;
+            for (let x = -1; x <= 16; x++) {
+                for (let z = -1; z <= 16; z++) {
+
+                    let blockChunk;
+                    if (x < 0) {
+                        if (z < 0) {
+                            blockChunk = northwest;
+                        } else if (z > 15) {
+                            blockChunk = southwest;
+                        } else {
+                            blockChunk = west;
+                        }
+                    } else if (x > 15) {
+                        if (z < 0) {
+                            blockChunk = northeast;
+                        } else if (z > 15) {
+                            blockChunk = southeast;
+                        } else {
+                            blockChunk = east;
+                        }
                     } else if (z < 0) {
-                        blocks[idx] = back?.blockAt(x, y, z + 16) ?? 0;
-                    } else if (z >= 16) {
-                        blocks[idx] = front?.blockAt(x, y, z - 16) ?? 0;
+                            blockChunk = north;
+                        } else if (z > 15) {
+                            blockChunk = south;
+                        } else {
+                            blockChunk = chunk;
+                        }
+
+                    if (!blockChunk) continue;
+
+                    for (let y = 0; y < 127; y++) {
+                        blocks[x + 1 + (z + 1) * 18 + (y + 1) * 324] = blockChunk.blocks[(x & 15) + (z & 15) * 16 + y * 256];
                     }
                 }
             }
         }
 
         const vertices = [], indices = [];
+        const light = 0.9;
 
         let offset = 0;
         for (let x = 0; x < 16; x++) {
@@ -119,67 +140,121 @@ class Terrain {
                     const offZ = chunk.z * 16 + z;
 
                     if (!blocks[x + 1 + (z + 2) * 18 + (y + 1) * 324]) {
+                        const north = !blocks[x + 1 + (z + 2) * 18 + (y + 2) * 324];
+                        const northeast = !blocks[x + 2 + (z + 2) * 18 + (y + 2) * 324];
+                        const east = !blocks[x + 2 + (z + 2) * 18 + (y + 1) * 324];
+                        const southeast = !blocks[x + 2 + (z + 2) * 18 + y * 324];
+                        const south = !blocks[x + 1 + (z + 2) * 18 + y * 324];
+                        const southwest = !blocks[x + (z + 2) * 18 + y * 324];
+                        const west = !blocks[x + (z + 2) * 18 + (y + 1) * 324];
+                        const northwest = !blocks[x + (z + 2) * 18 + (y + 2) * 324];
+
                         vertices.push(
                             // front
-                            offX + 0.0, y + 1.0, offZ + 1.0, ...uv[3], 0.9,
-                            offX + 0.0, y + 0.0, offZ + 1.0, ...uv[0], 0.9,
-                            offX + 1.0, y + 0.0, offZ + 1.0, ...uv[1], 0.9,
-                            offX + 1.0, y + 1.0, offZ + 1.0, ...uv[2], 0.9
+                            offX + 0.0, y + 1.0, offZ + 1.0, ...uv[3], 0.9 * (west && north && northwest ? 1 : light),
+                            offX + 0.0, y + 0.0, offZ + 1.0, ...uv[0], 0.9 * (west && south && southwest ? 1 : light),
+                            offX + 1.0, y + 0.0, offZ + 1.0, ...uv[1], 0.9 * (east && south && southeast ? 1 : light),
+                            offX + 1.0, y + 1.0, offZ + 1.0, ...uv[2], 0.9 * (east && north && northeast ? 1 : light)
                         );
                         indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
                         offset += 4;
                     }
                     if (!blocks[x + 1 + z * 18 + (y + 1) * 324]) {
+                        const north = !blocks[x + 1 + z * 18 + (y + 2) * 324];
+                        const northeast = !blocks[x + 2 + z * 18 + (y + 2) * 324];
+                        const east = !blocks[x + 2 + z * 18 + (y + 1) * 324];
+                        const southeast = !blocks[x + 2 + z * 18 + y * 324];
+                        const south = !blocks[x + 1 + z * 18 + y * 324];
+                        const southwest = !blocks[x + z * 18 + y * 324];
+                        const west = !blocks[x + z * 18 + (y + 1) * 324];
+                        const northwest = !blocks[x + z * 18 + (y + 2) * 324];
+
                         vertices.push(
                             // back
-                            offX + 0.0, y + 0.0, offZ + 0.0, ...uv[5], 0.9,
-                            offX + 0.0, y + 1.0, offZ + 0.0, ...uv[6], 0.9,
-                            offX + 1.0, y + 1.0, offZ + 0.0, ...uv[7], 0.9,
-                            offX + 1.0, y + 0.0, offZ + 0.0, ...uv[4], 0.9
+                            offX + 0.0, y + 0.0, offZ + 0.0, ...uv[5], 0.9 * (west && south && southwest ? 1 : light),
+                            offX + 0.0, y + 1.0, offZ + 0.0, ...uv[6], 0.9 * (west && north && northwest ? 1 : light),
+                            offX + 1.0, y + 1.0, offZ + 0.0, ...uv[7], 0.9 * (east && north && northeast ? 1 : light),
+                            offX + 1.0, y + 0.0, offZ + 0.0, ...uv[4], 0.9 * (east && south && southeast ? 1 : light)
                         );
                         indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
                         offset += 4;
                     }
                     if (!blocks[x + 1 + (z + 1) * 18 + (y + 2) * 324]) {
+                        const north = !blocks[x + 1 + z * 18 + (y + 2) * 324];
+                        const northeast = !blocks[x + 2 + z * 18 + (y + 2) * 324];
+                        const east = !blocks[x + 2 + (z + 1) * 18 + (y + 2) * 324];
+                        const southeast = !blocks[x + 2 + (z + 2) * 18 + (y + 2) * 324];
+                        const south = !blocks[x + 1 + (z + 2) * 18 + (y + 2) * 324];
+                        const southwest = !blocks[x + (z + 2) * 18 + (y + 2) * 324];
+                        const west = !blocks[x + (z + 1) * 18 + (y + 2) * 324];
+                        const northwest = !blocks[x + z * 18 + (y + 2) * 324];
+
                         vertices.push(
                             // top
-                            offX + 0.0, y + 1.0, offZ + 0.0, ...uv[8], 1.0,
-                            offX + 0.0, y + 1.0, offZ + 1.0, ...uv[9], 1.0,
-                            offX + 1.0, y + 1.0, offZ + 1.0, ...uv[10], 1.0,
-                            offX + 1.0, y + 1.0, offZ + 0.0, ...uv[11], 1.0
+                            offX + 0.0, y + 1.0, offZ + 0.0, ...uv[8], Number(west && north && northwest ? 1 : light),
+                            offX + 0.0, y + 1.0, offZ + 1.0, ...uv[9], Number(west && south && southwest ? 1 : light),
+                            offX + 1.0, y + 1.0, offZ + 1.0, ...uv[10], Number(east && south && southeast ? 1 : light),
+                            offX + 1.0, y + 1.0, offZ + 0.0, ...uv[11], Number(east && north && northeast ? 1 : light)
                         );
                         indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
                         offset += 4;
                     }
                     if (!blocks[x + 1 + (z + 1) * 18 + y * 324]) {
+                        const north = !blocks[x + 1 + z * 18 + y * 324];
+                        const northeast = !blocks[x + 2 + z * 18 + y * 324];
+                        const east = !blocks[x + 2 + (z + 1) * 18 + y * 324];
+                        const southeast = !blocks[x + 2 + (z + 2) * 18 + y * 324];
+                        const south = !blocks[x + 1 + (z + 2) * 18 + y * 324];
+                        const southwest = !blocks[x + (z + 2) * 18 + y * 324];
+                        const west = !blocks[x + (z + 1) * 18 + y * 324];
+                        const northwest = !blocks[x + z * 18 + y * 324];
+
                         vertices.push(
                             // bottom
-                            offX + 0.0, y + 0.0, offZ + 0.0, ...uv[12], 0.7,
-                            offX + 1.0, y + 0.0, offZ + 0.0, ...uv[13], 0.7,
-                            offX + 1.0, y + 0.0, offZ + 1.0, ...uv[14], 0.7,
-                            offX + 0.0, y + 0.0, offZ + 1.0, ...uv[15], 0.7
+                            offX + 0.0, y + 0.0, offZ + 0.0, ...uv[12], 0.7 * (west && north && northwest ? 1 : light),
+                            offX + 1.0, y + 0.0, offZ + 0.0, ...uv[13], 0.7 * (east && north && northeast ? 1 : light),
+                            offX + 1.0, y + 0.0, offZ + 1.0, ...uv[14], 0.7 * (east && south && southeast ? 1 : light),
+                            offX + 0.0, y + 0.0, offZ + 1.0, ...uv[15], 0.7 * (west && south && southwest ? 1 : light)
                         );
                         indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
                         offset += 4;
                     }
                     if (!blocks[x + 2 + (z + 1) * 18 + (y + 1) * 324]) {
+                        const north = !blocks[x + 2 + (z + 1) * 18 + (y + 2) * 324];
+                        const northeast = !blocks[x + 2 + z * 18 + (y + 2) * 324];
+                        const east = !blocks[x + 2 + z * 18 + (y + 1) * 324];
+                        const southeast = !blocks[x + 2 + z * 18 + y * 324];
+                        const south = !blocks[x + 2 + (z + 1) * 18 + y * 324];
+                        const southwest = !blocks[x + 2 + (z + 2) * 18 + y * 324];
+                        const west = !blocks[x + 2 + (z + 2) * 18 + (y + 1) * 324];
+                        const northwest = !blocks[x + 2 + (z + 2) * 18 + (y + 2) * 324];
+
                         vertices.push(
                             // right
-                            offX + 1.0, y + 0.0, offZ + 0.0, ...uv[17], 0.8,
-                            offX + 1.0, y + 1.0, offZ + 0.0, ...uv[18], 0.8,
-                            offX + 1.0, y + 1.0, offZ + 1.0, ...uv[19], 0.8,
-                            offX + 1.0, y + 0.0, offZ + 1.0, ...uv[16], 0.8
+                            offX + 1.0, y + 0.0, offZ + 0.0, ...uv[17], 0.8 * (east && south && southeast ? 1 : light),
+                            offX + 1.0, y + 1.0, offZ + 0.0, ...uv[18], 0.8 * (east && north && northeast ? 1 : light),
+                            offX + 1.0, y + 1.0, offZ + 1.0, ...uv[19], 0.8 * (west && north && northwest ? 1 : light),
+                            offX + 1.0, y + 0.0, offZ + 1.0, ...uv[16], 0.8 * (west && south && southwest ? 1 : light)
                         );
                         indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
                         offset += 4;
                     }
                     if (!blocks[x + (z + 1) * 18 + (y + 1) * 324]) {
+                        const north = !blocks[x + (z + 1) * 18 + (y + 2) * 324];
+                        const northeast = !blocks[x + z * 18 + (y + 2) * 324];
+                        const east = !blocks[x + z * 18 + (y + 1) * 324];
+                        const southeast = !blocks[x + z * 18 + y * 324];
+                        const south = !blocks[x + (z + 1) * 18 + y * 324];
+                        const southwest = !blocks[x + (z + 2) * 18 + y * 324];
+                        const west = !blocks[x + (z + 2) * 18 + (y + 1) * 324];
+                        const northwest = !blocks[x + (z + 2) * 18 + (y + 2) * 324];
+
                         vertices.push(
                             // left
-                            offX + 0.0, y + 0.0, offZ + 0.0, ...uv[20], 0.8,
-                            offX + 0.0, y + 0.0, offZ + 1.0, ...uv[21], 0.8,
-                            offX + 0.0, y + 1.0, offZ + 1.0, ...uv[22], 0.8,
-                            offX + 0.0, y + 1.0, offZ + 0.0, ...uv[23], 0.8
+                            offX + 0.0, y + 0.0, offZ + 0.0, ...uv[20], 0.8 * (east && south && southeast ? 1 : light),
+                            offX + 0.0, y + 0.0, offZ + 1.0, ...uv[21], 0.8 * (west && south && southwest ? 1 : light),
+                            offX + 0.0, y + 1.0, offZ + 1.0, ...uv[22], 0.8 * (west && north && northwest ? 1 : light),
+                            offX + 0.0, y + 1.0, offZ + 0.0, ...uv[23], 0.8 * (east && north && northeast ? 1 : light)
                         );
                         indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
                         offset += 4;
