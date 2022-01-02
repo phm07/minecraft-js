@@ -22,7 +22,14 @@ export default (env: any, argv: {mode: string}): webpack.Configuration => ({
     },
     optimization: {
         minimize: argv.mode === "production",
-        minimizer: [new TerserPlugin()]
+        minimizer: [new TerserPlugin({
+            terserOptions: {
+                mangle: {
+                    toplevel: true,
+                    properties: true
+                }
+            }
+        })]
     },
     resolve: {
         extensions: [".ts", ".js"]
