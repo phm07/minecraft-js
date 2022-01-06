@@ -39,7 +39,7 @@ export default (env: any, argv: {mode: string}): webpack.Configuration => ({
             {
                 test: /\.ts$/,
                 exclude: /node_modules/,
-                loader: "ts-loader"
+                use: ["ts-loader"]
             },
             {
                 test: /\.(s[ac]ss)$/i,
