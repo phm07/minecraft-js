@@ -25,8 +25,7 @@ export default (env: any, argv: {mode: string}): webpack.Configuration => ({
         minimizer: [new TerserPlugin({
             terserOptions: {
                 mangle: {
-                    toplevel: true,
-                    properties: true
+                    toplevel: true
                 }
             }
         })]

@@ -67,7 +67,7 @@ class Client {
         });
 
         this.socket.on("chunk", (packet: { x: number, z: number, blocks: ArrayBuffer }) => {
-            (game.scene as GameScene).world.receiveChunk(packet.x, packet.z, new Uint8Array(packet.blocks));
+            void (game.scene as GameScene).world.receiveChunk(packet.x, packet.z, new Uint8Array(packet.blocks));
         });
 
         this.socket.on("playerAdd", (packet: { id: number, name: string, position: Position }) => {
@@ -82,8 +82,11 @@ class Client {
             (game.scene as GameScene).humanFactory.removeHuman(packet.id);
         });
 
-        this.socket.on("blockUpdate", ({ position: { x, y, z }, type }: { position: { x: number, y: number, z: number }, type: number }) => {
-            (game.scene as GameScene).world.setBlock(x, y, z, type);
+        this.socket.on("blockUpdate", ({
+                                           position: { x, y, z },
+                                           type
+                                       }: { position: { x: number, y: number, z: number }, type: number }) => {
+            void (game.scene as GameScene).world.setBlock(x, y, z, type);
         });
     }
 }

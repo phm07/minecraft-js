@@ -44,41 +44,39 @@ class World {
             && !(game.scene as GameScene).humanFactory.humans.some((human) => human.getBoundingBox().intersects(aabb));
     }
 
-    public setBlock(x: number, y: number, z: number, block: number): void {
+    public async setBlock(x: number, y: number, z: number, block: number): Promise<void> {
 
         const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
         if (!chunk) return;
 
         chunk.setBlockAt(x & 15, y, z & 15, block);
 
-        if (block === 0) {
-            this.terrain.requestChunkUpdate(chunk, true);
-        }
-
-        if ((x & 15) === 0) {
-            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) - 1, z >> 4].toString()], true);
-        } else if ((x & 15) === 15) {
-            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) + 1, z >> 4].toString()], true);
-        }
-
-        if ((z & 15) === 0) {
-            this.terrain.requestChunkUpdate(this.chunkMap[[x >> 4, (z >> 4) - 1].toString()], true);
-        } else {
-            this.terrain.requestChunkUpdate(this.chunkMap[[x >> 4, (z >> 4) + 1].toString()], true);
-        }
-
-        if ((x & 15) === 0 && (z & 15) === 0) {
-            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) - 1, (z >> 4) - 1].toString()], true);
-        } else if ((x & 15) === 15 && (z & 15) === 0) {
-            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) + 1, (z >> 4) - 1].toString()], true);
-        } else if ((x & 15) === 0 && (z & 15) === 15) {
-            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) - 1, (z >> 4) + 1].toString()], true);
-        } else if ((x & 15) === 15 && (z & 15) === 15) {
-            this.terrain.requestChunkUpdate(this.chunkMap[[(x >> 4) + 1, (z >> 4) + 1].toString()], true);
-        }
+        const edgeX = (x & 15) === 0 ? -1 : (x & 15) === 15 ? 1 : 0;
+        const edgeY = (y & 15) === 0 ? -1 : (y & 15) === 15 ? 1 : 0;
+        const edgeZ = (z & 15) === 0 ? -1 : (z & 15) === 15 ? 1 : 0;
 
         if (block !== 0) {
-            this.terrain.requestChunkUpdate(chunk, true);
+            await this.terrain.updateSubChunk(chunk.subChunks[y >> 4]);
+        }
+
+        for (let chunkX = Math.min(0, edgeX); chunkX <= Math.max(0, edgeX); chunkX++) {
+            for (let chunkZ = Math.min(0, edgeZ); chunkZ <= Math.max(0, edgeZ); chunkZ++) {
+
+                const x1 = (x >> 4) + chunkX;
+                const z1 = (z >> 4) + chunkZ;
+                const theChunk = this.chunkMap[[x1, z1].toString()];
+                if (!theChunk) continue;
+
+                for (let chunkY = Math.min(0, edgeY); chunkY <= Math.max(0, edgeY); chunkY++) {
+                    const y1 = (y >> 4) + chunkY;
+                    if (y1 < 0 || y1 >= 8 || x1 === 0 && y1 === 0 && z1 === 0) continue;
+                    await this.terrain.updateSubChunk(theChunk.subChunks[y1]);
+                }
+            }
+        }
+
+        if (block === 0) {
+            await this.terrain.updateSubChunk(chunk.subChunks[y >> 4]);
         }
     }
 
@@ -125,21 +123,21 @@ class World {
         }
     }
 
-    public receiveChunk(x: number, z: number, blocks: Uint8Array): void {
+    public async receiveChunk(x: number, z: number, blocks: Uint8Array): Promise<void> {
 
-        const chunk = new Chunk(x, z, blocks);
+        const chunk = new Chunk(this, x, z, blocks);
         this.chunkMap[[chunk.x, chunk.z].toString()] = chunk;
 
         const neighbors = this.getNeighbors(chunk);
         if (neighbors.length === 8) {
-            this.terrain.requestChunkUpdate(chunk);
+            await this.terrain.updateChunk(chunk);
         }
 
-        neighbors.forEach((neighbor) => {
+        await Promise.all(neighbors.map(async (neighbor) => {
             if (this.getNeighbors(neighbor).length === 8) {
-                this.terrain.requestChunkUpdate(neighbor);
+                await this.terrain.updateChunk(neighbor);
             }
-        });
+        }));
     }
 
     public getNeighbors(chunk: Chunk): Chunk[] {

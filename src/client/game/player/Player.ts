@@ -59,7 +59,6 @@ class Player {
 
         this.interpolator.update(delta);
 
-        this.velocity.y = Math.max(-25, this.velocity.y - delta * 25);
         this.velocity.x = Util.lerp(this.velocity.x, 0, delta * 25);
         this.velocity.z = Util.lerp(this.velocity.z, 0, delta * 25);
         this.controller.update();
@@ -68,7 +67,7 @@ class Player {
         const oldZ = this.position.z;
 
         if ((game.scene as GameScene).world.isLoaded(oldX >> 4, oldZ >> 4)) {
-            this.updatePosition(delta);
+            this.stepPhysics(delta);
         }
 
         if (Util.dist2Square(this.velocity.x, this.velocity.z, 0, 0) >= 1 && this.onGround) {
@@ -112,7 +111,7 @@ class Player {
         const world = (game.scene as GameScene).world;
         const pos = Vec3.add(this.targetedBlock.position, this.targetedBlock.face.dir);
         if (world.isPlaceable(pos.x, pos.y, pos.z)) {
-            world.setBlock(pos.x, pos.y, pos.z, Blocks.DIRT);
+            void world.setBlock(pos.x, pos.y, pos.z, Blocks.DIRT);
             game.client.socket?.emit("blockUpdate", { position: pos, type: Blocks.DIRT });
         }
     }
@@ -122,7 +121,7 @@ class Player {
         const world = (game.scene as GameScene).world;
         const { x, y, z } = this.targetedBlock.position;
         if (world.blockAt(x, y, z)?.breakable) {
-            world.setBlock(x, y, z, 0);
+            void world.setBlock(x, y, z, 0);
             game.client.socket?.emit("blockUpdate", { position: { x, y, z }, type: 0 });
         }
     }
@@ -135,17 +134,16 @@ class Player {
         return blocks.some((block) => block.intersects(aabb));
     }
 
-    private updatePosition(delta: number): void {
-
-        this.accumulator += delta;
+    private stepPhysics(delta: number): void {
 
         const step = 1 / 500;
         const aabb = this.getBoundingBox();
         let blocks = this.getWorldCollisionBox();
 
-        while (this.accumulator > step) {
+        for (this.accumulator += delta; this.accumulator > step; this.accumulator -= step) {
 
-            this.accumulator -= step;
+            this.velocity.y = Math.max(-25, this.velocity.y - step * 25);
+
             const dx = this.velocity.x * step;
             const dy = this.velocity.y * step;
             const dz = this.velocity.z * step;

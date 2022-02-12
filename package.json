@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "lint": "eslint . --fix --ext .ts",
-    "buildDevClient": "eslint . --fix --ext .ts && webpack --mode development --config webpack.client.config.ts",
-    "buildDevServer": "eslint . --fix --ext .ts && webpack --mode development --config webpack.server.config.ts",
-    "build": "eslint . --fix --ext .ts && webpack --mode production --config webpack.client.config.ts && webpack --mode production --config webpack.server.config.ts",
+    "lint": "eslint . --fix --ext .ts --max-warnings 0",
+    "buildDevClient": "npm run lint && webpack --mode development --config webpack.client.config.ts",
+    "buildDevServer": "npm run lint && webpack --mode development --config webpack.server.config.ts",
+    "build": "npm run lint && webpack --mode production --config webpack.client.config.ts && webpack --mode production --config webpack.server.config.ts",
     "start": "node ./dist/server.bundle.js"
   },
   "keywords": [],
