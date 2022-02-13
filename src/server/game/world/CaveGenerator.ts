@@ -13,76 +13,90 @@ class CaveGenerator {
     private static readonly CHUNK_RADIUS = Math.floor(CaveGenerator.CAVE_LENGTH / 16);
 
     private readonly generator: WorldGenerator;
-    private readonly generated: Record<string, boolean | undefined>;
+    private readonly preGenerated: Record<string, Promise<void> | true>;
     private readonly caveData: Record<string, Uint8Array | undefined>;
 
     public constructor(generator: WorldGenerator) {
         this.generator = generator;
-        this.generated = {};
+        this.preGenerated = {};
         this.caveData = {};
     }
 
-    private setData(x: number, y: number, z: number, data: number): void {
-        (this.caveData[[x >> 4, z >> 4].toString()] ??= new Uint8Array(16 * 16 * 128))[(x & 15) + (z & 15) * 16 + y * 256] = data;
-    }
+    private async preGenerate(chunkX: number, chunkZ: number): Promise<void> {
 
-    private generate(chunkX: number, chunkZ: number): void {
+        const index = [chunkX, chunkZ].toString();
+        if (this.preGenerated[index] === true) {
+            return;
+        } else if (this.preGenerated[index] instanceof Promise) {
+            await this.preGenerated[index];
+            return;
+        }
 
-        if (this.generated[[chunkX, chunkZ].toString()]) return;
-        this.generated[[chunkX, chunkZ].toString()] = true;
-        this.caveData[[chunkX, chunkZ].toString()] ??= new Uint8Array(16 * 16 * 128);
+        const promise = new Promise<void>((resolve) => {
 
-        const chunkSeed = this.generator.seed + ":" + chunkX.toString() + "," + chunkZ.toString();
-        const random = new Random(chunkSeed);
+            this.caveData[[chunkX, chunkZ].toString()] ??= new Uint8Array(16 * 16 * 128);
 
-        for (let i = 0; i < CaveGenerator.CAVES_PER_CHUNK; i++) {
+            const chunkSeed = this.generator.seed + ":" + chunkX.toString() + "," + chunkZ.toString();
+            const random = new Random(chunkSeed);
 
-            if (random.next() > CaveGenerator.CAVES_PER_CHUNK) continue;
+            for (let i = 0; i < CaveGenerator.CAVES_PER_CHUNK; i++) {
 
-            const noiseX1 = makeNoise3D(() => random.next());
-            const noiseX2 = makeNoise3D(() => random.next());
-            const noiseY1 = makeNoise3D(() => random.next());
-            const noiseY2 = makeNoise3D(() => random.next());
-            const noiseZ1 = makeNoise3D(() => random.next());
-            const noiseZ2 = makeNoise3D(() => random.next());
-            const noiseR = makeNoise3D(() => random.next());
+                if (random.next() > CaveGenerator.CAVES_PER_CHUNK) continue;
 
-            let x = chunkX * 16 + Math.floor(random.next() * 16);
-            let y = Math.floor(random.next() * 48) + 16;
-            let z = chunkZ * 16 + Math.floor(random.next() * 16);
+                const noiseX1 = makeNoise3D(() => random.next());
+                const noiseX2 = makeNoise3D(() => random.next());
+                const noiseY1 = makeNoise3D(() => random.next());
+                const noiseY2 = makeNoise3D(() => random.next());
+                const noiseZ1 = makeNoise3D(() => random.next());
+                const noiseZ2 = makeNoise3D(() => random.next());
+                const noiseR = makeNoise3D(() => random.next());
 
-            for (let j = 0; j < CaveGenerator.CAVE_LENGTH; j++) {
+                let x = chunkX * 16 + Math.floor(random.next() * 16);
+                let y = Math.floor(random.next() * 48) + 16;
+                let z = chunkZ * 16 + Math.floor(random.next() * 16);
 
-                const dx = noiseX1(x / 50, y / 50, z / 50) - noiseX2(x / 50, y / 50, z / 50);
-                const dz = noiseZ1(x / 50, y / 50, z / 50) - noiseZ2(x / 50, y / 50, z / 50);
+                for (let j = 0; j < CaveGenerator.CAVE_LENGTH; j++) {
 
-                const yGradient = Util.map(y, 8, 16, 0, 1);
-                const yNoise = noiseY1(x / 50, y / 50, z / 50) - noiseY2(x / 50, y / 50, z / 50);
-                const dy = Util.lerp(1, yNoise, yGradient);
+                    const dx = noiseX1(x / 50, y / 50, z / 50) - noiseX2(x / 50, y / 50, z / 50);
+                    const dz = noiseZ1(x / 50, y / 50, z / 50) - noiseZ2(x / 50, y / 50, z / 50);
 
-                [x, y, z] = Vec3.toArray(Vec3.add(Vec3.normalize(new Vec3(dx, dy, dz)), new Vec3(x, y, z)));
+                    const yGradient = Util.map(y, 8, 16, 0, 1);
+                    const yNoise = noiseY1(x / 50, y / 50, z / 50) - noiseY2(x / 50, y / 50, z / 50);
+                    const dy = Util.lerp(1, yNoise, yGradient);
 
-                const r = Util.map(noiseR(x / 10, y / 10, z / 10), 0, 1, 2, 4);
-                for (let blockX = Math.floor(x - r); blockX <= Math.floor(x + r); blockX++) {
-                    for (let blockY = Math.max(2, Math.floor(y - r)); blockY <= Math.min(127, Math.floor(y + r)); blockY++) {
-                        for (let blockZ = Math.floor(z - r); blockZ <= Math.floor(z + r); blockZ++) {
-                            if (Util.dist3Square(blockX, blockY, blockZ, x, y, z) <= r * r) {
-                                this.setData(blockX, blockY, blockZ, 1);
+                    [x, y, z] = Vec3.toArray(Vec3.add(Vec3.normalize(new Vec3(dx, dy, dz)), new Vec3(x, y, z)));
+
+                    const r = Util.map(noiseR(x / 10, y / 10, z / 10), 0, 1, 2, 4);
+                    for (let blockX = Math.floor(x - r); blockX <= Math.floor(x + r); blockX++) {
+                        for (let blockY = Math.max(2, Math.floor(y - r)); blockY <= Math.min(127, Math.floor(y + r)); blockY++) {
+                            for (let blockZ = Math.floor(z - r); blockZ <= Math.floor(z + r); blockZ++) {
+                                if (Util.dist3Square(blockX, blockY, blockZ, x, y, z) <= r * r) {
+                                    (this.caveData[[x >> 4, z >> 4].toString()] ??= new Uint8Array(16 * 16 * 128))[(x & 15) + (z & 15) * 16 + y * 256] = 1;
+                                }
                             }
                         }
                     }
                 }
             }
-        }
+
+            resolve();
+        });
+
+        this.preGenerated[index] = promise;
+        await promise;
+        this.preGenerated[index] = true;
     }
 
-    public getAndRemoveCaveData(chunk: Chunk): Uint8Array {
+    public async requestCaveData(chunk: Chunk): Promise<Uint8Array> {
 
+        const promises = [];
         for (let x = chunk.x - CaveGenerator.CHUNK_RADIUS; x <= chunk.x + CaveGenerator.CHUNK_RADIUS; x++) {
             for (let z = chunk.z - CaveGenerator.CHUNK_RADIUS; z <= chunk.z + CaveGenerator.CHUNK_RADIUS; z++) {
-                this.generate(x, z);
+                promises.push(this.preGenerate(x, z));
             }
         }
+
+        await Promise.all(promises);
 
         const data = this.caveData[[chunk.x, chunk.z].toString()] ?? new Uint8Array(16 * 128 * 16);
         delete this.caveData[[chunk.x, chunk.z].toString()];

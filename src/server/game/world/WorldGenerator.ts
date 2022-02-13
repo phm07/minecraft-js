@@ -25,49 +25,45 @@ class WorldGenerator {
 
     public async generateChunk(chunk: Chunk): Promise<void> {
 
-        await new Promise<void>((resolve) => {
+        const chunkSeed = this.seed + ":" + chunk.x.toString() + "," + chunk.z.toString();
+        const chunkRandom = new Random(chunkSeed);
+        const caveData = await this.caveGenerator.requestCaveData(chunk);
 
-            const chunkSeed = this.seed + ":" + chunk.x.toString() + "," + chunk.z.toString();
-            const chunkRandom = new Random(chunkSeed);
-            const caveData = this.caveGenerator.getAndRemoveCaveData(chunk);
+        for (let x = 0; x < 16; x++) {
+            for (let z = 0; z < 16; z++) {
 
-            for (let x = 0; x < 16; x++) {
-                for (let z = 0; z < 16; z++) {
+                const worldX = x + chunk.x * 16;
+                const worldZ = z + chunk.z * 16;
 
-                    const worldX = x + chunk.x * 16;
-                    const worldZ = z + chunk.z * 16;
+                const height = Math.floor(
+                    this.heightNoise1(worldX / 100, worldZ / 100) * 12
+                    + this.heightNoise2(worldX / 50, worldZ / 50) * 6
+                    + this.heightNoise3(worldX / 25, worldZ / 25) * 3
+                    + 48
+                );
 
-                    const height = Math.floor(
-                        this.heightNoise1(worldX / 100, worldZ / 100) * 12
-                        + this.heightNoise2(worldX / 50, worldZ / 50) * 6
-                        + this.heightNoise3(worldX / 25, worldZ / 25) * 3
-                        + 48
-                    );
+                let surface = 1;
+                for (let y = 1; y < height; y++) {
 
-                    let surface = 1;
-                    for (let y = 1; y < height; y++) {
+                    if (caveData[x + z * 16 + y * 256]) continue;
+                    surface = y;
 
-                        if (caveData[x + z * 16 + y * 256]) continue;
-                        surface = y;
-
-                        if (y >= height - 4) {
-                            chunk.setBlockAt(x, y, z, Material.DIRT);
-                        } else if (y > 2) {
-                            chunk.setBlockAt(x, y, z, Material.STONE);
-                        } else {
-                            chunk.setBlockAt(x, y, z, chunkRandom.next() > 0.5 ? Material.BEDROCK : Material.STONE);
-                        }
+                    if (y >= height - 4) {
+                        chunk.setBlockAt(x, y, z, Material.DIRT);
+                    } else if (y > 2) {
+                        chunk.setBlockAt(x, y, z, Material.STONE);
+                    } else {
+                        chunk.setBlockAt(x, y, z, chunkRandom.next() > 0.5 ? Material.BEDROCK : Material.STONE);
                     }
-
-                    if (chunk.blockAt(x, surface, z) === Material.DIRT) {
-                        chunk.setBlockAt(x, surface, z, Material.GRASS);
-                    }
-
-                    chunk.setBlockAt(x, 0, z, Material.BEDROCK);
                 }
+
+                if (chunk.blockAt(x, surface, z) === Material.DIRT) {
+                    chunk.setBlockAt(x, surface, z, Material.GRASS);
+                }
+
+                chunk.setBlockAt(x, 0, z, Material.BEDROCK);
             }
-            resolve();
-        });
+        }
     }
 }
 
