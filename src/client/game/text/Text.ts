@@ -24,10 +24,8 @@ class Text {
         this.position = position;
         this.dimensions = new Vec2(1);
         this.background = new Model(factory.backgroundShader, null, new Quad2D(-0.475, 0.2, 1, 1));
-
         this.models = [];
-
-        void this.generate();
+        this.generate();
     }
 
     public delete(): void {
@@ -57,9 +55,9 @@ class Text {
         this.models.forEach((model) => model.render());
     }
 
-    private async generate(): Promise<void> {
+    private generate(): void {
 
-        const fontData = await this.factory.font.getFontData();
+        const fontData = this.factory.font.fontData;
 
         this.dimensions.x = Array.from(this.content).map((char) => fontData[char]?.width ?? 0).reduce((a, b) => a + b) / this.factory.font.glyphHeight;
         if (this.background) {

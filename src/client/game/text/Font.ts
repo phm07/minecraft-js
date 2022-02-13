@@ -5,20 +5,16 @@ type FontData = Record<string, { uvs: { left: number, right: number, top: number
 
 class Font {
 
-    private readonly fontData: FontData;
-    private waiting: ((data: FontData) => void)[];
-    private ready: boolean;
+    public readonly fontData: FontData;
     public readonly glyphHeight: number;
     public texture: Texture | null;
 
-    public constructor(src: string, glyphHeight: number) {
+    public constructor(data: ImageData, glyphHeight: number) {
 
-        this.ready = false;
         this.fontData = {};
-        this.waiting = [];
         this.glyphHeight = glyphHeight;
         this.texture = null;
-        void this.load(src);
+        this.load(data);
     }
 
     public delete(): void {
@@ -27,9 +23,9 @@ class Font {
         }
     }
 
-    private async load(src: string): Promise<void> {
+    private load(data: ImageData): void {
 
-        const image = new ImageUtils(await ImageUtils.loadImage(src));
+        const image = new ImageUtils(data);
         image.updateImageData();
 
         const inset = 0.001;
@@ -59,15 +55,7 @@ class Font {
             }
         }
 
-        this.texture = new Texture(image.toBase64());
-        this.ready = true;
-        this.waiting.forEach((resolve) => resolve(this.fontData));
-        this.waiting = [];
-    }
-
-    public async getFontData(): Promise<FontData> {
-        if (this.ready) return Promise.resolve(this.fontData);
-        else return new Promise((resolve) => this.waiting.push(resolve));
+        this.texture = new Texture(image.getData());
     }
 }
 

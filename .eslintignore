@@ -2,3 +2,5 @@ node_modules/
 dist/
 webpack.client.config.ts
 webpack.server.config.ts
+*.d.ts
+*.js

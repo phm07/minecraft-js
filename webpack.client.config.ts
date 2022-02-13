@@ -48,7 +48,7 @@ export default (env: any, argv: {mode: string}): webpack.Configuration => ({
             },
             {
                 test: /\.(png)$/i,
-                use: ["url-loader"]
+                use: ["texture-loader"]
             },
             {
                 test: /\.(fs)|(vs)|(obj)$/i,

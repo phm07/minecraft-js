@@ -1,12 +1,12 @@
 class ImageUtils {
 
-    private readonly canvas: HTMLCanvasElement;
-    private readonly context: CanvasRenderingContext2D | null;
+    readonly canvas: HTMLCanvasElement;
+    public readonly context: CanvasRenderingContext2D | null;
     private imageData: Uint8ClampedArray | null;
     public width: number;
     public height: number;
 
-    public constructor(image: HTMLImageElement, width = image.width, height = image.height, offX = 0, offY = 0) {
+    public constructor(image: ImageData, width = image.width, height = image.height, offX = 0, offY = 0) {
 
         this.width = width;
         this.height = height;
@@ -16,17 +16,9 @@ class ImageUtils {
         this.canvas.height = height;
 
         this.context = this.canvas.getContext("2d");
-        this.context?.drawImage(image, offX, offY, width, height, 0, 0, width, height);
+        this.context?.putImageData(image, -offX, -offY, 0, 0, image.width, image.height);
 
         this.imageData = null;
-    }
-
-    public static async loadImage(src: string): Promise<HTMLImageElement> {
-        const image = new Image();
-        image.src = src;
-        return new Promise<HTMLImageElement>((resolve): void => {
-            image.onload = (): void => resolve(image);
-        });
     }
 
     public updateImageData(): void {
@@ -55,12 +47,12 @@ class ImageUtils {
         this.context?.putImageData(new ImageData(data, 1, 1), x, y);
     }
 
-    public toBase64(): string {
-        return this.canvas.toDataURL("image/png");
-    }
-
-    public async save(): Promise<HTMLImageElement> {
-        return ImageUtils.loadImage(this.toBase64());
+    public getData(): ImageData {
+        return new ImageData(
+            this.context?.getImageData(0, 0, this.width, this.height).data
+                ?? new Uint8ClampedArray(this.width * this.height),
+            this.width, this.height
+        );
     }
 }
 

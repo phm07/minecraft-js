@@ -24,10 +24,6 @@
   "settings": {
     "import/resolver": "typescript"
   },
-  "ignorePatterns": [
-    "node_modules/**/*.*",
-    "*.d.ts"
-  ],
   "rules": {
     "import/order": ["warn", { "alphabetize": { "order": "asc", "caseInsensitive": true } }],
     "no-restricted-imports": ["error", { "patterns": [".*"] }],

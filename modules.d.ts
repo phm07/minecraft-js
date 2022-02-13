@@ -9,6 +9,6 @@ declare module "*.fs" {
 }
 
 declare module "*.png" {
-    const url: string;
-    export default url;
+    const data: ImageData;
+    export default data;
 }
