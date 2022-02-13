@@ -2,6 +2,7 @@ import path from "path";
 import webpack from "webpack";
 import TerserPlugin from "terser-webpack-plugin";
 import nodeExternals from "webpack-node-externals";
+import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
 
 export default (env: any, argv: {mode: string}): webpack.Configuration => ({
 
@@ -29,7 +30,8 @@ export default (env: any, argv: {mode: string}): webpack.Configuration => ({
         allowlist: "@spissvinkel/simplex-noise"
     })],
     resolve: {
-        extensions: [".ts", ".js"]
+        extensions: [".ts", ".js"],
+        plugins: [new TsconfigPathsPlugin()]
     },
     module: {
         rules: [

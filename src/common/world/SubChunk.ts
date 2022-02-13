@@ -1,5 +1,5 @@
-import Uint8Array3D from "../../../common/Uint8Array3D";
-import Chunk from "./Chunk";
+import Uint8Array3D from "src/common/util/Uint8Array3D";
+import Chunk from "src/common/world/Chunk";
 
 class SubChunk {
 

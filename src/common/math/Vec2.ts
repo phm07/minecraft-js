@@ -1,4 +1,3 @@
-
 class Vec2 {
 
     public x: number;

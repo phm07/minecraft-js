@@ -1,8 +1,9 @@
 import { Socket } from "socket.io";
 
-import Position from "../../../common/Position";
-import Util from "../../../common/Util";
-import Vec3 from "../../../common/Vec3";
+import Vec3 from "src/common/math/Vec3";
+import Util from "src/common/util/Util";
+import Position from "src/common/world/Position";
+import ServerChunk from "src/server/game/world/ServerChunk";
 
 class Player {
 
@@ -26,16 +27,21 @@ class Player {
             });
         });
 
-        this.position = Position.clone(server.world.getSpawnPoint());
-        this.velocity = new Vec3();
-        this.onGround = false;
-        this.socket.emit("teleport", {
-            position: this.position
+        void server.world.getSpawnPoint().then((spawnPoint) => {
+            this.position = spawnPoint;
+            this.socket.emit("teleport", {
+                position: this.position
+            });
         });
 
-        this.socket.on("requestChunk", (packet: { x: number, z: number }) => {
+        this.position = new Position();
+        this.velocity = new Vec3();
+        this.onGround = false;
+
+        this.socket.on("requestChunk", async (packet: { x: number, z: number }) => {
             if (Util.dist2Square(packet.x * 16, packet.z * 16, this.position.x, this.position.z) <= 256 * 256) {
-                server.world.getChunk(packet.x, packet.z).sendTo(this);
+                const chunk = await server.world.getChunk(packet.x, packet.z) as ServerChunk;
+                chunk.sendTo(this);
             }
         });
 

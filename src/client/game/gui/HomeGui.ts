@@ -1,12 +1,12 @@
-import Vec2 from "../../../common/Vec2";
-import backgroundImg from "../../assets/background.png";
-import logoImg from "../../assets/logo.png";
-import Model2D from "../../gl/Model2D";
-import Texture from "../../gl/Texture";
-import TexturedQuad2D from "../../models/TexturedQuad2D";
-import HomeScene from "../../scene/HomeScene";
-import GuiManager from "./GuiManager";
-import IGui from "./IGui";
+import backgroundImg from "src/client/assets/background.png";
+import logoImg from "src/client/assets/logo.png";
+import GuiManager from "src/client/game/gui/GuiManager";
+import IGui from "src/client/game/gui/IGui";
+import Model2D from "src/client/gl/Model2D";
+import Texture from "src/client/gl/Texture";
+import TexturedQuad2D from "src/client/models/TexturedQuad2D";
+import HomeScene from "src/client/scene/HomeScene";
+import Vec2 from "src/common/math/Vec2";
 
 class HomeGui implements IGui {
 

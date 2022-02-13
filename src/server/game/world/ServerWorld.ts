@@ -1,24 +1,25 @@
-import Position from "../../../common/Position";
-import Chunk from "./Chunk";
-import WorldGenerator from "./WorldGenerator";
+import Chunk from "src/common/world/Chunk";
+import Position from "src/common/world/Position";
+import World from "src/common/world/World";
+import ServerChunk from "src/server/game/world/ServerChunk";
+import WorldGenerator from "src/server/game/world/WorldGenerator";
 
-class World {
+class ServerWorld extends World {
 
     private readonly generator: WorldGenerator;
-    private readonly chunkMap: Record<string, Chunk | undefined>;
 
     public constructor() {
+        super();
         this.generator = new WorldGenerator("");
-        this.chunkMap = {};
         for (let x = -3; x <= 3; x++) {
             for (let z = -3; z <= 3; z++) {
-                this.getChunk(x, z);
+                void this.getChunk(x, z);
             }
         }
     }
 
-    public getSpawnPoint(): Position {
-        return new Position(0.5, this.highestPointAt(0, 0), 0.5, 0, 0);
+    public async getSpawnPoint(): Promise<Position> {
+        return new Position(0.5, await this.highestPointAt(0, 0), 0.5, 0, 0);
     }
 
     public blockAt(x: number, y: number, z: number): number {
@@ -32,18 +33,18 @@ class World {
         chunk.setBlockAt(x & 15, y, z & 15, block);
     }
 
-    public highestPointAt(x: number, z: number): number {
-        const chunk = this.getChunk(x >> 4, z >> 4);
+    public async highestPointAt(x: number, z: number): Promise<number> {
+        const chunk = await this.getChunk(x >> 4, z >> 4);
         let y = 128;
         while (y > 1 && !chunk.blockAt(x & 15, y - 1, z & 15)) y--;
         return y;
     }
 
-    public getChunk(x: number, z: number): Chunk {
+    public async getChunk(x: number, z: number): Promise<Chunk> {
         let chunk = this.chunkMap[[x, z].toString()];
         if (!chunk) {
-            chunk = new Chunk(x, z);
-            this.generator.generateChunk(chunk);
+            chunk = new ServerChunk(this, x, z);
+            await this.generator.generateChunk(chunk);
             this.chunkMap[[x, z].toString()] = chunk;
         }
         return chunk;
@@ -51,4 +52,4 @@ class World {
 
 }
 
-export default World;
+export default ServerWorld;

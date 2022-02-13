@@ -1,5 +1,5 @@
-import Vec3 from "../../common/Vec3";
-import Mesh from "../gl/Mesh";
+import Mesh from "src/client/gl/Mesh";
+import Vec3 from "src/common/math/Vec3";
 
 class WireframeCuboid extends Mesh {
 

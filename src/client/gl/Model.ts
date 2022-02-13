@@ -1,10 +1,10 @@
 import { mat4, quat } from "gl-matrix";
 
-import Vec3 from "../../common/Vec3";
-import GameScene from "../scene/GameScene";
-import Camera from "./Camera";
-import Mesh from "./Mesh";
-import Shader from "./Shader";
+import Camera from "src/client/gl/Camera";
+import Mesh from "src/client/gl/Mesh";
+import Shader from "src/client/gl/Shader";
+import GameScene from "src/client/scene/GameScene";
+import Vec3 from "src/common/math/Vec3";
 
 class Model {
 

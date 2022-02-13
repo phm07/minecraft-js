@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "./dist/",
-    "module": "ES2020",
-    "target": "ES2015",
+    "module": "ESNext",
+    "target": "ES6",
     "allowJs": false,
     "moduleResolution": "node",
     "sourceMap": true,
@@ -12,7 +13,10 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "strictPropertyInitialization": true
+    "strictPropertyInitialization": true,
+    "paths": {
+      "@/*": ["/*"]
+    }
   },
   "ts-node": {
     "compilerOptions": {

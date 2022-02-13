@@ -1,19 +1,18 @@
-import AABB from "../../physics/AABB";
-import GameScene from "../../scene/GameScene";
-import Block from "./Block";
-import Chunk from "./Chunk";
-import Terrain from "./Terrain";
+import Terrain from "src/client/game/world/Terrain";
+import AABB from "src/client/physics/AABB";
+import GameScene from "src/client/scene/GameScene";
+import Chunk from "src/common/world/Chunk";
+import World from "src/common/world/World";
 
-class World {
+class ClientWorld extends World {
 
     public static readonly RENDER_DISTANCE = 8;
 
     private readonly requested: Record<string, boolean | undefined>;
-    public readonly chunkMap: Record<string, Chunk | undefined>;
     public readonly terrain: Terrain;
 
     public constructor() {
-        this.chunkMap = {};
+        super();
         this.requested = {};
         this.terrain = new Terrain(this);
         setTimeout(this.update.bind(this), 0);
@@ -25,15 +24,6 @@ class World {
 
     public render(): void {
         this.terrain.render();
-    }
-
-    public isLoaded(chunkX: number, chunkZ: number): boolean {
-        return Boolean(this.chunkMap[[chunkX, chunkZ].toString()]);
-    }
-
-    public blockAt(x: number, y: number, z: number): Block | undefined {
-        const chunk = this.chunkMap[[x >> 4, z >> 4].toString()];
-        return Block.ofId(chunk?.blockAt(x & 15, y, z & 15) ?? 0);
     }
 
     public isPlaceable(x: number, y: number, z: number): boolean {
@@ -104,12 +94,12 @@ class World {
             if (!chunk) continue;
             const dx = Math.abs(chunk.x - chunkX);
             const dz = Math.abs(chunk.z - chunkZ);
-            if (dx > World.RENDER_DISTANCE || dz > World.RENDER_DISTANCE) {
+            if (dx > ClientWorld.RENDER_DISTANCE || dz > ClientWorld.RENDER_DISTANCE) {
                 this.unloadChunk(chunk);
             }
         }
 
-        for (let r = 0; r <= World.RENDER_DISTANCE; r++) {
+        for (let r = 0; r <= ClientWorld.RENDER_DISTANCE; r++) {
             for (let x = -1; x <= 1; x += 2) {
                 for (let z = chunkZ - r; z <= chunkZ + r; z++) {
                     this.requestChunk(chunkX + x * r, z);
@@ -154,4 +144,4 @@ class World {
     }
 }
 
-export default World;
+export default ClientWorld;

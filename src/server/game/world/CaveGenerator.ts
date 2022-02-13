@@ -1,10 +1,10 @@
 import { makeNoise3D } from "fast-simplex-noise";
 import Random from "rand-seed";
 
-import Util from "../../../common/Util";
-import Vec3 from "../../../common/Vec3";
-import Chunk from "./Chunk";
-import WorldGenerator from "./WorldGenerator";
+import Vec3 from "src/common/math/Vec3";
+import Util from "src/common/util/Util";
+import Chunk from "src/common/world/Chunk";
+import WorldGenerator from "src/server/game/world/WorldGenerator";
 
 class CaveGenerator {
 

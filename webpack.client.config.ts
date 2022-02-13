@@ -2,6 +2,7 @@ import webpack from "webpack";
 import TerserPlugin from "terser-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "path";
+import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
 
 export default (env: any, argv: {mode: string}): webpack.Configuration => ({
 
@@ -31,7 +32,8 @@ export default (env: any, argv: {mode: string}): webpack.Configuration => ({
         })]
     },
     resolve: {
-        extensions: [".ts", ".js"]
+        extensions: [".ts", ".js"],
+        plugins: [new TsconfigPathsPlugin()]
     },
     module: {
         rules: [

@@ -1,8 +1,8 @@
-import Position from "../../common/Position";
-import Vec3 from "../../common/Vec3";
-import Model from "../gl/Model";
-import Shader from "../gl/Shader";
-import ShadedTexturedCuboid from "./ShadedTexturedCuboid";
+import Model from "src/client/gl/Model";
+import Shader from "src/client/gl/Shader";
+import ShadedTexturedCuboid from "src/client/models/ShadedTexturedCuboid";
+import Vec3 from "src/common/math/Vec3";
+import Position from "src/common/world/Position";
 
 type Side = { left: number, right: number, top: number, bottom: number };
 type UV = { front: Side, back: Side, top: Side, bottom: Side, right: Side, left: Side };

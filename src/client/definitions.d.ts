@@ -1,4 +1,4 @@
-import Game from "./Game";
+import Game from "src/client/Game";
 
 declare global {
     var game: Game;

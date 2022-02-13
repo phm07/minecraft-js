@@ -1,24 +1,23 @@
-import "../../styles/game_gui.scss";
+import "src/client/styles/game_gui.scss";
 
 import { mat4 } from "gl-matrix";
-
-import Position from "../../../common/Position";
-import Vec2 from "../../../common/Vec2";
-import Vec3 from "../../../common/Vec3";
-import gui from "../../assets/gui.png";
-import Camera from "../../gl/Camera";
-import Model from "../../gl/Model";
-import Model2D from "../../gl/Model2D";
-import Shader from "../../gl/Shader";
-import Texture from "../../gl/Texture";
-import Axes from "../../models/Axes";
-import Humanoid from "../../models/Humanoid";
-import ShadedTexturedCuboid from "../../models/ShadedTexturedCuboid";
-import TexturedQuad2D from "../../models/TexturedQuad2D";
-import GameScene from "../../scene/GameScene";
-import HumanFactory from "../mp/HumanFactory";
-import GuiManager from "./GuiManager";
-import IGui from "./IGui";
+import gui from "src/client/assets/gui.png";
+import GuiManager from "src/client/game/gui/GuiManager";
+import IGui from "src/client/game/gui/IGui";
+import HumanFactory from "src/client/game/mp/HumanFactory";
+import Camera from "src/client/gl/Camera";
+import Model from "src/client/gl/Model";
+import Model2D from "src/client/gl/Model2D";
+import Shader from "src/client/gl/Shader";
+import Texture from "src/client/gl/Texture";
+import Axes from "src/client/models/Axes";
+import Humanoid from "src/client/models/Humanoid";
+import ShadedTexturedCuboid from "src/client/models/ShadedTexturedCuboid";
+import TexturedQuad2D from "src/client/models/TexturedQuad2D";
+import GameScene from "src/client/scene/GameScene";
+import Vec2 from "src/common/math/Vec2";
+import Vec3 from "src/common/math/Vec3";
+import Position from "src/common/world/Position";
 
 class GameGui implements IGui {
 

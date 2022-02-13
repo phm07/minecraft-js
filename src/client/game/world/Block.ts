@@ -1,18 +1,20 @@
+import Material from "src/common/world/Material";
+
 type UV = { all?: number[], sides?: number[], top?: number[], bottom?: number[] };
 
 class Block {
 
     public static readonly BLOCKS: Record<number, Block | undefined> = [];
-    public static readonly DIRT = new Block(1, { all: [0, 0] });
-    public static readonly GRASS = new Block(2, { sides: [1, 0], top: [2, 0], bottom: [0, 0] });
-    public static readonly STONE = new Block(3, { all: [3, 0] });
-    public static readonly BEDROCK = new Block(4, { all: [4, 0] }, false);
+    public static readonly DIRT = new Block(Material.DIRT, { all: [0, 0] });
+    public static readonly GRASS = new Block(Material.GRASS, { sides: [1, 0], top: [2, 0], bottom: [0, 0] });
+    public static readonly STONE = new Block(Material.STONE, { all: [3, 0] });
+    public static readonly BEDROCK = new Block(Material.BEDROCK, { all: [4, 0] }, false);
 
     public readonly id: number;
     public readonly uvs: number[][];
     public readonly breakable: boolean;
 
-    public constructor(id: number, uvs: UV, breakable = true) {
+    public constructor(id: Material, uvs: UV, breakable = true) {
         Block.BLOCKS[id] = this;
         this.id = id;
         this.uvs = Block.toUvArray(uvs);

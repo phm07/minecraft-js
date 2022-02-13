@@ -1,7 +1,7 @@
-import GuiManager from "./game/gui/GuiManager";
-import Client from "./network/Client";
-import HomeScene from "./scene/HomeScene";
-import IScene from "./scene/IScene";
+import GuiManager from "src/client/game/gui/GuiManager";
+import Client from "src/client/network/Client";
+import HomeScene from "src/client/scene/HomeScene";
+import IScene from "src/client/scene/IScene";
 
 class Game {
 

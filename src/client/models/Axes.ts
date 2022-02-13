@@ -1,4 +1,4 @@
-import Mesh from "../gl/Mesh";
+import Mesh from "src/client/gl/Mesh";
 
 class Axes extends Mesh {
 

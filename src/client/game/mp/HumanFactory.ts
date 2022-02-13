@@ -1,13 +1,13 @@
-import Position from "../../../common/Position";
-import Vec3 from "../../../common/Vec3";
-import skin from "../../assets/steve.png";
-import Shader from "../../gl/Shader";
-import Texture from "../../gl/Texture";
-import GameScene from "../../scene/GameScene";
-import fragmentShader from "../../shaders/human.fs";
-import vertexShader from "../../shaders/human.vs";
-import TextFactory from "../text/TextFactory";
-import Human from "./Human";
+import skin from "src/client/assets/steve.png";
+import Human from "src/client/game/mp/Human";
+import TextFactory from "src/client/game/text/TextFactory";
+import Shader from "src/client/gl/Shader";
+import Texture from "src/client/gl/Texture";
+import GameScene from "src/client/scene/GameScene";
+import fragmentShader from "src/client/shaders/human.fs";
+import vertexShader from "src/client/shaders/human.vs";
+import Vec3 from "src/common/math/Vec3";
+import Position from "src/common/world/Position";
 
 class HumanFactory {
 

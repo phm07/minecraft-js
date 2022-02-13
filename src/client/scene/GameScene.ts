@@ -1,22 +1,22 @@
-import Position from "../../common/Position";
-import defaultFont from "../assets/glyphs.png";
-import GameGui from "../game/gui/GameGui";
-import HumanFactory from "../game/mp/HumanFactory";
-import Player from "../game/player/Player";
-import Font from "../game/text/Font";
-import TextFactory from "../game/text/TextFactory";
-import World from "../game/world/World";
-import Camera from "../gl/Camera";
-import Shader from "../gl/Shader";
-import wireframeFragmentShader from "../shaders/wireframe.fs";
-import wireframeVertexShader from "../shaders/wireframe.vs";
-import IScene from "./IScene";
+import defaultFont from "src/client/assets/glyphs.png";
+import GameGui from "src/client/game/gui/GameGui";
+import HumanFactory from "src/client/game/mp/HumanFactory";
+import Player from "src/client/game/player/Player";
+import Font from "src/client/game/text/Font";
+import TextFactory from "src/client/game/text/TextFactory";
+import ClientWorld from "src/client/game/world/ClientWorld";
+import Camera from "src/client/gl/Camera";
+import Shader from "src/client/gl/Shader";
+import IScene from "src/client/scene/IScene";
+import wireframeFragmentShader from "src/client/shaders/wireframe.fs";
+import wireframeVertexShader from "src/client/shaders/wireframe.vs";
+import Position from "src/common/world/Position";
 
 class GameScene implements IScene {
 
     public readonly camera: Camera;
     public readonly player: Player;
-    public readonly world: World;
+    public readonly world: ClientWorld;
     public readonly font: Font;
     public readonly textFactory: TextFactory;
     public readonly humanFactory: HumanFactory;
@@ -27,7 +27,7 @@ class GameScene implements IScene {
         this.wireframeShader = new Shader(wireframeVertexShader, wireframeFragmentShader);
         this.camera = new Camera(new Position(), 110 / 360 * Math.PI * 2, 0.01, 1000);
         this.player = new Player(this.camera, this.wireframeShader);
-        this.world = new World();
+        this.world = new ClientWorld();
 
         this.font = new Font(defaultFont, 12);
         this.textFactory = new TextFactory(this.font);

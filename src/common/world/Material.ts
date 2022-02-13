@@ -1,4 +1,4 @@
-enum Blocks {
+enum Material {
     AIR,
     DIRT,
     GRASS,
@@ -6,4 +6,4 @@ enum Blocks {
     BEDROCK
 }
 
-export default Blocks;
+export default Material;

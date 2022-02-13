@@ -1,13 +1,13 @@
-import express from "express";
 import http from "http";
+import * as express from "express";
 import { Server } from "socket.io";
 import { webpack } from "webpack";
 import webpackDevMiddleware from "webpack-dev-middleware";
 
-import configFunction from "../../webpack.client.config";
-import GameServer from "./GameServer";
+import GameServer from "src/server/GameServer";
+import configFunction from "webpack.client.config";
 
-const app = express();
+const app = express.default();
 const httpServer = http.createServer(app);
 
 const config = configFunction(null, { mode: "development" });

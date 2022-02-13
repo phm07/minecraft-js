@@ -1,10 +1,10 @@
-import express from "express";
 import http from "http";
+import * as express from "express";
 import { Server } from "socket.io";
 
-import GameServer from "./GameServer";
+import GameServer from "src/server/GameServer";
 
-const app = express();
+const app = express.default();
 const httpServer = http.createServer(app);
 
 app.use(express.static(__dirname));

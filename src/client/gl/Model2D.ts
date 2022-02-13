@@ -1,8 +1,8 @@
 import { mat4, quat } from "gl-matrix";
 
-import Vec2 from "../../common/Vec2";
-import Mesh from "./Mesh";
-import Shader from "./Shader";
+import Mesh from "src/client/gl/Mesh";
+import Shader from "src/client/gl/Shader";
+import Vec2 from "src/common/math/Vec2";
 
 class Model2D {
 

@@ -1,16 +1,17 @@
-import Interpolator from "../../../common/Interpolator";
-import Position from "../../../common/Position";
-import Util from "../../../common/Util";
-import Vec3 from "../../../common/Vec3";
-import Blocks from "../../../server/game/world/Blocks";
-import Camera from "../../gl/Camera";
-import Model from "../../gl/Model";
-import Shader from "../../gl/Shader";
-import WireframeCuboid from "../../models/WireframeCuboid";
-import AABB from "../../physics/AABB";
-import GameScene from "../../scene/GameScene";
-import BlockFace from "../world/BlockFace";
-import PlayerController from "./PlayerController";
+import PlayerController from "src/client/game/player/PlayerController";
+import Block from "src/client/game/world/Block";
+import BlockFace from "src/client/game/world/BlockFace";
+import Camera from "src/client/gl/Camera";
+import Model from "src/client/gl/Model";
+import Shader from "src/client/gl/Shader";
+import WireframeCuboid from "src/client/models/WireframeCuboid";
+import AABB from "src/client/physics/AABB";
+import GameScene from "src/client/scene/GameScene";
+import Interpolator from "src/common/math/Interpolator";
+import Vec3 from "src/common/math/Vec3";
+import Util from "src/common/util/Util";
+import Material from "src/common/world/Material";
+import Position from "src/common/world/Position";
 
 type TargetBlock = { position: Vec3, face: BlockFace } | null;
 
@@ -111,8 +112,8 @@ class Player {
         const world = (game.scene as GameScene).world;
         const pos = Vec3.add(this.targetedBlock.position, this.targetedBlock.face.dir);
         if (world.isPlaceable(pos.x, pos.y, pos.z)) {
-            void world.setBlock(pos.x, pos.y, pos.z, Blocks.DIRT);
-            game.client.socket?.emit("blockUpdate", { position: pos, type: Blocks.DIRT });
+            void world.setBlock(pos.x, pos.y, pos.z, Material.DIRT);
+            game.client.socket?.emit("blockUpdate", { position: pos, type: Material.DIRT });
         }
     }
 
@@ -120,7 +121,7 @@ class Player {
         if (!this.targetedBlock) return;
         const world = (game.scene as GameScene).world;
         const { x, y, z } = this.targetedBlock.position;
-        if (world.blockAt(x, y, z)?.breakable) {
+        if (Block.ofId(world.blockAt(x, y, z))?.breakable) {
             void world.setBlock(x, y, z, 0);
             game.client.socket?.emit("blockUpdate", { position: { x, y, z }, type: 0 });
         }

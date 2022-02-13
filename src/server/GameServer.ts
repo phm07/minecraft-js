@@ -1,19 +1,19 @@
 import * as crypto from "crypto";
 
-import LoginHandler from "./connection/LoginHandler";
-import Player from "./game/player/Player";
-import World from "./game/world/World";
+import LoginHandler from "src/server/connection/LoginHandler";
+import Player from "src/server/game/player/Player";
+import ServerWorld from "src/server/game/world/ServerWorld";
 
 class GameServer {
 
     public readonly players: Player[];
-    public readonly world: World;
+    public readonly world: ServerWorld;
     private readonly loginHandler: LoginHandler;
 
     public constructor() {
 
         this.players = [];
-        this.world = new World();
+        this.world = new ServerWorld();
         this.loginHandler = new LoginHandler();
     }
 

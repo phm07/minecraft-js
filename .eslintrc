@@ -3,7 +3,13 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:import/recommended",
+    "plugin:import/typescript"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "import"
   ],
   "overrides": [
     {
@@ -15,15 +21,16 @@
       }
     }
   ],
+  "settings": {
+    "import/resolver": "typescript"
+  },
   "ignorePatterns": [
     "node_modules/**/*.*",
     "*.d.ts"
   ],
-  "plugins": [
-    "@typescript-eslint",
-    "simple-import-sort"
-  ],
   "rules": {
+    "import/order": ["warn", { "alphabetize": { "order": "asc", "caseInsensitive": true } }],
+    "no-restricted-imports": ["error", { "patterns": [".*"] }],
     "@typescript-eslint/brace-style": "warn",
     "@typescript-eslint/comma-dangle": "warn",
     "@typescript-eslint/comma-spacing": "warn",
@@ -108,8 +115,6 @@
       "before"
     ],
     "rest-spread-spacing": "warn",
-    "simple-import-sort/exports": "warn",
-    "simple-import-sort/imports": "warn",
     "space-before-blocks": "warn",
     "space-in-parens": "warn",
     "space-unary-ops": "warn",

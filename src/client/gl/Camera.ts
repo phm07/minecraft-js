@@ -1,6 +1,6 @@
 import { mat4 } from "gl-matrix";
 
-import Position from "../../common/Position";
+import Position from "src/common/world/Position";
 
 class Camera {
 

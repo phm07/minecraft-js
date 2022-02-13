@@ -1,5 +1,5 @@
-import ImageUtils from "../../../common/ImageUtils";
-import Texture from "../../gl/Texture";
+import Texture from "src/client/gl/Texture";
+import ImageUtils from "src/common/util/ImageUtils";
 
 type FontData = Record<string, { uvs: { left: number, right: number, top: number, bottom: number }, width: number, height: number } | undefined>;
 

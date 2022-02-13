@@ -1,11 +1,11 @@
-import Position from "../../../common/Position";
-import Util from "../../../common/Util";
-import Vec3 from "../../../common/Vec3";
-import Humanoid from "../../models/Humanoid";
-import AABB from "../../physics/AABB";
-import Text from "../text/Text";
-import Animator from "./Animator";
-import HumanFactory from "./HumanFactory";
+import Animator from "src/client/game/mp/Animator";
+import HumanFactory from "src/client/game/mp/HumanFactory";
+import Text from "src/client/game/text/Text";
+import Humanoid from "src/client/models/Humanoid";
+import AABB from "src/client/physics/AABB";
+import Vec3 from "src/common/math/Vec3";
+import Util from "src/common/util/Util";
+import Position from "src/common/world/Position";
 
 class Human {
 

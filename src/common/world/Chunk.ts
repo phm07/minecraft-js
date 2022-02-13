@@ -1,6 +1,7 @@
-import Uint8Array3D from "../../../common/Uint8Array3D";
-import SubChunk from "./SubChunk";
-import World from "./World";
+import Uint8Array3D from "src/common/util/Uint8Array3D";
+import Material from "src/common/world/Material";
+import SubChunk from "src/common/world/SubChunk";
+import World from "src/common/world/World";
 
 class Chunk {
 
@@ -21,12 +22,12 @@ class Chunk {
         }
     }
 
-    public blockAt(x: number, y: number, z: number): number {
-        return this.subChunks[Math.floor(y / 16)].blocks.get(x, y & 15, z);
+    public blockAt(x: number, y: number, z: number): Material {
+        return this.subChunks[Math.floor(y / 16)].blocks.getAt(x, y & 15, z);
     }
 
     public setBlockAt(x: number, y: number, z: number, block: number): void {
-        this.subChunks[Math.floor(y / 16)].blocks.set(x, y & 15, z, block);
+        this.subChunks[Math.floor(y / 16)].blocks.setAt(x, y & 15, z, block);
     }
 }
 

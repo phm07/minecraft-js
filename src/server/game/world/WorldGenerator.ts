@@ -1,9 +1,9 @@
 import { makeNoise2D } from "fast-simplex-noise";
 import Random from "rand-seed";
 
-import Blocks from "./Blocks";
-import CaveGenerator from "./CaveGenerator";
-import Chunk from "./Chunk";
+import Chunk from "src/common/world/Chunk";
+import Material from "src/common/world/Material";
+import CaveGenerator from "src/server/game/world/CaveGenerator";
 
 class WorldGenerator {
 
@@ -23,49 +23,52 @@ class WorldGenerator {
         this.caveGenerator = new CaveGenerator(this);
     }
 
-    public generateChunk(chunk: Chunk): void {
+    public async generateChunk(chunk: Chunk): Promise<void> {
 
-        const chunkSeed = this.seed + ":" + chunk.x.toString() + "," + chunk.z.toString();
-        const chunkRandom = new Random(chunkSeed);
-        const caveData = this.caveGenerator.getAndRemoveCaveData(chunk);
+        await new Promise<void>((resolve) => {
 
-        for (let x = 0; x < 16; x++) {
-            for (let z = 0; z < 16; z++) {
+            const chunkSeed = this.seed + ":" + chunk.x.toString() + "," + chunk.z.toString();
+            const chunkRandom = new Random(chunkSeed);
+            const caveData = this.caveGenerator.getAndRemoveCaveData(chunk);
 
-                const worldX = x + chunk.x * 16;
-                const worldZ = z + chunk.z * 16;
+            for (let x = 0; x < 16; x++) {
+                for (let z = 0; z < 16; z++) {
 
-                const height = Math.floor(
-                    this.heightNoise1(worldX / 100, worldZ / 100) * 12
-                    + this.heightNoise2(worldX / 50, worldZ / 50) * 6
-                    + this.heightNoise3(worldX / 25, worldZ / 25) * 3
-                    + 48
-                );
+                    const worldX = x + chunk.x * 16;
+                    const worldZ = z + chunk.z * 16;
 
-                let surface = 1;
-                for (let y = 1; y < height; y++) {
+                    const height = Math.floor(
+                        this.heightNoise1(worldX / 100, worldZ / 100) * 12
+                        + this.heightNoise2(worldX / 50, worldZ / 50) * 6
+                        + this.heightNoise3(worldX / 25, worldZ / 25) * 3
+                        + 48
+                    );
 
-                    if (caveData[x + z * 16 + y * 256]) continue;
-                    surface = y;
+                    let surface = 1;
+                    for (let y = 1; y < height; y++) {
 
-                    if (y >= height - 4) {
-                        chunk.setBlockAt(x, y, z, Blocks.DIRT);
-                    } else if (y > 2) {
-                        chunk.setBlockAt(x, y, z, Blocks.STONE);
-                    } else {
-                        chunk.setBlockAt(x, y, z, chunkRandom.next() > 0.5 ? Blocks.BEDROCK : Blocks.STONE);
+                        if (caveData[x + z * 16 + y * 256]) continue;
+                        surface = y;
+
+                        if (y >= height - 4) {
+                            chunk.setBlockAt(x, y, z, Material.DIRT);
+                        } else if (y > 2) {
+                            chunk.setBlockAt(x, y, z, Material.STONE);
+                        } else {
+                            chunk.setBlockAt(x, y, z, chunkRandom.next() > 0.5 ? Material.BEDROCK : Material.STONE);
+                        }
                     }
-                }
 
-                if (chunk.blockAt(x, surface, z) === Blocks.DIRT) {
-                    chunk.setBlockAt(x, surface, z, Blocks.GRASS);
-                }
+                    if (chunk.blockAt(x, surface, z) === Material.DIRT) {
+                        chunk.setBlockAt(x, surface, z, Material.GRASS);
+                    }
 
-                chunk.setBlockAt(x, 0, z, Blocks.BEDROCK);
+                    chunk.setBlockAt(x, 0, z, Material.BEDROCK);
+                }
             }
-        }
+            resolve();
+        });
     }
-
 }
 
 export default WorldGenerator;

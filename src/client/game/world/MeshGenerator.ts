@@ -1,8 +1,8 @@
-import Uint8Array3D from "../../../common/Uint8Array3D";
-import Mesh from "../../gl/Mesh";
-import Block from "./Block";
-import SubChunk from "./SubChunk";
-import World from "./World";
+import Block from "src/client/game/world/Block";
+import Mesh from "src/client/gl/Mesh";
+import Uint8Array3D from "src/common/util/Uint8Array3D";
+import SubChunk from "src/common/world/SubChunk";
+import World from "src/common/world/World";
 
 class MeshGenerator {
 
@@ -40,7 +40,7 @@ class MeshGenerator {
                 for (let y = -1; y <= 16; y++) {
                     const blockChunk = neighbors[Math.floor(x / 16) + 1][Math.floor(y / 16) + 1][Math.floor(z / 16) + 1];
                     if (!blockChunk) continue;
-                    blocks.set(x + 1, y + 1, z + 1, blockChunk.blocks.get(x & 15, y & 15, z & 15));
+                    blocks.setAt(x + 1, y + 1, z + 1, blockChunk.blocks.getAt(x & 15, y & 15, z & 15));
                 }
             }
         }
@@ -53,7 +53,7 @@ class MeshGenerator {
             for (let y = 0; y < 16; y++) {
                 for (let z = 0; z < 16; z++) {
 
-                    const block = blocks.get(x + 1, y + 1, z + 1);
+                    const block = blocks.getAt(x + 1, y + 1, z + 1);
                     const uv = Block.ofId(block)?.uvs;
                     if (!uv) continue;
 
@@ -62,16 +62,16 @@ class MeshGenerator {
                     const offY = subChunk.level * 16 + y;
 
                     // front
-                    if (!blocks.get(x + 1, y + 1, z + 2)) {
+                    if (!blocks.getAt(x + 1, y + 1, z + 2)) {
 
-                        const top = !blocks.get(x + 1, y + 2, z + 2);
-                        const right = !blocks.get(x + 2, y + 1, z + 2);
-                        const bottom = !blocks.get(x + 1, y, z + 2);
-                        const left = !blocks.get(x, y + 1, z + 2);
-                        const topRight = top && right && !blocks.get(x + 2, y + 2, z + 2) ? 0 : light;
-                        const bottomRight = bottom && right && !blocks.get(x + 2, y, z + 2) ? 0 : light;
-                        const bottomLeft = bottom && left && !blocks.get(x, y, z + 2) ? 0 : light;
-                        const topLeft = top && left && !blocks.get(x, y + 2, z + 2) ? 0 : light;
+                        const top = !blocks.getAt(x + 1, y + 2, z + 2);
+                        const right = !blocks.getAt(x + 2, y + 1, z + 2);
+                        const bottom = !blocks.getAt(x + 1, y, z + 2);
+                        const left = !blocks.getAt(x, y + 1, z + 2);
+                        const topRight = top && right && !blocks.getAt(x + 2, y + 2, z + 2) ? 0 : light;
+                        const bottomRight = bottom && right && !blocks.getAt(x + 2, y, z + 2) ? 0 : light;
+                        const bottomLeft = bottom && left && !blocks.getAt(x, y, z + 2) ? 0 : light;
+                        const topLeft = top && left && !blocks.getAt(x, y + 2, z + 2) ? 0 : light;
 
                         vertices.push(
                             offX + 0.0, offY + 1.0, offZ + 1.0, ...uv[3], 0.8 * (1 - topLeft),
@@ -89,16 +89,16 @@ class MeshGenerator {
                     }
 
                     // back
-                    if (!blocks.get(x + 1, y + 1, z)) {
+                    if (!blocks.getAt(x + 1, y + 1, z)) {
 
-                        const top = !blocks.get(x + 1, y + 2, z);
-                        const right = !blocks.get(x + 2, y + 1, z);
-                        const bottom = !blocks.get(x + 1, y, z);
-                        const left = !blocks.get(x, y + 1, z);
-                        const topRight = top && right && !blocks.get(x + 2, y + 2, z) ? 0 : light;
-                        const bottomRight = bottom && right && !blocks.get(x + 2, y, z) ? 0 : light;
-                        const bottomLeft = bottom && left && !blocks.get(x, y, z) ? 0 : light;
-                        const topLeft = top && left && !blocks.get(x, y + 2, z) ? 0 : light;
+                        const top = !blocks.getAt(x + 1, y + 2, z);
+                        const right = !blocks.getAt(x + 2, y + 1, z);
+                        const bottom = !blocks.getAt(x + 1, y, z);
+                        const left = !blocks.getAt(x, y + 1, z);
+                        const topRight = top && right && !blocks.getAt(x + 2, y + 2, z) ? 0 : light;
+                        const bottomRight = bottom && right && !blocks.getAt(x + 2, y, z) ? 0 : light;
+                        const bottomLeft = bottom && left && !blocks.getAt(x, y, z) ? 0 : light;
+                        const topLeft = top && left && !blocks.getAt(x, y + 2, z) ? 0 : light;
 
                         vertices.push(
                             offX + 0.0, offY + 0.0, offZ + 0.0, ...uv[5], 0.8 * (1 - bottomLeft),
@@ -116,16 +116,16 @@ class MeshGenerator {
                     }
 
                     // top
-                    if (!blocks.get(x + 1, y + 2, z + 1)) {
+                    if (!blocks.getAt(x + 1, y + 2, z + 1)) {
 
-                        const top = !blocks.get(x + 1, y + 2, z);
-                        const right = !blocks.get(x + 2, y + 2, z + 1);
-                        const bottom = !blocks.get(x + 1, y + 2, z + 2);
-                        const left = !blocks.get(x, y + 2, z + 1);
-                        const topRight = top && right && !blocks.get(x + 2, y + 2, z) ? 0 : light;
-                        const bottomRight = bottom && right && !blocks.get(x + 2, y + 2, z + 2) ? 0 : light;
-                        const bottomLeft = bottom && left && !blocks.get(x, y + 2, z + 2) ? 0 : light;
-                        const topLeft = top && left && !blocks.get(x, y + 2, z) ? 0 : light;
+                        const top = !blocks.getAt(x + 1, y + 2, z);
+                        const right = !blocks.getAt(x + 2, y + 2, z + 1);
+                        const bottom = !blocks.getAt(x + 1, y + 2, z + 2);
+                        const left = !blocks.getAt(x, y + 2, z + 1);
+                        const topRight = top && right && !blocks.getAt(x + 2, y + 2, z) ? 0 : light;
+                        const bottomRight = bottom && right && !blocks.getAt(x + 2, y + 2, z + 2) ? 0 : light;
+                        const bottomLeft = bottom && left && !blocks.getAt(x, y + 2, z + 2) ? 0 : light;
+                        const topLeft = top && left && !blocks.getAt(x, y + 2, z) ? 0 : light;
 
                         vertices.push(
                             offX + 0.0, offY + 1.0, offZ + 0.0, ...uv[8], 1 - topLeft,
@@ -143,16 +143,16 @@ class MeshGenerator {
                     }
 
                     // bottom
-                    if (!blocks.get(x + 1, y, z + 1)) {
+                    if (!blocks.getAt(x + 1, y, z + 1)) {
 
-                        const top = !blocks.get(x + 1, y, z);
-                        const right = !blocks.get(x + 2, y, z + 1);
-                        const bottom = !blocks.get(x + 1, y, z + 2);
-                        const left = !blocks.get(x, y, z + 1);
-                        const topRight = top && right && !blocks.get(x + 2, y, z) ? 0 : light;
-                        const bottomRight = bottom && right && !blocks.get(x + 2, y, z + 2) ? 0 : light;
-                        const bottomLeft = bottom && left && !blocks.get(x, y, z + 2) ? 0 : light;
-                        const topLeft = top && left && !blocks.get(x, y, z) ? 0 : light;
+                        const top = !blocks.getAt(x + 1, y, z);
+                        const right = !blocks.getAt(x + 2, y, z + 1);
+                        const bottom = !blocks.getAt(x + 1, y, z + 2);
+                        const left = !blocks.getAt(x, y, z + 1);
+                        const topRight = top && right && !blocks.getAt(x + 2, y, z) ? 0 : light;
+                        const bottomRight = bottom && right && !blocks.getAt(x + 2, y, z + 2) ? 0 : light;
+                        const bottomLeft = bottom && left && !blocks.getAt(x, y, z + 2) ? 0 : light;
+                        const topLeft = top && left && !blocks.getAt(x, y, z) ? 0 : light;
 
                         vertices.push(
                             offX + 0.0, offY + 0.0, offZ + 0.0, ...uv[12], 0.5 * (1 - topLeft),
@@ -170,16 +170,16 @@ class MeshGenerator {
                     }
 
                     // right
-                    if (!blocks.get(x + 2, y + 1, z + 1)) {
+                    if (!blocks.getAt(x + 2, y + 1, z + 1)) {
 
-                        const top = !blocks.get(x + 2, y + 2, z + 1);
-                        const right = !blocks.get(x + 2, y + 1, z);
-                        const bottom = !blocks.get(x + 2, y, z + 1);
-                        const left = !blocks.get(x + 2, y + 1, z + 2);
-                        const topRight = top && right && !blocks.get(x + 2, y + 2, z) ? 0 : light;
-                        const bottomRight = bottom && right && !blocks.get(x + 2, y, z) ? 0 : light;
-                        const bottomLeft = bottom && left && !blocks.get(x + 2, y, z + 2) ? 0 : light;
-                        const topLeft = top && left && !blocks.get(x + 2, y + 2, z + 2) ? 0 : light;
+                        const top = !blocks.getAt(x + 2, y + 2, z + 1);
+                        const right = !blocks.getAt(x + 2, y + 1, z);
+                        const bottom = !blocks.getAt(x + 2, y, z + 1);
+                        const left = !blocks.getAt(x + 2, y + 1, z + 2);
+                        const topRight = top && right && !blocks.getAt(x + 2, y + 2, z) ? 0 : light;
+                        const bottomRight = bottom && right && !blocks.getAt(x + 2, y, z) ? 0 : light;
+                        const bottomLeft = bottom && left && !blocks.getAt(x + 2, y, z + 2) ? 0 : light;
+                        const topLeft = top && left && !blocks.getAt(x + 2, y + 2, z + 2) ? 0 : light;
 
                         vertices.push(
                             offX + 1.0, offY + 0.0, offZ + 0.0, ...uv[17], 0.6 * (1 - bottomRight),
@@ -197,16 +197,16 @@ class MeshGenerator {
                     }
 
                     // left
-                    if (!blocks.get(x, y + 1, z + 1)) {
+                    if (!blocks.getAt(x, y + 1, z + 1)) {
 
-                        const top = !blocks.get(x, y + 2, z + 1);
-                        const right = !blocks.get(x, y + 1, z);
-                        const bottom = !blocks.get(x, y, z + 1);
-                        const left = !blocks.get(x, y + 1, z + 2);
-                        const topRight = top && right && !blocks.get(x, y + 2, z) ? 0 : light;
-                        const bottomRight = bottom && right && !blocks.get(x, y, z) ? 0 : light;
-                        const bottomLeft = bottom && left && !blocks.get(x, y, z + 2) ? 0 : light;
-                        const topLeft = top && left && !blocks.get(x, y + 2, z + 2) ? 0 : light;
+                        const top = !blocks.getAt(x, y + 2, z + 1);
+                        const right = !blocks.getAt(x, y + 1, z);
+                        const bottom = !blocks.getAt(x, y, z + 1);
+                        const left = !blocks.getAt(x, y + 1, z + 2);
+                        const topRight = top && right && !blocks.getAt(x, y + 2, z) ? 0 : light;
+                        const bottomRight = bottom && right && !blocks.getAt(x, y, z) ? 0 : light;
+                        const bottomLeft = bottom && left && !blocks.getAt(x, y, z + 2) ? 0 : light;
+                        const topLeft = top && left && !blocks.getAt(x, y + 2, z + 2) ? 0 : light;
 
                         vertices.push(
                             offX + 0.0, offY + 0.0, offZ + 0.0, ...uv[20], 0.6 * (1 - bottomRight),

@@ -1,11 +1,11 @@
-import Vec3 from "../../../common/Vec3";
-import Shader from "../../gl/Shader";
-import textFragmentShader from "../../shaders/text.fs";
-import textVertexShader from "../../shaders/text.vs";
-import textBackgroundFragmentShader from "../../shaders/text_background.fs";
-import textBackgroundVertexShader from "../../shaders/text_background.vs";
-import Font from "./Font";
-import Text from "./Text";
+import Font from "src/client/game/text/Font";
+import Text from "src/client/game/text/Text";
+import Shader from "src/client/gl/Shader";
+import textFragmentShader from "src/client/shaders/text.fs";
+import textVertexShader from "src/client/shaders/text.vs";
+import textBackgroundFragmentShader from "src/client/shaders/text_background.fs";
+import textBackgroundVertexShader from "src/client/shaders/text_background.vs";
+import Vec3 from "src/common/math/Vec3";
 
 class TextFactory {
 

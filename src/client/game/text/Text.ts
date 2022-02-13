@@ -1,9 +1,9 @@
-import Vec2 from "../../../common/Vec2";
-import Vec3 from "../../../common/Vec3";
-import Model from "../../gl/Model";
-import Quad2D from "../../models/Quad2D";
-import TexturedQuad2D from "../../models/TexturedQuad2D";
-import TextFactory from "./TextFactory";
+import TextFactory from "src/client/game/text/TextFactory";
+import Model from "src/client/gl/Model";
+import Quad2D from "src/client/models/Quad2D";
+import TexturedQuad2D from "src/client/models/TexturedQuad2D";
+import Vec2 from "src/common/math/Vec2";
+import Vec3 from "src/common/math/Vec3";
 
 class Text {
 
@@ -61,7 +61,7 @@ class Text {
 
         const fontData = await this.factory.font.getFontData();
 
-        this.dimensions.x = [...this.content].map((char) => fontData[char]?.width ?? 0).reduce((a, b) => a + b) / this.factory.font.glyphHeight;
+        this.dimensions.x = Array.from(this.content).map((char) => fontData[char]?.width ?? 0).reduce((a, b) => a + b) / this.factory.font.glyphHeight;
         if (this.background) {
             this.background.scale = new Vec3((this.dimensions.x + 0.1) * this.size, (this.dimensions.y - 0.1) * this.size, 0);
         }
