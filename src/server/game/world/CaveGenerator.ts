@@ -71,7 +71,7 @@ class CaveGenerator {
                         for (let blockY = Math.max(2, Math.floor(y - r)); blockY <= Math.min(127, Math.floor(y + r)); blockY++) {
                             for (let blockZ = Math.floor(z - r); blockZ <= Math.floor(z + r); blockZ++) {
                                 if (Util.dist3Square(blockX, blockY, blockZ, x, y, z) <= r * r) {
-                                    (this.caveData[[x >> 4, z >> 4].toString()] ??= new Uint8Array(16 * 16 * 128))[(x & 15) + (z & 15) * 16 + y * 256] = 1;
+                                    (this.caveData[[blockX >> 4, blockZ >> 4].toString()] ??= new Uint8Array(16 * 16 * 128))[(blockX & 15) + (blockZ & 15) * 16 + blockY * 256] = 1;
                                 }
                             }
                         }

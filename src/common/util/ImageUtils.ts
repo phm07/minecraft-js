@@ -1,7 +1,7 @@
 class ImageUtils {
 
-    readonly canvas: HTMLCanvasElement;
-    public readonly context: CanvasRenderingContext2D | null;
+    private readonly canvas: HTMLCanvasElement;
+    private readonly context: CanvasRenderingContext2D | null;
     private imageData: Uint8ClampedArray | null;
     public width: number;
     public height: number;
