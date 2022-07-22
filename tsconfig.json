@@ -21,6 +21,11 @@
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"
+    },
+    "files": true,
+    "require": ["tsconfig-paths/register"],
+    "paths": {
+      "/*": ["/*"]
     }
   },
   "exclude": [

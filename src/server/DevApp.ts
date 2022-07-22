@@ -17,8 +17,6 @@ app.use(webpackDevMiddleware(compiler, {
     publicPath: config.output?.publicPath
 }));
 
-app.use(express.static(__dirname));
-
 global.io = new Server(httpServer);
 global.server = new GameServer();
 
