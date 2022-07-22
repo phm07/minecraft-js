@@ -34,11 +34,6 @@ class HomeGui implements IGui {
         title.appendChild(document.createTextNode("Login"));
         this.loginBox.appendChild(title);
 
-        const errBox = document.createElement("div");
-        errBox.className = "error";
-        if (this.error) errBox.innerHTML = "Error: " + this.error;
-        this.loginBox.appendChild(errBox);
-
         const nameLabel = document.createElement("p");
         nameLabel.appendChild(document.createTextNode("Name:"));
         this.loginBox.appendChild(nameLabel);
@@ -52,6 +47,11 @@ class HomeGui implements IGui {
             }
         };
         this.loginBox.appendChild(nameField);
+
+        const errBox = document.createElement("div");
+        errBox.className = "error";
+        if (this.error) errBox.innerHTML = "Error: " + this.error;
+        this.loginBox.appendChild(errBox);
 
         const playButton = document.createElement("button");
         playButton.appendChild(document.createTextNode("Play"));
