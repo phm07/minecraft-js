@@ -32,13 +32,13 @@ export default (env: any, argv: {mode: string}): webpack.Configuration => ({
         })]
     },
     resolve: {
-        extensions: [".ts", ".js"],
+        extensions: [".ts", ".js", ".tsx"],
         plugins: [new TsconfigPathsPlugin()]
     },
     module: {
         rules: [
             {
-                test: /\.ts$/,
+                test: /\.(ts)|(.tsx)$/,
                 exclude: /node_modules/,
                 use: ["ts-loader"]
             },

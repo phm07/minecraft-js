@@ -1,5 +1,3 @@
-import "src/client/styles/home_scene.scss";
-
 import Game from "src/client/Game";
 import HomeGui from "src/client/game/gui/HomeGui";
 import IScene from "src/client/scene/IScene";

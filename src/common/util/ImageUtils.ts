@@ -54,6 +54,10 @@ class ImageUtils {
             this.width, this.height
         );
     }
+
+    public toBase64(): string {
+        return this.canvas.toDataURL();
+    }
 }
 
 export default ImageUtils;

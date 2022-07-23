@@ -16,7 +16,8 @@
     "strictPropertyInitialization": true,
     "paths": {
       "/*": ["/*"]
-    }
+    },
+    "jsx": "react"
   },
   "ts-node": {
     "compilerOptions": {
