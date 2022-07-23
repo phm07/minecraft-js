@@ -37,13 +37,13 @@ class Client {
                 this.loggingIn = false;
             });
 
-            this.socket.on("login", (packet: { timestamp: number }) => {
+            this.socket.on("login", (packet: { timestamp: number, id: string }) => {
                 if (packet.timestamp === timestamp) {
                     this.loggingIn = false;
                     clearTimeout(timeout);
                     resolve("Success");
                     this.setupSocket();
-                    game.setScene(new GameScene());
+                    game.setScene(new GameScene(packet.id));
                 }
             });
         });
@@ -70,15 +70,15 @@ class Client {
             void (game.scene as GameScene).world.receiveChunk(packet.x, packet.z, new Uint8Array(packet.blocks));
         });
 
-        this.socket.on("playerAdd", (packet: { id: number, name: string, position: Position }) => {
-            (game.scene as GameScene).humanFactory.addPlayer(packet.id, packet.name, packet.position);
+        this.socket.on("playerAdd", (packet: { id: string, name: string }) => {
+            (game.scene as GameScene).humanFactory.addPlayer(packet.id, packet.name);
         });
 
-        this.socket.on("position", (packet: { id: number, position: Position, velocity: Vec3, onGround: boolean }) => {
+        this.socket.on("position", (packet: { id: string, position: Position, velocity: Vec3, onGround: boolean }) => {
             (game.scene as GameScene).humanFactory.updateHuman(packet.id, packet.position, packet.velocity);
         });
 
-        this.socket.on("playerRemove", (packet: { id: number }) => {
+        this.socket.on("playerRemove", (packet: { id: string }) => {
             (game.scene as GameScene).humanFactory.removeHuman(packet.id);
         });
 

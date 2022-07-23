@@ -18,13 +18,15 @@ class PlayerController {
 
         const onWindowKeyDown = (e: KeyboardEvent): void => this.key(e, 1);
         const onWindowKeyUp = (e: KeyboardEvent): void => this.key(e, 0);
-        const onWindowMouseMove = (e: MouseEvent): void => this.mousemove(e);
-        const onWindowMouseDown = (e: MouseEvent): void => this.mousedown(e);
+        const onKeyPress = (e: KeyboardEvent): void => this.keyPress(e);
+        const onWindowMouseMove = (e: MouseEvent): void => this.mouseMove(e);
+        const onWindowMouseDown = (e: MouseEvent): void => this.mouseDown(e);
         const onCanvasClick = (): void => GL.canvas.requestPointerLock();
         const onDocumentPointerLockChange = (): void => this.pointerLockChange();
 
         window.addEventListener("keydown", onWindowKeyDown);
         window.addEventListener("keyup", onWindowKeyUp);
+        window.addEventListener("keypress", onKeyPress);
         window.addEventListener("mousemove", onWindowMouseMove);
         window.addEventListener("mousedown", onWindowMouseDown);
         GL.canvas.addEventListener("click", onCanvasClick);
@@ -33,6 +35,7 @@ class PlayerController {
         this.removeListeners = (): void => {
             window.removeEventListener("keydown", onWindowKeyDown);
             window.removeEventListener("keyup", onWindowKeyUp);
+            window.removeEventListener("keypress", onKeyPress);
             window.removeEventListener("mousemove", onWindowMouseMove);
             window.removeEventListener("mousedown", onWindowMouseDown);
             GL.canvas.removeEventListener("click", onCanvasClick);
@@ -45,7 +48,7 @@ class PlayerController {
         document.exitPointerLock();
     }
 
-    private mousedown(e: MouseEvent): void {
+    private mouseDown(e: MouseEvent): void {
         if (e.button === 0) {
             this.player.breakBlock();
         } else if (e.button === 2) {
@@ -60,7 +63,7 @@ class PlayerController {
         }
     }
 
-    private mousemove(e: MouseEvent): void {
+    private mouseMove(e: MouseEvent): void {
         if (!this.captureMouse) return;
         this.player.position.yaw += e.movementX * PlayerController.SENSITIVITY;
         this.player.position.pitch += e.movementY * PlayerController.SENSITIVITY;
@@ -70,6 +73,12 @@ class PlayerController {
     private key(e: KeyboardEvent, down: number): void {
         if (!this.captureMouse) return;
         this.pressed[e.code] = down;
+    }
+
+    private keyPress(e: KeyboardEvent): void {
+        if (e.code === "KeyV") {
+            this.player.viewMode = (this.player.viewMode + 1) % 3;
+        }
     }
 
     private isPressed(key: string): number {

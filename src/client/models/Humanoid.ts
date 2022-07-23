@@ -1,3 +1,4 @@
+import Camera from "src/client/gl/Camera";
 import Model from "src/client/gl/Model";
 import Shader from "src/client/gl/Shader";
 import ShadedTexturedCuboid from "src/client/models/ShadedTexturedCuboid";
@@ -27,27 +28,27 @@ class Humanoid {
         this.bodyYaw = 0;
         this.swing = 0;
 
-        this.torso = new Model(this.shader, null,
+        this.torso = new Model(this.shader,
             new ShadedTexturedCuboid(Humanoid.map(16 / 64, 16 / 64, 8, 12, 4)),
             new Vec3(), new Vec3(), new Vec3(8 / 16, 12 / 16, 4 / 16), new Vec3(0.5, 0, 0.5));
 
-        this.rightLeg = new Model(this.shader, null,
+        this.rightLeg = new Model(this.shader,
             new ShadedTexturedCuboid(Humanoid.map(0 / 64, 16 / 64, 4, 12, 4)),
             new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(1, 1, 0.5));
 
-        this.leftLeg = new Model(this.shader, null,
+        this.leftLeg = new Model(this.shader,
             new ShadedTexturedCuboid(Humanoid.map(16 / 64, 48 / 64, 4, 12, 4)),
             new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(0, 1, 0.5));
 
-        this.rightArm = new Model(this.shader, null,
+        this.rightArm = new Model(this.shader,
             new ShadedTexturedCuboid(Humanoid.map(40 / 64, 16 / 64, 4, 12, 4)),
             new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(2, 12 / 16, 0.5));
 
-        this.leftArm = new Model(this.shader, null,
+        this.leftArm = new Model(this.shader,
             new ShadedTexturedCuboid(Humanoid.map(32 / 64, 48 / 64, 4, 12, 4)),
             new Vec3(), new Vec3(), new Vec3(4 / 16, 12 / 16, 4 / 16), new Vec3(-1, 12 / 16, 0.5));
 
-        this.head = new Model(this.shader, null,
+        this.head = new Model(this.shader,
             new ShadedTexturedCuboid(Humanoid.map(0 / 64, 0 / 64, 8, 8, 8)),
             new Vec3(), new Vec3(), new Vec3(8 / 16, 8 / 16, 8 / 16), new Vec3(0.5, 0, 0.5));
 
@@ -165,13 +166,13 @@ class Humanoid {
         this.head.update();
     }
 
-    public render(): void {
-        this.torso.render();
-        this.leftLeg.render();
-        this.rightLeg.render();
-        this.rightArm.render();
-        this.leftArm.render();
-        this.head.render();
+    public render(camera: Camera): void {
+        this.torso.render(camera);
+        this.leftLeg.render(camera);
+        this.rightLeg.render(camera);
+        this.rightArm.render(camera);
+        this.leftArm.render(camera);
+        this.head.render(camera);
     }
 }
 

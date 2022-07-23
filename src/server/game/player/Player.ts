@@ -9,14 +9,14 @@ class Player {
 
     public readonly socket: Socket;
     public readonly name: string;
-    public readonly id: number;
+    public readonly id: string;
     public position: Position;
     public velocity: Vec3;
     public onGround: boolean;
 
-    public constructor(socket: Socket, name: string) {
+    public constructor(id: string, socket: Socket, name: string) {
 
-        this.id = server.newEntityId();
+        this.id = id;
         this.name = name;
         this.socket = socket;
 
@@ -60,14 +60,12 @@ class Player {
 
         this.socket.broadcast.emit("playerAdd", {
             id: this.id,
-            position: this.position,
             name: this.name
         });
 
         server.players.forEach((player) => {
             this.socket.emit("playerAdd", {
                 id: player.id,
-                position: player.position,
                 name: player.name
             });
         });

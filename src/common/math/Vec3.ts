@@ -14,6 +14,14 @@ class Vec3 {
         return new Vec3(x1 + x2, y1 + y2, z1 + z2);
     }
 
+    public static subtract({ x: x1, y: y1, z: z1 }: Vec3, { x: x2, y: y2, z: z2 }: Vec3): Vec3 {
+        return new Vec3(x1 - x2, y1 - y2, z1 - z2);
+    }
+
+    public static distance(vec1: Vec3, vec2: Vec3): number {
+        return Vec3.len(Vec3.subtract(vec1, vec2));
+    }
+
     public static toArray(vec: Vec3): number[] {
         return [vec.x, vec.y, vec.z];
     }

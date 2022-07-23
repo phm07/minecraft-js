@@ -5,6 +5,7 @@ import gui from "src/client/assets/gui.png";
 import GuiManager from "src/client/game/gui/GuiManager";
 import IGui from "src/client/game/gui/IGui";
 import HumanFactory from "src/client/game/mp/HumanFactory";
+import ViewMode from "src/client/game/player/ViewMode";
 import Camera from "src/client/gl/Camera";
 import Model from "src/client/gl/Model";
 import Model2D from "src/client/gl/Model2D";
@@ -37,7 +38,7 @@ class GameGui implements IGui {
         this.manager = manager;
         this.camera = new Camera(new Position(), 90 / 360 * Math.PI * 2, 0.1, 100);
         this.crosshair = new Model2D(manager.shader, new TexturedQuad2D(1 / 64, 10 / 64, 1 / 64, 10 / 64));
-        this.axes = new Model(wireframeShader, this.camera, new Axes());
+        this.axes = new Model(wireframeShader, new Axes());
         this.texture = new Texture(gui);
         this.showFps = false;
         this.lastFpsValues = [];
@@ -48,7 +49,7 @@ class GameGui implements IGui {
 
         this.fpsCounter.textContent = "FPS: 69";
 
-        this.arm = new Model(humanFactory.shader, this.camera,
+        this.arm = new Model(humanFactory.shader,
             new ShadedTexturedCuboid(Humanoid.map(40 / 64, 16 / 64, 4, 12, 4)),
             new Vec3(3.5, -1.5, -3), new Vec3(Math.PI / 2, Math.PI / 4, -Math.PI / 2), new Vec3(1, 3, 1));
 
@@ -79,7 +80,7 @@ class GameGui implements IGui {
 
         if (this.showFps) {
             this.axes.shader.bind();
-            this.axes.render();
+            this.axes.render(this.camera);
         } else {
             this.manager.shader.bind();
             GL.activeTexture(GL.TEXTURE0);
@@ -88,12 +89,14 @@ class GameGui implements IGui {
             this.crosshair.render();
         }
 
-        const { shader: humanShader, samplerUniform: humanSamplerUniform, texture: humanTexture } = (game.scene as GameScene).humanFactory;
-        humanShader.bind();
-        GL.activeTexture(GL.TEXTURE0);
-        GL.uniform1i(humanSamplerUniform, 0);
-        humanTexture.bind();
-        this.arm.render();
+        if ((game.scene as GameScene).player.viewMode === ViewMode.FIRST_PERSON) {
+            const { shader: humanShader, samplerUniform: humanSamplerUniform, texture: humanTexture } = (game.scene as GameScene).humanFactory;
+            humanShader.bind();
+            GL.activeTexture(GL.TEXTURE0);
+            GL.uniform1i(humanSamplerUniform, 0);
+            humanTexture.bind();
+            this.arm.render(this.camera);
+        }
     }
 
     public onWindowResize(): void {

@@ -1,4 +1,5 @@
 import TextFactory from "src/client/game/text/TextFactory";
+import Camera from "src/client/gl/Camera";
 import Model from "src/client/gl/Model";
 import Quad2D from "src/client/models/Quad2D";
 import TexturedQuad2D from "src/client/models/TexturedQuad2D";
@@ -23,7 +24,7 @@ class Text {
         this.size = size;
         this.position = position;
         this.dimensions = new Vec2(1);
-        this.background = new Model(factory.backgroundShader, null, new Quad2D(-0.475, 0.2, 1, 1));
+        this.background = new Model(factory.backgroundShader, new Quad2D(-0.475, 0.2, 1, 1));
         this.models = [];
         this.generate();
     }
@@ -39,11 +40,11 @@ class Text {
         this.background?.update();
     }
 
-    public render(): void {
+    public render(camera: Camera): void {
 
         this.factory.backgroundShader.bind();
         GL.uniform3fv(this.factory.backgroundCenterUniform, [this.position.x, this.position.y, this.position.z]);
-        this.background?.render();
+        this.background?.render(camera);
 
         this.factory.textShader.bind();
         GL.uniform1f(this.factory.textSizeUniform, this.size);
@@ -52,7 +53,7 @@ class Text {
 
         GL.activeTexture(GL.TEXTURE0);
         this.factory.font.texture?.bind();
-        this.models.forEach((model) => model.render());
+        this.models.forEach((model) => model.render(camera));
     }
 
     private generate(): void {
@@ -70,7 +71,7 @@ class Text {
             if (!charInfo) continue;
             const { width, height, uvs: { left, right, top, bottom } } = charInfo;
             const mesh = new TexturedQuad2D(left, right, top, bottom);
-            this.models.push(new Model(this.factory.textShader, null, mesh, new Vec3(offX, 0, 0), new Vec3(), new Vec3(width / height, 1)));
+            this.models.push(new Model(this.factory.textShader, mesh, new Vec3(offX, 0, 0), new Vec3(), new Vec3(width / height, 1)));
             offX += width / height;
         }
     }

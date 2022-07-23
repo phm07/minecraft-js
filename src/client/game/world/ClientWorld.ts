@@ -1,7 +1,10 @@
 import Terrain from "src/client/game/world/Terrain";
+import Camera from "src/client/gl/Camera";
 import AABB from "src/client/physics/AABB";
 import GameScene from "src/client/scene/GameScene";
+import Vec3 from "src/common/math/Vec3";
 import Chunk from "src/common/world/Chunk";
+import Position from "src/common/world/Position";
 import World from "src/common/world/World";
 
 class ClientWorld extends World {
@@ -22,8 +25,8 @@ class ClientWorld extends World {
         this.terrain.delete();
     }
 
-    public render(): void {
-        this.terrain.render();
+    public render(camera: Camera): void {
+        this.terrain.render(camera);
     }
 
     public isPlaceable(x: number, y: number, z: number): boolean {
@@ -32,6 +35,29 @@ class ClientWorld extends World {
             && !this.blockAt(x, y, z)
             && !(game.scene as GameScene).player.getBoundingBox().intersects(aabb)
             && !(game.scene as GameScene).humanFactory.humans.some((human) => human.getBoundingBox().intersects(aabb));
+    }
+
+    public raycastBlock(position: Position, maxDistance: number): { blockPos: Vec3, probePos: Vec3 } | null {
+
+        const { x, y, z, pitch, yaw } = position;
+
+        const dx = Math.cos(pitch) * Math.cos(yaw + Math.PI / 2);
+        const dy = Math.sin(pitch);
+        const dz = Math.cos(pitch) * Math.sin(yaw + Math.PI / 2);
+
+        for (let d = 0; d <= maxDistance; d += 0.025) {
+            const x1 = x - dx * d;
+            const y1 = y - dy * d;
+            const z1 = z - dz * d;
+            const blockX = Math.floor(x1);
+            const blockY = Math.floor(y1);
+            const blockZ = Math.floor(z1);
+            if (this.blockAt(blockX, blockY, blockZ)) {
+                return { blockPos: new Vec3(blockX, blockY, blockZ), probePos: new Vec3(x1, y1, z1) };
+            }
+        }
+
+        return null;
     }
 
     public async setBlock(x: number, y: number, z: number, block: number): Promise<void> {

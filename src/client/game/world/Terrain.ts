@@ -1,9 +1,9 @@
 import terrain from "src/client/assets/terrain.png";
 import MeshGenerator from "src/client/game/world/MeshGenerator";
+import Camera from "src/client/gl/Camera";
 import Mesh from "src/client/gl/Mesh";
 import Shader from "src/client/gl/Shader";
 import TextureArray from "src/client/gl/TextureArray";
-import GameScene from "src/client/scene/GameScene";
 import fragmentShader from "src/client/shaders/terrain.fs";
 import vertexShader from "src/client/shaders/terrain.vs";
 import Chunk from "src/common/world/Chunk";
@@ -33,11 +33,11 @@ class Terrain {
         this.texture = new TextureArray(terrain, 16, 16);
     }
 
-    public render(): void {
+    public render(camera: Camera): void {
 
         this.shader.bind();
-        GL.uniformMatrix4fv(this.viewMatrixUniform, false, (game.scene as GameScene).camera.viewMatrix);
-        GL.uniformMatrix4fv(this.projectionMatrixUniform, false, (game.scene as GameScene).camera.projectionMatrix);
+        GL.uniformMatrix4fv(this.viewMatrixUniform, false, camera.viewMatrix);
+        GL.uniformMatrix4fv(this.projectionMatrixUniform, false, camera.projectionMatrix);
         GL.uniform1i(this.samplerUniform, 0);
         GL.activeTexture(GL.TEXTURE0);
         this.texture.bind();

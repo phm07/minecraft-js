@@ -22,16 +22,16 @@ class GameScene implements IScene {
     public readonly humanFactory: HumanFactory;
     public readonly wireframeShader: Shader;
 
-    public constructor() {
+    public constructor(playerId: string) {
 
-        this.wireframeShader = new Shader(wireframeVertexShader, wireframeFragmentShader);
         this.camera = new Camera(new Position(), 110 / 360 * Math.PI * 2, 0.01, 1000);
-        this.player = new Player(this.camera, this.wireframeShader);
-        this.world = new ClientWorld();
-
         this.font = new Font(defaultFont, 12);
         this.textFactory = new TextFactory(this.font);
         this.humanFactory = new HumanFactory(this.textFactory);
+
+        this.wireframeShader = new Shader(wireframeVertexShader, wireframeFragmentShader);
+        this.player = new Player(playerId, this.camera, this.wireframeShader, this.humanFactory.shader);
+        this.world = new ClientWorld();
 
         game.guiManager.setGui(GameGui, { humanFactory: this.humanFactory, wireframeShader: this.wireframeShader });
 
@@ -55,9 +55,9 @@ class GameScene implements IScene {
     }
 
     public render(): void {
-        this.world.render();
-        this.humanFactory.render();
-        this.player.render();
+        this.world.render(this.camera);
+        this.humanFactory.render(this.camera);
+        this.player.render(this.camera);
     }
 
     public onWindowResize(): void {

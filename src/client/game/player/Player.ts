@@ -1,4 +1,6 @@
+import Human from "src/client/game/mp/Human";
 import PlayerController from "src/client/game/player/PlayerController";
+import ViewMode from "src/client/game/player/ViewMode";
 import Block from "src/client/game/world/Block";
 import BlockFace from "src/client/game/world/BlockFace";
 import Camera from "src/client/gl/Camera";
@@ -22,24 +24,30 @@ class Player {
     private readonly updateTimer: NodeJS.Timer;
     private readonly interpolator: Interpolator;
     private readonly wireframe: Model;
+    private readonly playerModel: Human;
     public readonly velocity: Vec3;
     private bobTime: number;
     private accumulator: number;
+    private headPosition: Position;
     public position: Position;
     public onGround: boolean;
     public targetedBlock: TargetBlock;
+    public viewMode: ViewMode;
 
-    public constructor(camera: Camera, wireframeShader: Shader) {
+    public constructor(id: string, camera: Camera, wireframeShader: Shader, humanShader: Shader) {
         this.camera = camera;
         this.interpolator = new Interpolator({ bob: 0 });
         this.controller = new PlayerController(this);
         this.position = new Position();
+        this.headPosition = new Position();
         this.velocity = new Vec3();
-        this.wireframe = new Model(wireframeShader, camera, new WireframeCuboid(new Vec3(-0.001), new Vec3(1.002)));
+        this.wireframe = new Model(wireframeShader, new WireframeCuboid(new Vec3(-0.001), new Vec3(1.002)));
         this.onGround = false;
         this.bobTime = 0;
         this.targetedBlock = null;
         this.accumulator = 0;
+        this.viewMode = ViewMode.THIRD_PERSON_BACK;
+        this.playerModel = new Human(id, "", humanShader, null);
 
         this.updateTimer = setInterval(() => {
             game.client.socket?.emit("position", {
@@ -71,22 +79,53 @@ class Player {
             this.stepPhysics(delta);
         }
 
-        if (Util.dist2Square(this.velocity.x, this.velocity.z, 0, 0) >= 1 && this.onGround) {
-            const speed = Util.dist2(this.velocity.x, this.velocity.z, 0, 0);
-            const bobAmount = Util.map(speed, 0, 3, 0, 0.05);
-            this.interpolator.animate("bob", bobAmount, 0.1);
+        this.camera.position = Position.clone(this.position);
+        this.camera.position.y += 1.7;
+        this.headPosition = Position.clone(this.camera.position);
+
+        this.playerModel.position = Position.clone(this.position);
+        this.playerModel.targetPosition = Position.clone(this.position);
+        this.playerModel.velocity = Vec3.clone(this.velocity);
+        this.playerModel.update(delta);
+
+        if (this.viewMode === ViewMode.FIRST_PERSON) {
+            if (Util.dist2Square(this.velocity.x, this.velocity.z, 0, 0) >= 1 && this.onGround) {
+                const speed = Util.dist2(this.velocity.x, this.velocity.z, 0, 0);
+                const bobAmount = Util.map(speed, 0, 3, 0, 0.05);
+                this.interpolator.animate("bob", bobAmount, 0.1);
+            } else {
+                this.interpolator.animate("bob", 0, 0.1);
+            }
+
+            const bob = this.interpolator.getValue("bob");
+            this.camera.position.y += Math.sin(this.bobTime * 2) * Math.cos(this.position.pitch) * bob;
+            this.camera.position.x += Math.cos(this.camera.position.yaw) * Math.sin(this.bobTime) * bob;
+            this.camera.position.z += Math.sin(this.camera.position.yaw) * Math.sin(this.bobTime) * bob;
+
+            this.bobTime += bob * delta * 100;
+
         } else {
-            this.interpolator.animate("bob", 0, 0.1);
+
+            const raycastPosition = Position.clone(this.headPosition);
+            if (this.viewMode === ViewMode.THIRD_PERSON_BACK) {
+                raycastPosition.yaw += Math.PI;
+                raycastPosition.pitch *= -1;
+            }
+
+            const range = Math.max(0.3, Player.findRange(raycastPosition, 3, 0.5))
+                * (this.viewMode === ViewMode.THIRD_PERSON_FRONT ? -1 : 1);
+
+            this.camera.position.y += Math.sin(this.position.pitch) * range;
+            this.camera.position.x += Math.cos(this.position.pitch) * Math.sin(Math.PI * 2 - this.camera.position.yaw) * range;
+            this.camera.position.z += Math.cos(this.position.pitch) * Math.cos(Math.PI * 2 - this.camera.position.yaw) * range;
+
+            if (this.viewMode === ViewMode.THIRD_PERSON_FRONT) {
+                this.camera.position.yaw += Math.PI;
+                this.camera.position.pitch *= -1;
+            }
         }
 
-        const bob = this.interpolator.getValue("bob");
-        this.camera.position = Position.clone(this.position);
-        this.camera.position.y += 1.7 + Math.sin(this.bobTime * 2) * Math.cos(this.position.pitch) * bob;
-        this.camera.position.x += Math.cos(this.camera.position.yaw) * Math.sin(this.bobTime) * bob;
-        this.camera.position.z += Math.sin(this.camera.position.yaw) * Math.sin(this.bobTime) * bob;
         this.camera.updateViewMatrix();
-
-        this.bobTime += bob * delta * 100;
 
         if (oldX >> 4 !== this.position.x >> 4
             || oldZ >> 4 !== this.position.z >> 4) {
@@ -100,10 +139,14 @@ class Player {
         }
     }
 
-    public render(): void {
+    public render(camera: Camera): void {
         if (this.targetedBlock) {
             this.wireframe.shader.bind();
-            this.wireframe.render();
+            this.wireframe.render(camera);
+        }
+
+        if (this.viewMode !== ViewMode.FIRST_PERSON) {
+            this.playerModel.renderAlone(camera, (game.scene as GameScene).humanFactory);
         }
     }
 
@@ -212,30 +255,16 @@ class Player {
     private findTargetedBlock(): TargetBlock {
 
         const range = 5;
+        const raycast = (game.scene as GameScene).world.raycastBlock(this.headPosition, range);
 
-        const { x, y, z, pitch, yaw } = this.camera.position;
-
-        const dx = Math.cos(pitch) * Math.cos(yaw + Math.PI / 2);
-        const dy = Math.sin(pitch);
-        const dz = Math.cos(pitch) * Math.sin(yaw + Math.PI / 2);
-
-        let blockPos, probePos;
-        for (let d = 0; d <= range && !blockPos; d += 0.025) {
-            const x1 = x - dx * d;
-            const y1 = y - dy * d;
-            const z1 = z - dz * d;
-            const blockX = Math.floor(x1);
-            const blockY = Math.floor(y1);
-            const blockZ = Math.floor(z1);
-            if ((game.scene as GameScene).world.blockAt(blockX, blockY, blockZ)) {
-                blockPos = new Vec3(blockX, blockY, blockZ);
-                probePos = new Vec3(x1, y1, z1);
-            }
-        }
-
-        if (blockPos && probePos) {
-            return { position: blockPos, face: BlockFace.getNearestFace(probePos) };
+        if (raycast) {
+            return { position: raycast.blockPos, face: BlockFace.getNearestFace(raycast.probePos) };
         } else return null;
+    }
+
+    private static findRange(position: Position, maxDistance: number, padding: number): number {
+        const raycast = (game.scene as GameScene).world.raycastBlock(position, maxDistance);
+        return raycast ? Vec3.distance(raycast.probePos, new Vec3(position.x, position.y, position.z)) - padding : maxDistance;
     }
 }
 

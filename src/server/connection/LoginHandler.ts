@@ -27,8 +27,9 @@ class LoginHandler {
                     return;
                 }
 
-                socket.emit("login", { timestamp: event.timestamp });
-                server.players.push(new Player(socket, event.name));
+                const id = server.newEntityId();
+                socket.emit("login", { timestamp: event.timestamp, id });
+                server.players.push(new Player(id, socket, event.name));
             });
         });
 
