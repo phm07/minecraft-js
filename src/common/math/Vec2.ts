@@ -20,11 +20,15 @@ class Vec2 {
         return JSON.parse(JSON.stringify(vec)) as Vec2;
     }
 
+    public static len(vec: Vec2): number {
+        return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
+    }
+
     public static normalize(vec: Vec2): Vec2 {
-        const max = Math.max(Math.abs(vec.x), Math.abs(vec.y));
+        const len = Vec2.len(vec);
         const normalized = Vec2.clone(vec);
-        normalized.x /= max;
-        normalized.y /= max;
+        normalized.x /= len;
+        normalized.y /= len;
         return normalized;
     }
 }

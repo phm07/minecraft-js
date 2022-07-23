@@ -22,12 +22,16 @@ class Vec3 {
         return JSON.parse(JSON.stringify(vec)) as Vec3;
     }
 
+    public static len(vec: Vec3): number {
+        return Math.sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+    }
+
     public static normalize(vec: Vec3): Vec3 {
-        const max = Math.max(Math.abs(vec.x), Math.abs(vec.y), Math.abs(vec.z));
+        const len = Vec3.len(vec);
         const normalized = Vec3.clone(vec);
-        normalized.x /= max;
-        normalized.y /= max;
-        normalized.z /= max;
+        normalized.x /= len;
+        normalized.y /= len;
+        normalized.z /= len;
         return normalized;
     }
 }
