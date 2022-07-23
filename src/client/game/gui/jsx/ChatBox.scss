@@ -1,0 +1,60 @@
+.chatBox {
+  font-size: 1rem;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 30em;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-family: "MinecraftiaRegular", monospace;
+  overflow-y: hidden;
+  opacity: 1;
+
+  .messages {
+    padding: 0.5em;
+    max-height: 25em;
+    overflow-y: auto;
+
+    &.focused {
+      margin-bottom: 2.5em;
+    }
+
+    &::-webkit-scrollbar {
+      border-radius: 10px;
+      height: 10px;
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #999;
+
+      &:hover {
+        background: #BBB;
+      }
+    }
+  }
+
+  input {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border: none;
+    outline: none;
+    color: white;
+    font-family: "MinecraftiaRegular", monospace;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5em;
+    font-size: 1em;
+  }
+
+  &.unfocused {
+    @keyframes fadeOut {
+      from { opacity: 1 }
+      to {opacity: 0 }
+    }
+
+    animation: fadeOut 0.5s forwards;
+    animation-delay: 5s;
+  }
+}

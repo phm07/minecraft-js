@@ -60,6 +60,11 @@ class Player {
             this.socket.broadcast.emit("blockUpdate", packet);
         });
 
+        this.socket.on("chatMessage", (packet: { text: string, color: string | null }) => {
+            if (!packet.text.replace(/\s/g, "")) return;
+            server.sendChatMessage("<" + name + "> " + packet.text);
+        });
+
         this.socket.broadcast.emit("playerAdd", {
             id: this.id,
             name: this.name,
@@ -73,6 +78,10 @@ class Player {
                 skin: player.skin
             });
         });
+
+        setTimeout(() => {
+            server.sendChatMessage(name + " joined the game", "#f5ff99");
+        }, 100);
     }
 
 }

@@ -1,9 +1,12 @@
 import "client/styles/game_gui.scss";
 
 import { mat4 } from "gl-matrix";
+import { createElement } from "react";
+import { createRoot, Root } from "react-dom/client";
 import gui from "client/assets/gui.png";
 import GuiManager from "client/game/gui/GuiManager";
 import IGui from "client/game/gui/IGui";
+import ChatBox from "client/game/gui/jsx/ChatBox";
 import HumanFactory from "client/game/mp/HumanFactory";
 import ViewMode from "client/game/player/ViewMode";
 import Camera from "client/gl/Camera";
@@ -31,6 +34,8 @@ class GameGui implements IGui {
     private readonly fpsCounter: HTMLDivElement;
     private readonly lastFpsValues: number[];
     private readonly removeListeners: () => void;
+    private readonly chatBox: HTMLDivElement;
+    private readonly reactDomRoot: Root;
     private showFps: boolean;
 
     public constructor(manager: GuiManager, { humanFactory, wireframeShader }: { humanFactory: HumanFactory, wireframeShader: Shader }) {
@@ -65,9 +70,16 @@ class GameGui implements IGui {
         this.removeListeners = (): void => {
             window.removeEventListener("keydown", onWindowKeydown);
         };
+
+        this.chatBox = document.createElement("div");
+        document.body.appendChild(this.chatBox);
+
+        this.reactDomRoot = createRoot(this.chatBox);
+        this.reactDomRoot.render(createElement(ChatBox));
     }
 
     public delete(): void {
+        this.reactDomRoot.unmount();
         document.body.removeChild(this.fpsCounter);
         this.texture.delete();
         this.arm.delete();

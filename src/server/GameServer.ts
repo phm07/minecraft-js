@@ -31,6 +31,10 @@ class GameServer {
     public findEntity(id: string): Player | null {
         return this.players.find((player) => player.id === id) ?? null;
     }
+
+    public sendChatMessage(text: string, color: string | null = null): void {
+        io.emit("chatMessage", { text, color });
+    }
 }
 
 export default GameServer;
