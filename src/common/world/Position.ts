@@ -1,4 +1,4 @@
-import Util from "src/common/util/Util";
+import MathUtils from "src/common/math/MathUtils";
 
 class Position {
 
@@ -21,7 +21,7 @@ class Position {
     }
 
     public static distSquare({ x: x1, y: y1, z: z1 }: Position, { x: x2, y: y2, z: z2 }: Position): number {
-        return Util.dist3Square(x1, y1, z1, x2, y2, z2);
+        return MathUtils.dist3Square(x1, y1, z1, x2, y2, z2);
     }
 
     public static dist(a: Position, b: Position): number {

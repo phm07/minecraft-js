@@ -1,4 +1,4 @@
-import Util from "src/common/util/Util";
+import MathUtils from "src/common/math/MathUtils";
 
 class Interpolator {
 
@@ -20,7 +20,7 @@ class Interpolator {
         if (!animator) {
             return 0;
         }
-        return Util.map(this.time, animator.start, animator.end, animator.from, animator.to);
+        return MathUtils.map(this.time, animator.start, animator.end, animator.from, animator.to);
     }
 
     public animate(index: string, target: number, duration: number): void {

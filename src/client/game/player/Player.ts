@@ -10,8 +10,8 @@ import WireframeCuboid from "src/client/models/WireframeCuboid";
 import AABB from "src/client/physics/AABB";
 import GameScene from "src/client/scene/GameScene";
 import Interpolator from "src/common/math/Interpolator";
+import MathUtils from "src/common/math/MathUtils";
 import Vec3 from "src/common/math/Vec3";
-import Util from "src/common/util/Util";
 import Material from "src/common/world/Material";
 import Position from "src/common/world/Position";
 
@@ -68,8 +68,8 @@ class Player {
 
         this.interpolator.update(delta);
 
-        this.velocity.x = Util.lerp(this.velocity.x, 0, delta * 25);
-        this.velocity.z = Util.lerp(this.velocity.z, 0, delta * 25);
+        this.velocity.x = MathUtils.lerp(this.velocity.x, 0, delta * 25);
+        this.velocity.z = MathUtils.lerp(this.velocity.z, 0, delta * 25);
         this.controller.update();
 
         const oldX = this.position.x;
@@ -89,9 +89,9 @@ class Player {
         this.playerModel.update(delta);
 
         if (this.viewMode === ViewMode.FIRST_PERSON) {
-            if (Util.dist2Square(this.velocity.x, this.velocity.z, 0, 0) >= 1 && this.onGround) {
-                const speed = Util.dist2(this.velocity.x, this.velocity.z, 0, 0);
-                const bobAmount = Util.map(speed, 0, 3, 0, 0.05);
+            if (MathUtils.dist2Square(this.velocity.x, this.velocity.z, 0, 0) >= 1 && this.onGround) {
+                const speed = MathUtils.dist2(this.velocity.x, this.velocity.z, 0, 0);
+                const bobAmount = MathUtils.map(speed, 0, 3, 0, 0.05);
                 this.interpolator.animate("bob", bobAmount, 0.1);
             } else {
                 this.interpolator.animate("bob", 0, 0.1);

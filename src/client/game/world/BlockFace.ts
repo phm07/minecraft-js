@@ -1,5 +1,5 @@
+import MathUtils from "src/common/math/MathUtils";
 import Vec3 from "src/common/math/Vec3";
-import Util from "src/common/util/Util";
 
 class BlockFace {
 
@@ -19,15 +19,15 @@ class BlockFace {
 
     public static getNearestFace(position: Vec3): BlockFace {
 
-        const x1 = Util.mod(position.x, 1) * 2 - 1;
-        const y1 = Util.mod(position.y, 1) * 2 - 1;
-        const z1 = Util.mod(position.z, 1) * 2 - 1;
+        const x1 = MathUtils.mod(position.x, 1) * 2 - 1;
+        const y1 = MathUtils.mod(position.y, 1) * 2 - 1;
+        const z1 = MathUtils.mod(position.z, 1) * 2 - 1;
 
         let nearestDist = Infinity;
         let nearestFace = BlockFace.NORTH;
         for (const face of BlockFace.ALL) {
             const { x, y, z } = face.dir;
-            const dist = Util.dist3Square(x1, y1, z1, x, y, z);
+            const dist = MathUtils.dist3Square(x1, y1, z1, x, y, z);
             if (dist < nearestDist) {
                 nearestDist = dist;
                 nearestFace = face;

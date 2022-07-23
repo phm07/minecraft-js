@@ -6,8 +6,8 @@ import Camera from "src/client/gl/Camera";
 import Shader from "src/client/gl/Shader";
 import Humanoid from "src/client/models/Humanoid";
 import AABB from "src/client/physics/AABB";
+import MathUtils from "src/common/math/MathUtils";
 import Vec3 from "src/common/math/Vec3";
-import Util from "src/common/util/Util";
 import Position from "src/common/world/Position";
 
 class Human {
@@ -67,11 +67,11 @@ class Human {
     public update(delta: number): void {
 
         const mix = delta * 25;
-        this.position.x = Util.lerp(this.position.x, this.targetPosition.x, mix);
-        this.position.y = Util.lerp(this.position.y, this.targetPosition.y, mix);
-        this.position.z = Util.lerp(this.position.z, this.targetPosition.z, mix);
-        this.position.yaw = Util.lerp(this.position.yaw, this.targetPosition.yaw, mix);
-        this.position.pitch = Util.lerp(this.position.pitch, this.targetPosition.pitch, mix);
+        this.position.x = MathUtils.lerp(this.position.x, this.targetPosition.x, mix);
+        this.position.y = MathUtils.lerp(this.position.y, this.targetPosition.y, mix);
+        this.position.z = MathUtils.lerp(this.position.z, this.targetPosition.z, mix);
+        this.position.yaw = MathUtils.lerp(this.position.yaw, this.targetPosition.yaw, mix);
+        this.position.pitch = MathUtils.lerp(this.position.pitch, this.targetPosition.pitch, mix);
         this.animator.update(delta);
         this.model.position = this.position;
         this.model.update();

@@ -1,8 +1,8 @@
 import { makeNoise3D } from "fast-simplex-noise";
 import Random from "rand-seed";
 
+import MathUtils from "src/common/math/MathUtils";
 import Vec3 from "src/common/math/Vec3";
-import Util from "src/common/util/Util";
 import Chunk from "src/common/world/Chunk";
 import WorldGenerator from "src/server/game/world/WorldGenerator";
 
@@ -60,17 +60,17 @@ class CaveGenerator {
                     const dx = noiseX1(x / 50, y / 50, z / 50) - noiseX2(x / 50, y / 50, z / 50);
                     const dz = noiseZ1(x / 50, y / 50, z / 50) - noiseZ2(x / 50, y / 50, z / 50);
 
-                    const yGradient = Util.map(y, 8, 16, 0, 1);
+                    const yGradient = MathUtils.map(y, 8, 16, 0, 1);
                     const yNoise = noiseY1(x / 50, y / 50, z / 50) - noiseY2(x / 50, y / 50, z / 50);
-                    const dy = Util.lerp(1, yNoise, yGradient);
+                    const dy = MathUtils.lerp(1, yNoise, yGradient);
 
                     [x, y, z] = Vec3.toArray(Vec3.add(Vec3.normalize(new Vec3(dx, dy, dz)), new Vec3(x, y, z)));
 
-                    const r = Util.map(noiseR(x / 10, y / 10, z / 10), 0, 1, 2, 4);
+                    const r = MathUtils.map(noiseR(x / 10, y / 10, z / 10), 0, 1, 2, 4);
                     for (let blockX = Math.floor(x - r); blockX <= Math.floor(x + r); blockX++) {
                         for (let blockY = Math.max(2, Math.floor(y - r)); blockY <= Math.min(127, Math.floor(y + r)); blockY++) {
                             for (let blockZ = Math.floor(z - r); blockZ <= Math.floor(z + r); blockZ++) {
-                                if (Util.dist3Square(blockX, blockY, blockZ, x, y, z) <= r * r) {
+                                if (MathUtils.dist3Square(blockX, blockY, blockZ, x, y, z) <= r * r) {
                                     (this.caveData[[blockX >> 4, blockZ >> 4].toString()] ??= new Uint8Array(16 * 16 * 128))[(blockX & 15) + (blockZ & 15) * 16 + blockY * 256] = 1;
                                 }
                             }

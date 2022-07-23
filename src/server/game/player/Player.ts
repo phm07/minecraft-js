@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 
+import MathUtils from "src/common/math/MathUtils";
 import Vec3 from "src/common/math/Vec3";
-import Util from "src/common/util/Util";
 import Position from "src/common/world/Position";
 import ServerChunk from "src/server/game/world/ServerChunk";
 
@@ -39,7 +39,7 @@ class Player {
         this.onGround = false;
 
         this.socket.on("requestChunk", async (packet: { x: number, z: number }) => {
-            if (Util.dist2Square(packet.x * 16, packet.z * 16, this.position.x, this.position.z) <= 256 * 256) {
+            if (MathUtils.dist2Square(packet.x * 16, packet.z * 16, this.position.x, this.position.z) <= 256 * 256) {
                 const chunk = await server.world.getChunk(packet.x, packet.z) as ServerChunk;
                 chunk.sendTo(this);
             }

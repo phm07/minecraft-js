@@ -1,4 +1,4 @@
-class Util {
+class MathUtils {
 
     public static clamp(x: number, lower: number, upper: number): number {
         return Math.min(Math.max(x, lower), upper);
@@ -13,7 +13,7 @@ class Util {
     }
 
     public static dist3(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number): number {
-        return Math.sqrt(Util.dist3Square(x1, y1, z1, x2, y2, z2));
+        return Math.sqrt(MathUtils.dist3Square(x1, y1, z1, x2, y2, z2));
     }
 
     public static dist2Square(x1: number, y1: number, x2: number, y2: number): number {
@@ -21,7 +21,7 @@ class Util {
     }
 
     public static dist2(x1: number, y1: number, x2: number, y2: number): number {
-        return Math.sqrt(Util.dist2Square(x1, y1, x2, y2));
+        return Math.sqrt(MathUtils.dist2Square(x1, y1, x2, y2));
     }
 
     public static map(x: number, from: number, to: number, lower: number, upper: number): number {
@@ -37,4 +37,4 @@ class Util {
     }
 }
 
-export default Util;
+export default MathUtils;
