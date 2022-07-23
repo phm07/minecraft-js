@@ -1,7 +1,7 @@
-import Uint8Array3D from "src/common/util/Uint8Array3D";
-import Material from "src/common/world/Material";
-import SubChunk from "src/common/world/SubChunk";
-import World from "src/common/world/World";
+import Uint8Array3D from "common/util/Uint8Array3D";
+import Material from "common/world/Material";
+import SubChunk from "common/world/SubChunk";
+import World from "common/world/World";
 
 class Chunk {
 

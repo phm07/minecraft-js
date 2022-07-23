@@ -1,14 +1,14 @@
-import terrain from "src/client/assets/terrain.png";
-import MeshGenerator from "src/client/game/world/MeshGenerator";
-import Camera from "src/client/gl/Camera";
-import Mesh from "src/client/gl/Mesh";
-import Shader from "src/client/gl/Shader";
-import TextureArray from "src/client/gl/TextureArray";
-import fragmentShader from "src/client/shaders/terrain.fs";
-import vertexShader from "src/client/shaders/terrain.vs";
-import Chunk from "src/common/world/Chunk";
-import SubChunk from "src/common/world/SubChunk";
-import World from "src/common/world/World";
+import terrain from "client/assets/terrain.png";
+import MeshGenerator from "client/game/world/MeshGenerator";
+import Camera from "client/gl/Camera";
+import Mesh from "client/gl/Mesh";
+import Shader from "client/gl/Shader";
+import TextureArray from "client/gl/TextureArray";
+import fragmentShader from "client/shaders/terrain.fs";
+import vertexShader from "client/shaders/terrain.vs";
+import Chunk from "common/world/Chunk";
+import SubChunk from "common/world/SubChunk";
+import World from "common/world/World";
 
 class Terrain {
 

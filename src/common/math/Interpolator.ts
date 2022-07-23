@@ -1,4 +1,4 @@
-import MathUtils from "src/common/math/MathUtils";
+import MathUtils from "common/math/MathUtils";
 
 class Interpolator {
 

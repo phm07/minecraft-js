@@ -1,4 +1,4 @@
-import Player from "src/server/game/player/Player";
+import Player from "server/game/player/Player";
 
 class LoginHandler {
 

@@ -1,7 +1,7 @@
-import Chunk from "src/common/world/Chunk";
-import Material from "src/common/world/Material";
-import World from "src/common/world/World";
-import Player from "src/server/game/player/Player";
+import Chunk from "common/world/Chunk";
+import Material from "common/world/Material";
+import World from "common/world/World";
+import Player from "server/game/player/Player";
 
 class ServerChunk extends Chunk {
 

@@ -1,5 +1,5 @@
-import IndexBuffer from "src/client/gl/IndexBuffer";
-import VertexBuffer from "src/client/gl/VertexBuffer";
+import IndexBuffer from "client/gl/IndexBuffer";
+import VertexBuffer from "client/gl/VertexBuffer";
 
 class Mesh {
 

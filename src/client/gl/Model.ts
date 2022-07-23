@@ -1,9 +1,9 @@
 import { mat4, quat } from "gl-matrix";
 
-import Camera from "src/client/gl/Camera";
-import Mesh from "src/client/gl/Mesh";
-import Shader from "src/client/gl/Shader";
-import Vec3 from "src/common/math/Vec3";
+import Camera from "client/gl/Camera";
+import Mesh from "client/gl/Mesh";
+import Shader from "client/gl/Shader";
+import Vec3 from "common/math/Vec3";
 
 class Model {
 

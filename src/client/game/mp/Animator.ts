@@ -1,7 +1,7 @@
-import Human from "src/client/game/mp/Human";
-import Humanoid from "src/client/models/Humanoid";
-import Interpolator from "src/common/math/Interpolator";
-import MathUtils from "src/common/math/MathUtils";
+import Human from "client/game/mp/Human";
+import Humanoid from "client/models/Humanoid";
+import Interpolator from "common/math/Interpolator";
+import MathUtils from "common/math/MathUtils";
 
 class Animator {
 

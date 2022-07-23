@@ -1,4 +1,4 @@
-import Material from "src/common/world/Material";
+import Material from "common/world/Material";
 
 type UV = { all?: number[], sides?: number[], top?: number[], bottom?: number[] };
 

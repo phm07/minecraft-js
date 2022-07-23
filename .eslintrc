@@ -12,14 +12,15 @@
     "@typescript-eslint",
     "import"
   ],
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": "./"
+  },
   "overrides": [
     {
       "files": [
         "*.ts", "*.tsx"
-      ],
-      "parserOptions": {
-        "project": "./tsconfig.json"
-      }
+      ]
     },
     {
       "files": [
@@ -43,7 +44,12 @@
     }
   ],
   "settings": {
-    "import/resolver": "typescript"
+    "import/resolver": {
+      "typescript": {}
+    },
+    "react": {
+      "version": "detect"
+    }
   },
   "rules": {
     "import/order": ["warn", { "alphabetize": { "order": "asc", "caseInsensitive": true } }],

@@ -1,4 +1,4 @@
-import ImageUtils from "src/common/util/ImageUtils";
+import ImageUtils from "common/util/ImageUtils";
 
 class TextureArray {
 

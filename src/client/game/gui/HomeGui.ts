@@ -1,13 +1,13 @@
 import { createElement } from "react";
 import { createRoot, Root } from "react-dom/client";
-import backgroundImg from "src/client/assets/background.png";
-import GuiManager from "src/client/game/gui/GuiManager";
-import IGui from "src/client/game/gui/IGui";
-import LoginBox from "src/client/game/gui/jsx/LoginBox";
-import Model2D from "src/client/gl/Model2D";
-import Texture from "src/client/gl/Texture";
-import TexturedQuad2D from "src/client/models/TexturedQuad2D";
-import Vec2 from "src/common/math/Vec2";
+import backgroundImg from "client/assets/background.png";
+import GuiManager from "client/game/gui/GuiManager";
+import IGui from "client/game/gui/IGui";
+import LoginBox from "client/game/gui/jsx/LoginBox";
+import Model2D from "client/gl/Model2D";
+import Texture from "client/gl/Texture";
+import TexturedQuad2D from "client/models/TexturedQuad2D";
+import Vec2 from "common/math/Vec2";
 
 class HomeGui implements IGui {
 

@@ -1,6 +1,6 @@
-import Game from "src/client/Game";
-import HomeGui from "src/client/game/gui/HomeGui";
-import IScene from "src/client/scene/IScene";
+import Game from "client/Game";
+import HomeGui from "client/game/gui/HomeGui";
+import IScene from "client/scene/IScene";
 
 class HomeScene implements IScene {
 

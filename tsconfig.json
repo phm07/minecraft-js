@@ -15,7 +15,8 @@
     "resolveJsonModule": true,
     "strictPropertyInitialization": true,
     "paths": {
-      "/*": ["/*"]
+      "*": ["./src/*"],
+      "@root/*": ["./*"]
     },
     "jsx": "react"
   },
@@ -26,7 +27,8 @@
     "files": true,
     "require": ["tsconfig-paths/register"],
     "paths": {
-      "/*": ["/*"]
+      "*": ["./src/*"],
+      "@root/*": ["./*"]
     }
   },
   "exclude": [

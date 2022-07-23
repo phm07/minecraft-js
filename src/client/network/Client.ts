@@ -1,9 +1,9 @@
 import { io, Socket } from "socket.io-client";
 
-import GameScene from "src/client/scene/GameScene";
-import HomeScene from "src/client/scene/HomeScene";
-import Vec3 from "src/common/math/Vec3";
-import Position from "src/common/world/Position";
+import GameScene from "client/scene/GameScene";
+import HomeScene from "client/scene/HomeScene";
+import Vec3 from "common/math/Vec3";
+import Position from "common/world/Position";
 
 class Client {
 

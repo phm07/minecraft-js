@@ -1,4 +1,4 @@
-import Player from "src/client/game/player/Player";
+import Player from "client/game/player/Player";
 
 class PlayerController {
 

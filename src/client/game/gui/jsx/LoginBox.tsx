@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
-import "src/client/game/gui/jsx/LoginBox.scss";
-import Logo from "src/client/assets/logo.png";
-import HomeScene from "src/client/scene/HomeScene";
-import ImageUtils from "src/common/util/ImageUtils";
+import "client/game/gui/jsx/LoginBox.scss";
+import Logo from "client/assets/logo.png";
+import DefaultSkin from "client/assets/steve.png";
+import HomeScene from "client/scene/HomeScene";
+import ImageUtils from "common/util/ImageUtils";
 
 function LoginBox() {
 
-    const [logo, setLogo] = useState("");
+    const [logo, setLogo] = useState<string>("");
+    const [skin, setSkin] = useState<string>("");
     const [connecting, setConnecting] = useState(false);
     const [name, setName] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -24,21 +26,29 @@ function LoginBox() {
     }, [name]);
 
     useEffect(() => {
-        console.log(new ImageUtils(Logo).toBase64());
+        setSkin(new ImageUtils(DefaultSkin).toBase64());
         setLogo(new ImageUtils(Logo).toBase64());
     }, []);
+
+    if (!logo) return <></>;
 
     return (
         <div>
             <img className="logo" src={logo} alt="Logo" draggable={false} />
             <div className="loginBox">
+
                 <h1>Login</h1>
+
                 <p>Name:</p>
                 <input type="text" spellCheck="false" onKeyPress={(e) => {
                     if (e.key === "Enter") {
                         void startGame();
                     }
                 }} value={name} onChange={(e) => setName(e.target.value)} disabled={connecting} />
+
+                <p>Skin:</p>
+                <img className="skin" src={skin} alt="Skin" draggable={false} />
+
                 {
                     error ? <div className="error">Error: {error}</div> : <></>
                 }

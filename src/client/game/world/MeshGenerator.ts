@@ -1,8 +1,8 @@
-import Block from "src/client/game/world/Block";
-import Mesh from "src/client/gl/Mesh";
-import Uint8Array3D from "src/common/util/Uint8Array3D";
-import SubChunk from "src/common/world/SubChunk";
-import World from "src/common/world/World";
+import Block from "client/game/world/Block";
+import Mesh from "client/gl/Mesh";
+import Uint8Array3D from "common/util/Uint8Array3D";
+import SubChunk from "common/world/SubChunk";
+import World from "common/world/World";
 
 class MeshGenerator {
 

@@ -1,14 +1,14 @@
-import Animator from "src/client/game/mp/Animator";
-import HumanFactory from "src/client/game/mp/HumanFactory";
-import Text from "src/client/game/text/Text";
-import TextFactory from "src/client/game/text/TextFactory";
-import Camera from "src/client/gl/Camera";
-import Shader from "src/client/gl/Shader";
-import Humanoid from "src/client/models/Humanoid";
-import AABB from "src/client/physics/AABB";
-import MathUtils from "src/common/math/MathUtils";
-import Vec3 from "src/common/math/Vec3";
-import Position from "src/common/world/Position";
+import Animator from "client/game/mp/Animator";
+import HumanFactory from "client/game/mp/HumanFactory";
+import Text from "client/game/text/Text";
+import TextFactory from "client/game/text/TextFactory";
+import Camera from "client/gl/Camera";
+import Shader from "client/gl/Shader";
+import Humanoid from "client/models/Humanoid";
+import AABB from "client/physics/AABB";
+import MathUtils from "common/math/MathUtils";
+import Vec3 from "common/math/Vec3";
+import Position from "common/world/Position";
 
 class Human {
 

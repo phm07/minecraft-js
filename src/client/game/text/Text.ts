@@ -1,10 +1,10 @@
-import TextFactory from "src/client/game/text/TextFactory";
-import Camera from "src/client/gl/Camera";
-import Model from "src/client/gl/Model";
-import Quad2D from "src/client/models/Quad2D";
-import TexturedQuad2D from "src/client/models/TexturedQuad2D";
-import Vec2 from "src/common/math/Vec2";
-import Vec3 from "src/common/math/Vec3";
+import TextFactory from "client/game/text/TextFactory";
+import Camera from "client/gl/Camera";
+import Model from "client/gl/Model";
+import Quad2D from "client/models/Quad2D";
+import TexturedQuad2D from "client/models/TexturedQuad2D";
+import Vec2 from "common/math/Vec2";
+import Vec3 from "common/math/Vec3";
 
 class Text {
 

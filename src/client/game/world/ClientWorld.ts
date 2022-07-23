@@ -1,11 +1,11 @@
-import Terrain from "src/client/game/world/Terrain";
-import Camera from "src/client/gl/Camera";
-import AABB from "src/client/physics/AABB";
-import GameScene from "src/client/scene/GameScene";
-import Vec3 from "src/common/math/Vec3";
-import Chunk from "src/common/world/Chunk";
-import Position from "src/common/world/Position";
-import World from "src/common/world/World";
+import Terrain from "client/game/world/Terrain";
+import Camera from "client/gl/Camera";
+import AABB from "client/physics/AABB";
+import GameScene from "client/scene/GameScene";
+import Vec3 from "common/math/Vec3";
+import Chunk from "common/world/Chunk";
+import Position from "common/world/Position";
+import World from "common/world/World";
 
 class ClientWorld extends World {
 

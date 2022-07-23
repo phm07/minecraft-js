@@ -1,16 +1,16 @@
-import defaultFont from "src/client/assets/glyphs.png";
-import GameGui from "src/client/game/gui/GameGui";
-import HumanFactory from "src/client/game/mp/HumanFactory";
-import Player from "src/client/game/player/Player";
-import Font from "src/client/game/text/Font";
-import TextFactory from "src/client/game/text/TextFactory";
-import ClientWorld from "src/client/game/world/ClientWorld";
-import Camera from "src/client/gl/Camera";
-import Shader from "src/client/gl/Shader";
-import IScene from "src/client/scene/IScene";
-import wireframeFragmentShader from "src/client/shaders/wireframe.fs";
-import wireframeVertexShader from "src/client/shaders/wireframe.vs";
-import Position from "src/common/world/Position";
+import defaultFont from "client/assets/glyphs.png";
+import GameGui from "client/game/gui/GameGui";
+import HumanFactory from "client/game/mp/HumanFactory";
+import Player from "client/game/player/Player";
+import Font from "client/game/text/Font";
+import TextFactory from "client/game/text/TextFactory";
+import ClientWorld from "client/game/world/ClientWorld";
+import Camera from "client/gl/Camera";
+import Shader from "client/gl/Shader";
+import IScene from "client/scene/IScene";
+import wireframeFragmentShader from "client/shaders/wireframe.fs";
+import wireframeVertexShader from "client/shaders/wireframe.vs";
+import Position from "common/world/Position";
 
 class GameScene implements IScene {
 

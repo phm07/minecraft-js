@@ -2,7 +2,7 @@ import http from "http";
 import * as express from "express";
 import { Server } from "socket.io";
 
-import GameServer from "src/server/GameServer";
+import GameServer from "server/GameServer";
 
 const app = express.default();
 const httpServer = http.createServer(app);

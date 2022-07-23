@@ -1,5 +1,5 @@
-import Chunk from "src/common/world/Chunk";
-import Material from "src/common/world/Material";
+import Chunk from "common/world/Chunk";
+import Material from "common/world/Material";
 
 abstract class World {
 

@@ -1,8 +1,8 @@
 import { mat4 } from "gl-matrix";
-import IGui from "src/client/game/gui/IGui";
-import Shader from "src/client/gl/Shader";
-import guiFragmentShader from "src/client/shaders/gui.fs";
-import guiVertexShader from "src/client/shaders/gui.vs";
+import IGui from "client/game/gui/IGui";
+import Shader from "client/gl/Shader";
+import guiFragmentShader from "client/shaders/gui.fs";
+import guiVertexShader from "client/shaders/gui.vs";
 
 class GuiManager {
 

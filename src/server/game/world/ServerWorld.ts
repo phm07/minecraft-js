@@ -1,8 +1,8 @@
-import Chunk from "src/common/world/Chunk";
-import Position from "src/common/world/Position";
-import World from "src/common/world/World";
-import ServerChunk from "src/server/game/world/ServerChunk";
-import WorldGenerator from "src/server/game/world/WorldGenerator";
+import Chunk from "common/world/Chunk";
+import Position from "common/world/Position";
+import World from "common/world/World";
+import ServerChunk from "server/game/world/ServerChunk";
+import WorldGenerator from "server/game/world/WorldGenerator";
 
 class ServerWorld extends World {
 

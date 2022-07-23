@@ -1,4 +1,4 @@
-import Mesh from "src/client/gl/Mesh";
+import Mesh from "client/gl/Mesh";
 
 class TexturedQuad2D extends Mesh {
 

@@ -4,8 +4,8 @@ import { Server } from "socket.io";
 import { webpack } from "webpack";
 import webpackDevMiddleware from "webpack-dev-middleware";
 
-import GameServer from "src/server/GameServer";
-import configFunction from "webpack.client.config";
+import configFunction from "@root/webpack.client.config";
+import GameServer from "server/GameServer";
 
 const app = express.default();
 const httpServer = http.createServer(app);

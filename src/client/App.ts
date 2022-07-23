@@ -1,6 +1,6 @@
-import "src/client/styles/app.scss";
+import "client/styles/app.scss";
 
-import Game from "src/client/Game";
+import Game from "client/Game";
 
 window.onload = (): void => {
 

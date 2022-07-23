@@ -1,9 +1,9 @@
 import { makeNoise2D } from "fast-simplex-noise";
 import Random from "rand-seed";
 
-import Chunk from "src/common/world/Chunk";
-import Material from "src/common/world/Material";
-import CaveGenerator from "src/server/game/world/CaveGenerator";
+import Chunk from "common/world/Chunk";
+import Material from "common/world/Material";
+import CaveGenerator from "server/game/world/CaveGenerator";
 
 class WorldGenerator {
 
