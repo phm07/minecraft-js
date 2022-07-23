@@ -1,3 +1,4 @@
+import { imageSize } from "image-size";
 import Player from "server/game/player/Player";
 
 class LoginHandler {
@@ -10,12 +11,12 @@ class LoginHandler {
                 socket.disconnect();
             }, 10000);
 
-            socket.on("login", (event: { name: string, timestamp: number }) => {
+            socket.on("login", (packet: { name: string, skin: string | null, timestamp: number }) => {
 
                 clearTimeout(timeout);
-                const existing = server.getPlayerByName(event.name);
+                const existing = server.getPlayerByName(packet.name);
 
-                if (event.name.length < 3 || event.name.length > 24) {
+                if (packet.name.length < 3 || packet.name.length > 24) {
                     socket.emit("error", "Invalid name");
                     socket.disconnect();
                     return;
@@ -27,12 +28,29 @@ class LoginHandler {
                     return;
                 }
 
+                if (packet.skin && !LoginHandler.isValidSkin(packet.skin)) {
+                    socket.emit("error", "Invalid skin");
+                    socket.disconnect();
+                    return;
+                }
+
                 const id = server.newEntityId();
-                socket.emit("login", { timestamp: event.timestamp, id });
-                server.players.push(new Player(id, socket, event.name));
+                socket.emit("login", { timestamp: packet.timestamp, id });
+                server.players.push(new Player(id, socket, packet.name, packet.skin));
             });
         });
 
+    }
+
+    private static isValidSkin(skin: string): boolean {
+
+        if (!skin.startsWith("data:image/png;base64,")) {
+            return false;
+        }
+
+        const img = Buffer.from(skin.substring(22), "base64");
+        const { width, height } = imageSize(img);
+        return width === 64 && height === 64;
     }
 }
 

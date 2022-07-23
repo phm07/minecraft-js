@@ -10,7 +10,7 @@ class Client {
     private loggingIn = false;
     public socket: Socket | null = null;
 
-    public async login(name: string): Promise<string> {
+    public async login(name: string, skin: string | null): Promise<string> {
 
         return new Promise((resolve, reject) => {
 
@@ -28,7 +28,7 @@ class Client {
             }, 10000);
 
             this.socket.emit("login", {
-                name, timestamp
+                name, skin, timestamp
             });
 
             this.socket.on("error", (error: string) => {
@@ -43,7 +43,7 @@ class Client {
                     clearTimeout(timeout);
                     resolve("Success");
                     this.setupSocket();
-                    game.setScene(new GameScene(packet.id));
+                    game.setScene(new GameScene(packet.id, skin));
                 }
             });
         });
@@ -70,8 +70,8 @@ class Client {
             void (game.scene as GameScene).world.receiveChunk(packet.x, packet.z, new Uint8Array(packet.blocks));
         });
 
-        this.socket.on("playerAdd", (packet: { id: string, name: string }) => {
-            (game.scene as GameScene).humanFactory.addPlayer(packet.id, packet.name);
+        this.socket.on("playerAdd", (packet: { id: string, name: string, skin: string | null }) => {
+            void (game.scene as GameScene).humanFactory.addPlayer(packet.id, packet.name, packet.skin);
         });
 
         this.socket.on("position", (packet: { id: string, position: Position, velocity: Vec3, onGround: boolean }) => {

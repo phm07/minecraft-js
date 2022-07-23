@@ -90,11 +90,11 @@ class GameGui implements IGui {
         }
 
         if ((game.scene as GameScene).player.viewMode === ViewMode.FIRST_PERSON) {
-            const { shader: humanShader, samplerUniform: humanSamplerUniform, texture: humanTexture } = (game.scene as GameScene).humanFactory;
-            humanShader.bind();
+            const { shader, samplerUniform, defaultSkin } = (game.scene as GameScene).humanFactory;
+            shader.bind();
             GL.activeTexture(GL.TEXTURE0);
-            GL.uniform1i(humanSamplerUniform, 0);
-            humanTexture.bind();
+            GL.uniform1i(samplerUniform, 0);
+            ((game.scene as GameScene).player.playerModel.skin ?? defaultSkin).bind();
             this.arm.render(this.camera);
         }
     }

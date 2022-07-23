@@ -1,4 +1,4 @@
-import skin from "client/assets/steve.png";
+import DefaultSkin from "client/assets/steve.png";
 import Human from "client/game/mp/Human";
 import TextFactory from "client/game/text/TextFactory";
 import Camera from "client/gl/Camera";
@@ -6,6 +6,7 @@ import Shader from "client/gl/Shader";
 import Texture from "client/gl/Texture";
 import fragmentShader from "client/shaders/human.fs";
 import vertexShader from "client/shaders/human.vs";
+import ImageUtils from "client/util/ImageUtils";
 import Vec3 from "common/math/Vec3";
 import Position from "common/world/Position";
 
@@ -13,20 +14,24 @@ class HumanFactory {
 
     public readonly humans: Human[];
     public readonly textFactory: TextFactory;
-    public readonly texture: Texture;
+    public readonly defaultSkin: Texture;
     public readonly shader: Shader;
     public readonly samplerUniform: WebGLUniformLocation | null;
 
     public constructor(textFactory: TextFactory) {
         this.textFactory = textFactory;
         this.humans = [];
-        this.texture = new Texture(skin);
+        this.defaultSkin = new Texture(DefaultSkin);
         this.shader = new Shader(vertexShader, fragmentShader);
         this.samplerUniform = this.shader.getUniformLocation("uTexture");
     }
 
-    public addPlayer(id: string, name: string): void {
-        this.humans.push(new Human(id, name, this.shader, this.textFactory));
+    public async addPlayer(id: string, name: string, skin: string | null): Promise<void> {
+        let skinTexture: Texture | null = null;
+        if (skin) {
+            skinTexture = new Texture(await ImageUtils.fromSource(skin));
+        }
+        this.humans.push(new Human(id, name, skinTexture, this.shader, this.textFactory));
     }
 
     public removeHuman(id: string): void {
@@ -52,7 +57,7 @@ class HumanFactory {
     public delete(): void {
         this.humans.forEach((human) => human.delete());
         this.shader.delete();
-        this.texture.delete();
+        this.defaultSkin.delete();
     }
 
     public update(delta: number): void {
@@ -64,10 +69,12 @@ class HumanFactory {
         this.shader.bind();
         GL.uniform1i(this.samplerUniform, 0);
         GL.activeTexture(GL.TEXTURE0);
-        this.texture.bind();
 
         GL.disable(GL.CULL_FACE);
-        this.humans.forEach((human) => human.render(camera));
+        this.humans.forEach((human) => {
+            (human.skin ?? this.defaultSkin).bind();
+            human.render(camera);
+        });
         GL.enable(GL.CULL_FACE);
 
         GL.disable(GL.DEPTH_TEST);

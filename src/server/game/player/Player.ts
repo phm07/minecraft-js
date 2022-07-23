@@ -8,17 +8,19 @@ import ServerChunk from "server/game/world/ServerChunk";
 class Player {
 
     public readonly socket: Socket;
-    public readonly name: string;
     public readonly id: string;
+    public readonly name: string;
+    public readonly skin: string | null;
     public position: Position;
     public velocity: Vec3;
     public onGround: boolean;
 
-    public constructor(id: string, socket: Socket, name: string) {
+    public constructor(id: string, socket: Socket, name: string, skin: string | null) {
 
+        this.socket = socket;
         this.id = id;
         this.name = name;
-        this.socket = socket;
+        this.skin = skin;
 
         this.socket.on("disconnect", () => {
             server.players.splice(server.players.indexOf(this), 1);
@@ -60,13 +62,15 @@ class Player {
 
         this.socket.broadcast.emit("playerAdd", {
             id: this.id,
-            name: this.name
+            name: this.name,
+            skin: this.skin
         });
 
         server.players.forEach((player) => {
             this.socket.emit("playerAdd", {
                 id: player.id,
-                name: player.name
+                name: player.name,
+                skin: player.skin
             });
         });
     }

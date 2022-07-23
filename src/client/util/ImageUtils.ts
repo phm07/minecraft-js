@@ -21,6 +21,29 @@ class ImageUtils {
         this.imageData = null;
     }
 
+    public static async fromSource(source: string): Promise<ImageData> {
+
+        const image = await new Promise<HTMLImageElement>((resolve) => {
+            const img = new Image();
+            img.addEventListener("load", () => {
+                resolve(img);
+            });
+            img.src = source;
+        });
+
+        const canvas = document.createElement("canvas");
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+        const context = canvas.getContext("2d");
+        context?.drawImage(image, 0, 0);
+
+        return new ImageData(
+            context?.getImageData(0, 0, canvas.width, canvas.height).data
+            ?? new Uint8ClampedArray(canvas.width * canvas.height),
+            canvas.width, canvas.height
+        );
+    }
+
     public updateImageData(): void {
         this.imageData = this.context?.getImageData(0, 0, this.canvas.width, this.canvas.height).data ?? null;
     }

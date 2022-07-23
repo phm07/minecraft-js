@@ -58,9 +58,6 @@ class Model {
     }
 
     public render(camera: Camera): void {
-
-        console.log(this);
-
         GL.uniformMatrix4fv(this.modelMatrixUniform, false, this.modelMatrix);
         GL.uniformMatrix4fv(this.viewMatrixUniform, false, camera.viewMatrix);
         GL.uniformMatrix4fv(this.projectionMatrixUniform, false, camera.projectionMatrix);

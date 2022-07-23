@@ -4,6 +4,7 @@ import Text from "client/game/text/Text";
 import TextFactory from "client/game/text/TextFactory";
 import Camera from "client/gl/Camera";
 import Shader from "client/gl/Shader";
+import Texture from "client/gl/Texture";
 import Humanoid from "client/models/Humanoid";
 import AABB from "client/physics/AABB";
 import MathUtils from "common/math/MathUtils";
@@ -17,13 +18,15 @@ class Human {
     private readonly model: Humanoid;
     private readonly animator: Animator;
     private readonly text: Text | undefined;
+    public skin: Texture | null;
     public targetPosition: Position;
     public position: Position;
     public velocity: Vec3;
 
-    public constructor(id: string, name: string, shader: Shader, textFactory: TextFactory | null) {
+    public constructor(id: string, name: string, skin: Texture | null, shader: Shader, textFactory: TextFactory | null) {
         this.id = id;
         this.name = name;
+        this.skin = skin;
         this.position = new Position();
         this.targetPosition = new Position();
         this.model = new Humanoid(this.position, shader);
@@ -42,6 +45,7 @@ class Human {
     public delete(): void {
         this.model.delete();
         this.text?.delete();
+        this.skin?.delete();
     }
 
     public render(camera: Camera): void {
@@ -53,7 +57,7 @@ class Human {
         humanFactory.shader.bind();
         GL.uniform1i(humanFactory.samplerUniform, 0);
         GL.activeTexture(GL.TEXTURE0);
-        humanFactory.texture.bind();
+        (this.skin ?? humanFactory.defaultSkin).bind();
 
         GL.disable(GL.CULL_FACE);
         this.model.render(camera);
