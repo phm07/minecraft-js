@@ -46,7 +46,7 @@ class Player {
         this.bobTime = 0;
         this.targetedBlock = null;
         this.accumulator = 0;
-        this.viewMode = ViewMode.THIRD_PERSON_BACK;
+        this.viewMode = ViewMode.FIRST_PERSON;
         this.playerModel = new Human(id, "", humanShader, null);
 
         this.updateTimer = setInterval(() => {
