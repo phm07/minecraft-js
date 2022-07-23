@@ -23,7 +23,7 @@ class Animator {
         const walking = this.human.velocity.y >= -10 && speed > 10e-3;
 
         this.interpolator.update(delta);
-        this.interpolator.animate("swingSpeed", speed / 3.0, 0.1);
+        this.interpolator.animate("swingSpeed", speed / 2.75, 0.1);
         if (walking) {
             this.interpolator.animate("walk", 1, 0.2);
             const angleOffset = -MathUtils.wrapRadians(this.human.position.yaw + Math.atan2(this.human.velocity.x, this.human.velocity.z) + Math.PI);
