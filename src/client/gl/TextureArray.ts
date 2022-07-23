@@ -1,4 +1,4 @@
-import ImageUtils from "common/util/ImageUtils";
+import ImageUtils from "client/util/ImageUtils";
 
 class TextureArray {
 

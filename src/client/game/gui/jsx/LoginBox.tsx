@@ -3,7 +3,7 @@ import "client/game/gui/jsx/LoginBox.scss";
 import Logo from "client/assets/logo.png";
 import DefaultSkin from "client/assets/steve.png";
 import HomeScene from "client/scene/HomeScene";
-import ImageUtils from "common/util/ImageUtils";
+import ImageUtils from "client/util/ImageUtils";
 
 function LoginBox() {
 
