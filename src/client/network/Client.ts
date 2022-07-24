@@ -1,16 +1,17 @@
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 
 import GameScene from "client/scene/GameScene";
 import HomeScene from "client/scene/HomeScene";
-import Vec3 from "common/math/Vec3";
-import Position from "common/world/Position";
 
 class Client {
 
     private loggingIn = false;
-    public socket: Socket | null = null;
+    public socket: ServerSocket | null = null;
+    public playerName: string | null = null;
+    public playerId: string | null = null;
+    public playerSkin: string | null = null;
 
-    public async login(name: string, skin: string | null): Promise<string> {
+    public async login(name: string, skin: string | null): Promise<void> {
 
         return new Promise((resolve, reject) => {
 
@@ -27,23 +28,24 @@ class Client {
                 this.loggingIn = false;
             }, 10000);
 
-            this.socket.emit("login", {
-                name, skin, timestamp
-            });
+            this.socket.emit("login", { name, skin: skin ?? undefined, timestamp }, (response) => {
 
-            this.socket.on("error", (error: string) => {
-                reject(error);
-                clearTimeout(timeout);
-                this.loggingIn = false;
-            });
-
-            this.socket.on("login", (packet: { timestamp: number, id: string }) => {
-                if (packet.timestamp === timestamp) {
+                if (response.error || !response.timestamp || !response.id) {
                     this.loggingIn = false;
                     clearTimeout(timeout);
-                    resolve("Success");
+                    reject(response.error ?? "Invalid server response");
+                    return;
+                }
+
+                if (response.timestamp === timestamp) {
+                    this.loggingIn = false;
+                    clearTimeout(timeout);
+                    resolve();
+                    this.playerName = name;
+                    this.playerId = response.id;
+                    this.playerSkin = skin;
                     this.setupSocket();
-                    game.setScene(new GameScene(packet.id, skin));
+                    game.setScene(new GameScene());
                 }
             });
         });
@@ -53,40 +55,41 @@ class Client {
 
         if (!this.socket) return;
 
-        let err = "Disconnected";
-        this.socket.on("error", (error: string) => {
-            err = error;
+        let error = "Disconnected";
+        this.socket.on("error", (packet) => {
+            error = packet.error;
         });
 
         this.socket.on("disconnect", () => {
-            game.setScene(new HomeScene(game, err));
+            this.playerName = null;
+            this.playerId = null;
+            this.playerSkin = null;
+            game.setScene(new HomeScene(game, error));
         });
 
-        this.socket.on("teleport", (packet: { position: Position }) => {
+        this.socket.on("teleport", (packet) => {
             (game.scene as GameScene).player.teleport(packet.position);
         });
 
-        this.socket.on("chunk", (packet: { x: number, z: number, blocks: ArrayBuffer }) => {
+        this.socket.on("chunk", (packet) => {
             void (game.scene as GameScene).world.receiveChunk(packet.x, packet.z, new Uint8Array(packet.blocks));
         });
 
-        this.socket.on("playerAdd", (packet: { id: string, name: string, skin: string | null }) => {
-            void (game.scene as GameScene).humanFactory.addPlayer(packet.id, packet.name, packet.skin);
+        this.socket.on("playerAdd", (packet) => {
+            void (game.scene as GameScene).humanFactory.addPlayer(packet.id, packet.name, packet.skin ?? null);
         });
 
-        this.socket.on("position", (packet: { id: string, position: Position, velocity: Vec3, onGround: boolean }) => {
+        this.socket.on("updatePosition", (packet) => {
             (game.scene as GameScene).humanFactory.updateHuman(packet.id, packet.position, packet.velocity);
         });
 
-        this.socket.on("playerRemove", (packet: { id: string }) => {
+        this.socket.on("playerRemove", (packet) => {
             (game.scene as GameScene).humanFactory.removeHuman(packet.id);
         });
 
-        this.socket.on("blockUpdate", ({
-                                           position: { x, y, z },
-                                           type
-                                       }: { position: { x: number, y: number, z: number }, type: number }) => {
-            void (game.scene as GameScene).world.setBlock(x, y, z, type);
+        this.socket.on("blockUpdate", (packet) => {
+            const { x, y, z } = packet.position;
+            void (game.scene as GameScene).world.setBlock(x, y, z, packet.type);
         });
     }
 }

@@ -11,32 +11,32 @@ class LoginHandler {
                 socket.disconnect();
             }, 10000);
 
-            socket.on("login", (packet: { name: string, skin: string | null, timestamp: number }) => {
+            socket.on("login", (packet, callback) => {
 
                 clearTimeout(timeout);
                 const existing = server.getPlayerByName(packet.name);
 
                 if (packet.name.length < 3 || packet.name.length > 24) {
-                    socket.emit("error", "Invalid name");
+                    callback({ error: "Invalid name" });
                     socket.disconnect();
                     return;
                 }
 
                 if (existing) {
-                    socket.emit("error", "Player already online");
+                    callback({ error: "Player already online" });
                     socket.disconnect();
                     return;
                 }
 
                 if (packet.skin && !LoginHandler.isValidSkin(packet.skin)) {
-                    socket.emit("error", "Invalid skin");
+                    callback({ error: "Invalid skin" });
                     socket.disconnect();
                     return;
                 }
 
                 const id = server.newEntityId();
-                socket.emit("login", { timestamp: packet.timestamp, id });
-                server.players.push(new Player(id, socket, packet.name, packet.skin));
+                callback({ timestamp: packet.timestamp, id });
+                server.players.push(new Player(id, socket, packet.name, packet.skin ?? null));
             });
         });
 

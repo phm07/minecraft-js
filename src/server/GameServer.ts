@@ -32,7 +32,7 @@ class GameServer {
         return this.players.find((player) => player.id === id) ?? null;
     }
 
-    public sendChatMessage(text: string, color: string | null = null): void {
+    public sendChatMessage(text: string, color?: string): void {
         io.emit("chatMessage", { text, color });
     }
 }

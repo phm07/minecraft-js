@@ -4,7 +4,7 @@ import "client/game/gui/jsx/ChatBox.scss";
 function ChatBox() {
 
     const [focused, setFocused] = useState(true);
-    const [messages, setMessages] = useState<{ text: string, color: string | null }[]>([]);
+    const [messages, setMessages] = useState<{ text: string, color?: string }[]>([]);
     const [text, setText] = useState("");
     const messageListRef = useRef<HTMLDivElement>(null);
     const chatBoxRef = useRef<HTMLDivElement>(null);
@@ -50,7 +50,7 @@ function ChatBox() {
     }, [focused]);
 
     useEffect(() => {
-        const listener = (message: { text: string, color: string | null }) => {
+        const listener = (message: { text: string, color?: string }) => {
             setMessages(messages.concat(message));
         };
         game.client.socket?.on("chatMessage", listener);

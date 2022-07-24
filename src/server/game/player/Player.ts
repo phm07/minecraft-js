@@ -1,5 +1,3 @@
-import { Socket } from "socket.io";
-
 import MathUtils from "common/math/MathUtils";
 import Vec3 from "common/math/Vec3";
 import Position from "common/world/Position";
@@ -7,7 +5,7 @@ import ServerChunk from "server/game/world/ServerChunk";
 
 class Player {
 
-    public readonly socket: Socket;
+    public readonly socket: PlayerSocket;
     public readonly id: string;
     public readonly name: string;
     public readonly skin: string | null;
@@ -15,7 +13,7 @@ class Player {
     public velocity: Vec3;
     public onGround: boolean;
 
-    public constructor(id: string, socket: Socket, name: string, skin: string | null) {
+    public constructor(id: string, socket: PlayerSocket, name: string, skin: string | null) {
 
         this.socket = socket;
         this.id = id;
@@ -40,16 +38,16 @@ class Player {
         this.velocity = new Vec3();
         this.onGround = false;
 
-        this.socket.on("requestChunk", async (packet: { x: number, z: number }) => {
+        this.socket.on("requestChunk", async (packet) => {
             if (MathUtils.dist2Square(packet.x * 16, packet.z * 16, this.position.x, this.position.z) <= 256 * 256) {
                 const chunk = await server.world.getChunk(packet.x, packet.z) as ServerChunk;
                 chunk.sendTo(this);
             }
         });
 
-        this.socket.on("position", (packet: { position: Position, velocity: Vec3, onGround: boolean }) => {
+        this.socket.on("updatePosition", (packet) => {
             Object.assign(this, packet);
-            this.socket.broadcast.emit("position", {
+            this.socket.broadcast.emit("updatePosition", {
                 id: this.id,
                 ...packet
             });
@@ -60,7 +58,7 @@ class Player {
             this.socket.broadcast.emit("blockUpdate", packet);
         });
 
-        this.socket.on("chatMessage", (packet: { text: string, color: string | null }) => {
+        this.socket.on("chatMessage", (packet) => {
             if (!packet.text.replace(/\s/g, "")) return;
             server.sendChatMessage("<" + name + "> " + packet.text);
         });
@@ -68,14 +66,14 @@ class Player {
         this.socket.broadcast.emit("playerAdd", {
             id: this.id,
             name: this.name,
-            skin: this.skin
+            skin: this.skin ?? undefined
         });
 
         server.players.forEach((player) => {
             this.socket.emit("playerAdd", {
                 id: player.id,
                 name: player.name,
-                skin: player.skin
+                skin: player.skin ?? undefined
             });
         });
 
@@ -86,4 +84,5 @@ class Player {
 
 }
 
+export type { PlayerSocket };
 export default Player;

@@ -56,7 +56,7 @@ class Player {
         }
 
         this.updateTimer = setInterval(() => {
-            game.client.socket?.emit("position", {
+            game.client.socket?.emit("updatePosition", {
                 position: this.position,
                 velocity: this.velocity,
                 onGround: this.onGround
