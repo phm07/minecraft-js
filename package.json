@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "eslint . --fix --ext .ts --max-warnings 0",
     "dev": "nodemon ./src/server/DevApp.ts",
-    "build": "npm run lint && webpack --mode production --config webpack.client.config.ts && webpack --mode production --config webpack.server.config.ts",
+    "build": "webpack --mode production --config webpack.client.config.ts && webpack --mode production --config webpack.server.config.ts",
     "start": "node ./dist/server.bundle.js"
   },
   "keywords": [],
