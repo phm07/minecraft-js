@@ -7,13 +7,11 @@ class Font {
 
     public readonly fontData: FontData;
     public readonly glyphHeight: number;
-    public texture: Texture | null;
+    public texture?: Texture;
 
     public constructor(data: ImageData, glyphHeight: number) {
-
         this.fontData = {};
         this.glyphHeight = glyphHeight;
-        this.texture = null;
         this.load(data);
     }
 

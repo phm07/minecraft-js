@@ -1,8 +1,8 @@
 class ImageUtils {
 
     private readonly canvas: HTMLCanvasElement;
-    private readonly context: CanvasRenderingContext2D | null;
-    private imageData: Uint8ClampedArray | null;
+    private readonly context?: CanvasRenderingContext2D;
+    private imageData?: Uint8ClampedArray;
     public width: number;
     public height: number;
 
@@ -15,10 +15,8 @@ class ImageUtils {
         this.canvas.width = width;
         this.canvas.height = height;
 
-        this.context = this.canvas.getContext("2d");
+        this.context = this.canvas.getContext("2d") ?? undefined;
         this.context?.putImageData(image, -offX, -offY, 0, 0, image.width, image.height);
-
-        this.imageData = null;
     }
 
     public static async fromSource(source: string): Promise<ImageData> {
@@ -45,7 +43,7 @@ class ImageUtils {
     }
 
     public updateImageData(): void {
-        this.imageData = this.context?.getImageData(0, 0, this.canvas.width, this.canvas.height).data ?? null;
+        this.imageData = this.context?.getImageData(0, 0, this.canvas.width, this.canvas.height).data;
     }
 
     public pixelAt(x: number, y: number): number {

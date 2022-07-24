@@ -8,7 +8,7 @@ class HomeScene implements IScene {
         game.guiManager.setGui(HomeGui, { error });
     }
 
-    public async startGame(name: string, skin: string | null): Promise<void> {
+    public async startGame(name: string, skin?: string): Promise<void> {
         await game.client.login(name, skin);
     }
 

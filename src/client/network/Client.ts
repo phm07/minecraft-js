@@ -6,13 +6,13 @@ import HomeScene from "client/scene/HomeScene";
 class Client {
 
     private loggingIn = false;
-    public socket: ServerSocket | null = null;
-    public playerName: string | null = null;
-    public playerId: string | null = null;
-    public playerSkin: string | null = null;
+    public socket?: ServerSocket;
+    public playerName?: string;
+    public playerId?: string;
+    public playerSkin?: string;
     public chatMessages: { text: string, color?: string }[] = [];
 
-    public async login(name: string, skin: string | null): Promise<void> {
+    public async login(name: string, skin?: string): Promise<void> {
 
         return new Promise((resolve, reject) => {
 
@@ -62,9 +62,9 @@ class Client {
         });
 
         this.socket.on("disconnect", () => {
-            this.playerName = null;
-            this.playerId = null;
-            this.playerSkin = null;
+            this.playerName = undefined;
+            this.playerId = undefined;
+            this.playerSkin = undefined;
             game.setScene(new HomeScene(game, error));
         });
 
@@ -77,7 +77,7 @@ class Client {
         });
 
         this.socket.on("playerAdd", (packet) => {
-            void (game.scene as GameScene).humanFactory.addPlayer(packet.id, packet.name, packet.skin ?? null);
+            void (game.scene as GameScene).humanFactory.addPlayer(packet.id, packet.name, packet.skin);
         });
 
         this.socket.on("updatePosition", (packet) => {

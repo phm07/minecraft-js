@@ -8,12 +8,12 @@ class Player {
     public readonly socket: PlayerSocket;
     public readonly id: string;
     public readonly name: string;
-    public readonly skin: string | null;
+    public readonly skin?: string;
     public position: Position;
     public velocity: Vec3;
     public onGround: boolean;
 
-    public constructor(id: string, socket: PlayerSocket, name: string, skin: string | null) {
+    public constructor(id: string, socket: PlayerSocket, name: string, skin?: string) {
 
         this.socket = socket;
         this.id = id;

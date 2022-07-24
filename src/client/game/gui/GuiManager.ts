@@ -6,13 +6,12 @@ import guiVertexShader from "client/shaders/gui.vs";
 
 class GuiManager {
 
-    private gui: IGui | null;
+    private gui?: IGui;
     public readonly projectionMatrix: mat4;
     public readonly shader: Shader;
     public readonly samplerUniform: WebGLUniformLocation | null;
 
     public constructor() {
-        this.gui = null;
         this.projectionMatrix = mat4.create();
         this.shader = new Shader(guiVertexShader, guiFragmentShader);
         this.samplerUniform = this.shader.getUniformLocation("uTexture");
@@ -23,8 +22,6 @@ class GuiManager {
         if (constructor) {
             this.gui = new constructor(this, options);
             this.gui.onWindowResize();
-        } else {
-            this.gui = null;
         }
     }
 

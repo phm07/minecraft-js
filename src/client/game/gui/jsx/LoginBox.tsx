@@ -25,7 +25,7 @@ function LoginBox() {
                 localStorage.removeItem("skin");
             }
             localStorage.setItem("name", name);
-            await (game.scene as HomeScene).startGame(name, skin);
+            await (game.scene as HomeScene).startGame(name, skin ?? undefined);
         } catch (err) {
             if (typeof err === "string") {
                 setError(err);

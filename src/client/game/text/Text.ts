@@ -12,7 +12,7 @@ class Text {
     private readonly content: string;
     private readonly size: number;
     private readonly models: Model[];
-    private readonly background: Model | null;
+    private readonly background?: Model;
     private readonly dimensions: Vec2;
 
     public position: Vec3;

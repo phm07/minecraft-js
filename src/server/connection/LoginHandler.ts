@@ -36,7 +36,7 @@ class LoginHandler {
 
                 const id = server.newEntityId();
                 callback({ timestamp: packet.timestamp, id });
-                server.players.push(new Player(id, socket, packet.name, packet.skin ?? null));
+                server.players.push(new Player(id, socket, packet.name, packet.skin));
             });
         });
 

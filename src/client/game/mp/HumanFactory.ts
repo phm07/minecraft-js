@@ -25,7 +25,7 @@ class HumanFactory {
         this.samplerUniform = this.shader.getUniformLocation("uTexture");
     }
 
-    public addPlayer(id: string, name: string, skin: string | null): void {
+    public addPlayer(id: string, name: string, skin?: string): void {
         this.humans.push(new Human(id, name, skin, this.shader, this.textFactory));
     }
 

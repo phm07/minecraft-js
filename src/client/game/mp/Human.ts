@@ -16,16 +16,16 @@ class Human {
 
     public readonly id: string;
     public readonly name: string;
-    public readonly skin: string | null;
+    public readonly skin?: string;
     private readonly model: Humanoid;
     private readonly animator: Animator;
     private readonly text: Text | undefined;
-    public skinTexture: Texture | null;
+    public skinTexture?: Texture;
     public targetPosition: Position;
     public position: Position;
     public velocity: Vec3;
 
-    public constructor(id: string, name: string, skin: string | null, shader: Shader, textFactory: TextFactory | null) {
+    public constructor(id: string, name: string, skin: string | undefined, shader: Shader, textFactory: TextFactory | null) {
         this.id = id;
         this.name = name;
         this.skin = skin;
@@ -34,7 +34,6 @@ class Human {
         this.model = new Humanoid(this.position, shader);
         this.animator = new Animator(this, this.model);
         this.velocity = new Vec3();
-        this.skinTexture = null;
 
         if (textFactory) {
             this.text = textFactory.createText(this.name, 0.4, new Vec3());
