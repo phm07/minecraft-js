@@ -25,6 +25,7 @@ class Player {
             this.socket.broadcast.emit("playerRemove", {
                 id: this.id
             });
+            server.sendChatMessage(name + " left the game", "#f5ff99");
         });
 
         void server.world.getSpawnPoint().then((spawnPoint) => {
@@ -74,6 +75,12 @@ class Player {
                 id: player.id,
                 name: player.name,
                 skin: player.skin ?? undefined
+            });
+            this.socket.emit("updatePosition", {
+                id: player.id,
+                position: player.position,
+                velocity: player.velocity,
+                onGround: player.onGround
             });
         });
 
