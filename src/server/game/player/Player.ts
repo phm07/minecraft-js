@@ -69,7 +69,7 @@ class Player {
             skin: this.skin ?? undefined
         });
 
-        server.players.forEach((player) => {
+        server.players.filter((player) => player.id !== this.id).forEach((player) => {
             this.socket.emit("playerAdd", {
                 id: player.id,
                 name: player.name,
@@ -77,9 +77,7 @@ class Player {
             });
         });
 
-        setTimeout(() => {
-            server.sendChatMessage(name + " joined the game", "#f5ff99");
-        }, 100);
+        server.sendChatMessage(name + " joined the game", "#f5ff99");
     }
 
 }

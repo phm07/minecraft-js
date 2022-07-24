@@ -6,7 +6,6 @@ import Shader from "client/gl/Shader";
 import Texture from "client/gl/Texture";
 import fragmentShader from "client/shaders/human.fs";
 import vertexShader from "client/shaders/human.vs";
-import ImageUtils from "client/util/ImageUtils";
 import Vec3 from "common/math/Vec3";
 import Position from "common/world/Position";
 
@@ -26,12 +25,8 @@ class HumanFactory {
         this.samplerUniform = this.shader.getUniformLocation("uTexture");
     }
 
-    public async addPlayer(id: string, name: string, skin: string | null): Promise<void> {
-        let skinTexture: Texture | null = null;
-        if (skin) {
-            skinTexture = new Texture(await ImageUtils.fromSource(skin));
-        }
-        this.humans.push(new Human(id, name, skinTexture, this.shader, this.textFactory));
+    public addPlayer(id: string, name: string, skin: string | null): void {
+        this.humans.push(new Human(id, name, skin, this.shader, this.textFactory));
     }
 
     public removeHuman(id: string): void {
@@ -72,7 +67,7 @@ class HumanFactory {
 
         GL.disable(GL.CULL_FACE);
         this.humans.forEach((human) => {
-            (human.skin ?? this.defaultSkin).bind();
+            (human.skinTexture ?? this.defaultSkin).bind();
             human.render(camera);
         });
         GL.enable(GL.CULL_FACE);

@@ -27,14 +27,20 @@ function ChatBox() {
     }, [messages]);
 
     useEffect(() => {
+
+        game.client.socket?.removeAllListeners("chatMessage");
+        setMessages(game.client.chatMessages);
+
         const pointerLockChangeListener = () => {
             setFocused(!document.pointerLockElement);
         };
+
         const keyPressListener = (e: KeyboardEvent) => {
             if (e.code === "KeyT") {
                 document.exitPointerLock();
             }
         };
+
         document.addEventListener("pointerlockchange", pointerLockChangeListener);
         document.addEventListener("keypress", keyPressListener);
         return () => {

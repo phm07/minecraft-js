@@ -10,6 +10,7 @@ class Client {
     public playerName: string | null = null;
     public playerId: string | null = null;
     public playerSkin: string | null = null;
+    public chatMessages: { text: string, color?: string }[] = [];
 
     public async login(name: string, skin: string | null): Promise<void> {
 
@@ -90,6 +91,11 @@ class Client {
         this.socket.on("blockUpdate", (packet) => {
             const { x, y, z } = packet.position;
             void (game.scene as GameScene).world.setBlock(x, y, z, packet.type);
+        });
+
+        this.chatMessages = [];
+        this.socket.on("chatMessage", (packet) => {
+            this.chatMessages.push(packet);
         });
     }
 }

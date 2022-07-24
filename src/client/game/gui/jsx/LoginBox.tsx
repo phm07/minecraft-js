@@ -19,7 +19,11 @@ function LoginBox() {
     const startGame = useCallback(async () => {
         setConnecting(true);
         try {
-            if (skin) localStorage.setItem("skin", skin);
+            if (skin) {
+                localStorage.setItem("skin", skin);
+            } else {
+                localStorage.removeItem("skin");
+            }
             localStorage.setItem("name", name);
             await (game.scene as HomeScene).startGame(name, skin);
         } catch (err) {

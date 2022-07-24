@@ -30,7 +30,7 @@ class GameScene implements IScene {
         this.humanFactory = new HumanFactory(this.textFactory);
 
         this.wireframeShader = new Shader(wireframeVertexShader, wireframeFragmentShader);
-        this.player = new Player(game.client.playerId ?? "", game.client.playerSkin, this.camera, this.wireframeShader, this.humanFactory.shader);
+        this.player = new Player(this.camera, this.wireframeShader, this.humanFactory.shader);
         this.world = new ClientWorld();
 
         game.guiManager.setGui(GameGui, { humanFactory: this.humanFactory, wireframeShader: this.wireframeShader });

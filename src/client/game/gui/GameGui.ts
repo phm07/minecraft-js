@@ -6,7 +6,7 @@ import { createRoot, Root } from "react-dom/client";
 import gui from "client/assets/gui.png";
 import GuiManager from "client/game/gui/GuiManager";
 import IGui from "client/game/gui/IGui";
-import ChatBox from "client/game/gui/jsx/ChatBox";
+import GameOverlay from "client/game/gui/jsx/GameOverlay";
 import HumanFactory from "client/game/mp/HumanFactory";
 import ViewMode from "client/game/player/ViewMode";
 import Camera from "client/gl/Camera";
@@ -34,7 +34,7 @@ class GameGui implements IGui {
     private readonly fpsCounter: HTMLDivElement;
     private readonly lastFpsValues: number[];
     private readonly removeListeners: () => void;
-    private readonly chatBox: HTMLDivElement;
+    private readonly htmlOverlay: HTMLDivElement;
     private readonly reactDomRoot: Root;
     private showFps: boolean;
 
@@ -71,11 +71,11 @@ class GameGui implements IGui {
             window.removeEventListener("keydown", onWindowKeydown);
         };
 
-        this.chatBox = document.createElement("div");
-        document.body.appendChild(this.chatBox);
+        this.htmlOverlay = document.createElement("div");
+        document.body.appendChild(this.htmlOverlay);
 
-        this.reactDomRoot = createRoot(this.chatBox);
-        this.reactDomRoot.render(createElement(ChatBox));
+        this.reactDomRoot = createRoot(this.htmlOverlay);
+        this.reactDomRoot.render(createElement(GameOverlay));
     }
 
     public delete(): void {
@@ -106,7 +106,7 @@ class GameGui implements IGui {
             shader.bind();
             GL.activeTexture(GL.TEXTURE0);
             GL.uniform1i(samplerUniform, 0);
-            ((game.scene as GameScene).player.playerModel.skin ?? defaultSkin).bind();
+            ((game.scene as GameScene).player.playerModel.skinTexture ?? defaultSkin).bind();
             this.arm.render(this.camera);
         }
     }

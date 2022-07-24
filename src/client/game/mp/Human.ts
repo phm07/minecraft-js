@@ -7,6 +7,7 @@ import Shader from "client/gl/Shader";
 import Texture from "client/gl/Texture";
 import Humanoid from "client/models/Humanoid";
 import AABB from "client/physics/AABB";
+import ImageUtils from "client/util/ImageUtils";
 import MathUtils from "common/math/MathUtils";
 import Vec3 from "common/math/Vec3";
 import Position from "common/world/Position";
@@ -15,15 +16,16 @@ class Human {
 
     public readonly id: string;
     public readonly name: string;
+    public readonly skin: string | null;
     private readonly model: Humanoid;
     private readonly animator: Animator;
     private readonly text: Text | undefined;
-    public skin: Texture | null;
+    public skinTexture: Texture | null;
     public targetPosition: Position;
     public position: Position;
     public velocity: Vec3;
 
-    public constructor(id: string, name: string, skin: Texture | null, shader: Shader, textFactory: TextFactory | null) {
+    public constructor(id: string, name: string, skin: string | null, shader: Shader, textFactory: TextFactory | null) {
         this.id = id;
         this.name = name;
         this.skin = skin;
@@ -32,9 +34,14 @@ class Human {
         this.model = new Humanoid(this.position, shader);
         this.animator = new Animator(this, this.model);
         this.velocity = new Vec3();
+        this.skinTexture = null;
 
         if (textFactory) {
             this.text = textFactory.createText(this.name, 0.4, new Vec3());
+        }
+
+        if (skin) {
+            void this.loadSkin(skin);
         }
     }
 
@@ -45,7 +52,7 @@ class Human {
     public delete(): void {
         this.model.delete();
         this.text?.delete();
-        this.skin?.delete();
+        this.skinTexture?.delete();
     }
 
     public render(camera: Camera): void {
@@ -57,7 +64,7 @@ class Human {
         humanFactory.shader.bind();
         GL.uniform1i(humanFactory.samplerUniform, 0);
         GL.activeTexture(GL.TEXTURE0);
-        (this.skin ?? humanFactory.defaultSkin).bind();
+        (this.skinTexture ?? humanFactory.defaultSkin).bind();
 
         GL.disable(GL.CULL_FACE);
         this.model.render(camera);
@@ -84,6 +91,10 @@ class Human {
             this.text.position = new Vec3(this.position.x, this.position.y + 2.1, this.position.z);
             this.text.update();
         }
+    }
+
+    private async loadSkin(skin: string): Promise<void> {
+        this.skinTexture = new Texture(await ImageUtils.fromSource(skin));
     }
 }
 

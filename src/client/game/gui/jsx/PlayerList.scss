@@ -1,0 +1,38 @@
+
+.playerList {
+  position: absolute;
+  width: 15em;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-family: "MinecraftiaRegular", monospace;
+  background: rgba(0, 0, 0, 0.5);
+  user-select: none;
+
+  &.invisible {
+    display: none;
+  }
+
+  ul {
+    list-style-type: none;
+
+    li {
+      display: flex;
+      align-content: center;
+      padding: 0.25em;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.25);
+
+      .avatar {
+        width: 1.5em;
+        height: 1.5em;
+        margin-right: 0.5em;
+        image-rendering: pixelated;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}

@@ -6,11 +6,9 @@ import BlockFace from "client/game/world/BlockFace";
 import Camera from "client/gl/Camera";
 import Model from "client/gl/Model";
 import Shader from "client/gl/Shader";
-import Texture from "client/gl/Texture";
 import WireframeCuboid from "client/models/WireframeCuboid";
 import AABB from "client/physics/AABB";
 import GameScene from "client/scene/GameScene";
-import ImageUtils from "client/util/ImageUtils";
 import Interpolator from "common/math/Interpolator";
 import MathUtils from "common/math/MathUtils";
 import Vec3 from "common/math/Vec3";
@@ -36,7 +34,7 @@ class Player {
     public targetedBlock: TargetBlock;
     public viewMode: ViewMode;
 
-    public constructor(id: string, skin: string | null, camera: Camera, wireframeShader: Shader, humanShader: Shader) {
+    public constructor(camera: Camera, wireframeShader: Shader, humanShader: Shader) {
         this.camera = camera;
         this.interpolator = new Interpolator({ bob: 0 });
         this.controller = new PlayerController(this);
@@ -49,11 +47,7 @@ class Player {
         this.targetedBlock = null;
         this.accumulator = 0;
         this.viewMode = ViewMode.FIRST_PERSON;
-        this.playerModel = new Human(id, "", null, humanShader, null);
-
-        if (skin) {
-            void this.loadSkin(skin);
-        }
+        this.playerModel = new Human(game.client.playerId ?? "", game.client.playerName ?? "", game.client.playerSkin, humanShader, null);
 
         this.updateTimer = setInterval(() => {
             game.client.socket?.emit("updatePosition", {
@@ -271,10 +265,6 @@ class Player {
     private static findRange(position: Position, maxDistance: number, padding: number): number {
         const raycast = (game.scene as GameScene).world.raycastBlock(position, maxDistance);
         return raycast ? Vec3.distance(raycast.probePos, new Vec3(position.x, position.y, position.z)) - padding : maxDistance;
-    }
-
-    private async loadSkin(skin: string): Promise<void> {
-        this.playerModel.skin = new Texture(await ImageUtils.fromSource(skin));
     }
 }
 
